@@ -25,6 +25,6 @@ This document identifies the major system boundaries C-COPE is expected to expos
 ## Near-Term Follow-Up
 
 - pin the LocalNet distribution
-- define the CPL and policy-profile schemas
+- wire CPL evaluation to the published schema and policy-profile examples
 - define the first decision-report and execution-report contracts
 - define the initial asset-adapter contracts

@@ -1,0 +1,250 @@
+{
+  "$schema": "../../schema/cpl.schema.json",
+  "cplVersion": "0.1.0",
+  "policyId": "bilateral-csa-standard-policy",
+  "policyVersion": "1.0.0",
+  "profile": "bilateral_csa",
+  "metadata": {
+    "name": "Bilateral CSA Standard Policy",
+    "description": "Bilateral CSA-style collateral policy with negotiated currencies, explicit substitution consent, and counterparty wrong-way-risk exclusions.",
+    "owner": "Derivatives Collateral Governance",
+    "createdBy": "mission-control",
+    "createdAt": "2026-03-28T00:00:00Z",
+    "status": "active",
+    "sourceDocument": "CSA-ANNEX-2026-01",
+    "approvalReference": "csa-governance-2026-q2",
+    "tags": [
+      "bilateral",
+      "csa",
+      "substitution"
+    ],
+    "marketPracticeNotes": [
+      "bilateral_csa_operations"
+    ]
+  },
+  "effectivePeriod": {
+    "effectiveFrom": "2026-04-01T00:00:00Z",
+    "effectiveUntil": "2027-04-01T00:00:00Z"
+  },
+  "eligibility": {
+    "eligibleAssetClasses": [
+      "CASH",
+      "SOVEREIGN_BOND",
+      "CORPORATE_BOND"
+    ],
+    "eligibleIssueTypes": [
+      "CASH",
+      "SOVEREIGN",
+      "SENIOR_UNSECURED"
+    ],
+    "issuerFilters": {
+      "allowedIssuerTypes": [
+        "SOVEREIGN",
+        "BANK",
+        "CORPORATE"
+      ],
+      "minimumLongTermRating": "A-",
+      "allowUnratedIssuers": false,
+      "allowSelfIssued": false,
+      "allowCounterpartyIssued": false
+    },
+    "custodianFilters": {
+      "allowedCustodianIds": [
+        "bilateral-custodian-a",
+        "bilateral-custodian-b"
+      ],
+      "allowedAccountTypes": [
+        "BILATERAL_CUSTODY",
+        "THIRD_PARTY_CUSTODY"
+      ],
+      "requireSegregatedAccount": false,
+      "requireControlAgreement": false,
+      "allowInternalCustody": false
+    },
+    "jurisdictionFilters": {
+      "allowedIssuanceJurisdictions": [
+        "US",
+        "GB",
+        "CH",
+        "JP",
+        "DE"
+      ],
+      "allowedRiskJurisdictions": [
+        "US",
+        "GB",
+        "CH",
+        "JP",
+        "DE"
+      ],
+      "allowedCustodyJurisdictions": [
+        "US",
+        "GB",
+        "CH"
+      ],
+      "excludedJurisdictions": [
+        "RU"
+      ]
+    }
+  },
+  "haircuts": {
+    "valuationBasis": "MARKET_VALUE",
+    "roundingMode": "ROUND_HALF_UP",
+    "schedule": [
+      {
+        "ruleId": "cash-rule",
+        "description": "Cash collateral in an agreed settlement currency.",
+        "selectors": {
+          "assetClasses": [
+            "CASH"
+          ]
+        },
+        "haircutBps": 0
+      },
+      {
+        "ruleId": "sovereign-rule",
+        "description": "Negotiated sovereign collateral list.",
+        "selectors": {
+          "assetClasses": [
+            "SOVEREIGN_BOND"
+          ],
+          "minimumLongTermRating": "A-"
+        },
+        "haircutBps": 300
+      },
+      {
+        "ruleId": "corporate-rule",
+        "description": "Investment-grade senior unsecured corporate collateral.",
+        "selectors": {
+          "assetClasses": [
+            "CORPORATE_BOND"
+          ],
+          "issueTypes": [
+            "SENIOR_UNSECURED"
+          ],
+          "minimumLongTermRating": "A-"
+        },
+        "haircutBps": 1500
+      }
+    ],
+    "currencyMismatch": {
+      "basis": "COLLATERAL_VS_SETTLEMENT_CURRENCY",
+      "defaultHaircutBps": 500,
+      "pairOverrides": [
+        {
+          "collateralCurrency": "EUR",
+          "settlementCurrency": "USD",
+          "haircutBps": 300
+        },
+        {
+          "collateralCurrency": "GBP",
+          "settlementCurrency": "USD",
+          "haircutBps": 350
+        }
+      ]
+    }
+  },
+  "concentrationLimits": [
+    {
+      "limitId": "single-issuer-cap",
+      "description": "Single corporate issuer concentration cap.",
+      "dimension": "ISSUER",
+      "scope": "COUNTERPARTY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.15
+      },
+      "breachAction": "REJECT"
+    },
+    {
+      "limitId": "corporate-bucket-cap",
+      "description": "Corporate collateral remains a minority of bilateral collateral.",
+      "dimension": "ASSET_CLASS",
+      "scope": "COUNTERPARTY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.25
+      },
+      "appliesTo": {
+        "assetClasses": [
+          "CORPORATE_BOND"
+        ]
+      },
+      "breachAction": "REVIEW"
+    }
+  ],
+  "controlRequirements": {
+    "encumbrance": {
+      "requireUnencumbered": true,
+      "allowReuse": true,
+      "allowPartialRelease": true,
+      "minimumFreeAllocationPercent": 1
+    },
+    "segregation": {
+      "required": false,
+      "segregationType": "NONE",
+      "requireThirdPartyAcknowledgement": false
+    }
+  },
+  "substitutionRights": {
+    "substitutionAllowed": true,
+    "replacementCoverageRule": "LENDABLE_VALUE_MUST_NOT_DECREASE",
+    "requiresSecuredPartyConsent": true,
+    "requiresCustodianConsent": false,
+    "minimumNotice": "PT1H",
+    "maxSubstitutionsPerDay": 6,
+    "sameDaySettlementRequired": false,
+    "partialSubstitutionAllowed": true,
+    "inventoryControl": "SELF_MANAGED"
+  },
+  "settlement": {
+    "currencyConstraints": {
+      "allowedSettlementCurrencies": [
+        "USD",
+        "EUR",
+        "GBP"
+      ],
+      "requireSettlementCurrencyInHaircutSchedule": true,
+      "allowCollateralCurrencyMismatch": true
+    },
+    "settlementWindows": [
+      {
+        "windowId": "bilateral-window",
+        "daysOfWeek": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "startTime": "07:00:00-05:00",
+        "endTime": "17:00:00-05:00",
+        "timeZone": "America/Chicago",
+        "cutoffAction": "NEXT_WINDOW"
+      }
+    ],
+    "expiry": {
+      "marginCallTtl": "P1D",
+      "settlementInstructionTtl": "PT6H",
+      "substitutionRequestTtl": "PT4H"
+    }
+  },
+  "wrongWayRiskExclusions": [
+    {
+      "exclusionId": "counterparty-issued-paper",
+      "description": "Reject collateral issued by the posting counterparty.",
+      "type": "ISSUER_EQUALS_EXPOSURE_COUNTERPARTY",
+      "action": "REJECT",
+      "matchExposureCounterpartyRole": "PLEDGOR"
+    },
+    {
+      "exclusionId": "named-counterparty-issuers",
+      "description": "Reject a negotiated deny-list of issuer names tied to the counterparty group.",
+      "type": "CUSTOM_ISSUER_LIST",
+      "action": "REJECT",
+      "issuerIds": [
+        "counterparty-parent-bank",
+        "counterparty-broker-dealer"
+      ]
+    }
+  ]
+}

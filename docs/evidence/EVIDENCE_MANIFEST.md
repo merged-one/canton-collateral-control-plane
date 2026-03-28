@@ -43,10 +43,17 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0022 | Specs | [docs/integration/QUICKSTART_INTEGRATION_PLAN.md](../integration/QUICKSTART_INTEGRATION_PLAN.md) | LocalNet integration plan with overlays and adjacent services |
 | E-0023 | Specs | [docs/integration/TOKEN_STANDARD_ALIGNMENT.md](../integration/TOKEN_STANDARD_ALIGNMENT.md) | asset representation and future Canton integration boundaries |
 | E-0024 | Demo artifacts | [docs/evidence/prompt-02-execution-report.md](./prompt-02-execution-report.md) | reproducible Prompt 2 execution record for the architecture and domain package |
+| E-0025 | Specs | [docs/specs/CPL_SPEC_v0_1.md](../specs/CPL_SPEC_v0_1.md) | normative `CPL v0.1` format, semantics, and market-practice mapping |
+| E-0026 | Code | [schema/cpl.schema.json](../../schema/cpl.schema.json) | machine-readable `CPL v0.1` schema with strict field validation |
+| E-0027 | Specs | [docs/specs/CPL_EXAMPLES.md](../specs/CPL_EXAMPLES.md) | explanation of the central-bank-style, tri-party-style, CCP-style, and bilateral examples |
+| E-0028 | ADRs | [docs/adrs/0005-cpl-format-and-versioning.md](../adrs/0005-cpl-format-and-versioning.md) | canonical format, versioning, and validation decision for `CPL v0.1` |
+| E-0029 | Tests | [docs/testing/CPL_VALIDATION_TEST_PLAN.md](../testing/CPL_VALIDATION_TEST_PLAN.md) | first executable validation scope for schema, positive examples, and negative cases |
+| E-0030 | Code | [requirements-cpl-validation.txt](../../requirements-cpl-validation.txt) | pinned validation dependency for the repo-local CPL validation toolchain |
+| E-0031 | Demo artifacts | [docs/evidence/prompt-03-execution-report.md](./prompt-03-execution-report.md) | reproducible Prompt 3 execution record for the CPL specification and schema package |
 
 ## Coverage Notes
 
-- The `Code` category is intentionally minimal because no business logic exists yet.
-- The architecture and domain package now provide stronger design evidence, but not executable workflow evidence.
+- The `Code` category now includes schema and validation-toolchain artifacts, but still no business logic.
+- The architecture and CPL packages now provide stronger design evidence, but not executable workflow evidence.
 - The `Demo artifacts` category still contains prompt execution records rather than end-to-end workflow runs.
-- Economic rationale is currently architectural and control-oriented rather than calibration-backed.
+- Economic rationale is currently architecture-, control-, and market-practice-oriented rather than calibration-backed.

@@ -198,3 +198,94 @@ Results:
 
 Next step:
 Pin the Quickstart and asset-adapter dependency set, then formalize the first `CPL v0.1`, policy decision report, execution report, and Daml package contracts against the documented architecture.
+
+## 2026-03-28 - Prompt 3 - Pre-Change
+
+Intent:
+Design and publish the first `CPL v0.1` package as a prose specification plus a machine-readable schema, supported by validating example policies, a minimal durable validation toolchain, and mission-control traceability updates.
+
+Risks addressed:
+
+- the repository currently describes CPL conceptually but does not yet expose a versioned machine-readable contract
+- policy coverage could remain too weak for central-bank-style, tri-party-style, CCP-style, and bilateral CSA-style controls
+- schema drift or weak validation could undermine later deterministic policy-engine work
+- operators would lack a reproducible command to prove example policies conform to the published schema
+
+Affected files:
+
+- `README.md`
+- `Makefile`
+- `requirements-cpl-validation.txt`
+- `docs/specs/CPL_SPEC_v0_1.md`
+- `docs/specs/CPL_EXAMPLES.md`
+- `schema/cpl.schema.json`
+- `examples/policies/central-bank-style-policy.json`
+- `examples/policies/tri-party-style-policy.json`
+- `examples/policies/ccp-style-policy.json`
+- `examples/policies/bilateral-csa-style-policy.json`
+- `docs/adrs/0005-cpl-format-and-versioning.md`
+- `docs/adrs/README.md`
+- `docs/testing/CPL_VALIDATION_TEST_PLAN.md`
+- `docs/testing/TEST_STRATEGY.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/DECISION_LOG.md`
+- `docs/mission-control/WORKLOG.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-03-execution-report.md`
+- `docs/risks/RISK_REGISTER.md`
+- `docs/security/THREAT_MODEL.md`
+- `docs/runbooks/README.md`
+
+Acceptance criteria:
+
+- `CPL v0.1` exists as both prose spec and machine-readable schema
+- the four example policy files validate successfully
+- the schema is strong enough to support later policy-engine work without relying on hidden conventions
+- central-bank, tri-party, CCP, and bilateral market-practice mappings are documented clearly
+- the repository exposes at least one reproducible validation command such as `make validate-cpl`
+
+Planned commands:
+
+```sh
+make validate-cpl
+make docs-lint
+make status
+make verify
+git status --short --branch
+```
+
+## 2026-03-28 - Prompt 3 - Post-Change
+
+Outcome:
+Published the first formal `CPL v0.1` package for the repository, including a normative specification, strict JSON Schema, four validating market-profile examples, a pinned validation toolchain, and the required mission-control traceability updates.
+
+Completed artifacts:
+
+- `CPL v0.1` prose specification and example guide under `docs/specs/`
+- machine-readable schema in `schema/cpl.schema.json`
+- validating example policies for central-bank-style, tri-party-style, CCP-style, and bilateral CSA-style usage under `examples/policies/`
+- ADR 0005 for CPL format and versioning plus a dedicated CPL validation test plan
+- `make validate-cpl` and the pinned validator dependency in `requirements-cpl-validation.txt`
+- README, tracker, decision log, invariant, risk, threat, runbook, evidence, and prompt-execution updates aligned to the new CPL surface
+
+Commands run:
+
+```sh
+make validate-cpl
+make docs-lint
+make status
+make verify
+git status --short --branch
+```
+
+Results:
+
+- `make validate-cpl` passed and confirmed the schema validates against its metaschema, the four example policies validate successfully, and generated negative cases fail as expected
+- `make docs-lint` passed
+- `make status` passed and reported `Current Phase: Milestone 1 / Phase 1 - CPL And Formal Model`
+- `make verify` passed and now includes the CPL schema validation loop in the baseline repository controls
+- the repository remains free of business logic while now exposing a durable machine-readable policy contract
+
+Next step:
+Define machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts, then pin the Quickstart and asset-adapter dependencies that will consume `CPL v0.1`.

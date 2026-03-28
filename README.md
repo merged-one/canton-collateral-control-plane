@@ -60,6 +60,7 @@ Current scope:
 - repository governance and operating rules
 - mission-control documents and decision tracking
 - proposal-aligned architecture, milestone, invariant, and evidence structure
+- `CPL v0.1` prose specification, JSON Schema, validation plan, and example policy set
 - implementation-ready planning for CPL, policy-engine, optimization, workflow, and conformance phases
 - reusable framing for margin, repo, securities-lending, treasury, and collateral-mobility workflows
 
@@ -95,10 +96,18 @@ Working rules:
 Reproducible commands today:
 
 ```sh
+make validate-cpl
 make status
 make docs-lint
 make verify
 ```
+
+Current CPL artifacts:
+
+- [docs/specs/CPL_SPEC_v0_1.md](./docs/specs/CPL_SPEC_v0_1.md)
+- [docs/specs/CPL_EXAMPLES.md](./docs/specs/CPL_EXAMPLES.md)
+- [schema/cpl.schema.json](./schema/cpl.schema.json)
+- [docs/testing/CPL_VALIDATION_TEST_PLAN.md](./docs/testing/CPL_VALIDATION_TEST_PLAN.md)
 
 ## Upcoming Phases
 

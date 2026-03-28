@@ -13,4 +13,4 @@ Runbooks turn design intent into operator steps. They should contain real comman
 
 ## Current State
 
-No executable runbooks exist yet because business logic is intentionally absent. When implementation begins, each major workflow should add or update at least one runbook and one reproducible command.
+No executable workflow runbooks exist yet because business logic is intentionally absent. The repository now includes one operator-facing control command, `make validate-cpl`, for schema-validating published policy artifacts. When implementation begins, each major workflow should add or update at least one runbook and one reproducible command.

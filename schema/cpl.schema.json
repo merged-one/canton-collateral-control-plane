@@ -1,0 +1,1251 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c-cope.dev/schema/cpl.schema.json",
+  "title": "Collateral Policy Language (CPL) v0.1 Policy",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "cplVersion",
+    "policyId",
+    "policyVersion",
+    "profile",
+    "metadata",
+    "effectivePeriod",
+    "eligibility",
+    "haircuts",
+    "concentrationLimits",
+    "controlRequirements",
+    "substitutionRights",
+    "settlement",
+    "wrongWayRiskExclusions"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "cplVersion": {
+      "const": "0.1.0"
+    },
+    "policyId": {
+      "$ref": "#/$defs/identifier"
+    },
+    "policyVersion": {
+      "$ref": "#/$defs/semver"
+    },
+    "profile": {
+      "type": "string",
+      "enum": [
+        "central_bank",
+        "tri_party",
+        "ccp",
+        "bilateral_csa",
+        "custom"
+      ]
+    },
+    "metadata": {
+      "$ref": "#/$defs/metadata"
+    },
+    "effectivePeriod": {
+      "$ref": "#/$defs/effectivePeriod"
+    },
+    "eligibility": {
+      "$ref": "#/$defs/eligibility"
+    },
+    "haircuts": {
+      "$ref": "#/$defs/haircuts"
+    },
+    "concentrationLimits": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/concentrationLimit"
+      }
+    },
+    "controlRequirements": {
+      "$ref": "#/$defs/controlRequirements"
+    },
+    "substitutionRights": {
+      "$ref": "#/$defs/substitutionRights"
+    },
+    "settlement": {
+      "$ref": "#/$defs/settlement"
+    },
+    "wrongWayRiskExclusions": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/wrongWayRiskExclusion"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "currencyCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "jurisdictionCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{2}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "duration": {
+      "type": "string",
+      "pattern": "^P(?!$)(?:\\d+Y)?(?:\\d+M)?(?:\\d+W)?(?:\\d+D)?(?:T(?:\\d+H)?(?:\\d+M)?(?:\\d+S)?)?$"
+    },
+    "timeWithOffset": {
+      "type": "string",
+      "pattern": "^(?:[01]\\d|2[0-3]):[0-5]\\d(?::[0-5]\\d)?(?:Z|[+-][01]\\d:[0-5]\\d)$"
+    },
+    "rating": {
+      "type": "string",
+      "enum": [
+        "AAA",
+        "AA+",
+        "AA",
+        "AA-",
+        "A+",
+        "A",
+        "A-",
+        "BBB+",
+        "BBB",
+        "BBB-",
+        "BB+",
+        "BB",
+        "BB-",
+        "B+",
+        "B",
+        "B-",
+        "CCC",
+        "CC",
+        "C",
+        "D",
+        "UNRATED"
+      ]
+    },
+    "dayOfWeek": {
+      "type": "string",
+      "enum": [
+        "MON",
+        "TUE",
+        "WED",
+        "THU",
+        "FRI",
+        "SAT",
+        "SUN"
+      ]
+    },
+    "assetClass": {
+      "type": "string",
+      "enum": [
+        "CASH",
+        "SOVEREIGN_BOND",
+        "AGENCY_BOND",
+        "SUPRANATIONAL_BOND",
+        "COVERED_BOND",
+        "CORPORATE_BOND",
+        "MONEY_MARKET_FUND",
+        "EQUITY",
+        "ABS",
+        "MUNICIPAL_BOND"
+      ]
+    },
+    "issueType": {
+      "type": "string",
+      "enum": [
+        "CASH",
+        "SOVEREIGN",
+        "CENTRAL_BANK",
+        "AGENCY",
+        "SUPRANATIONAL",
+        "COVERED",
+        "SECURED",
+        "SENIOR_UNSECURED",
+        "SUBORDINATED",
+        "EQUITY",
+        "ABS",
+        "MUNICIPAL"
+      ]
+    },
+    "issuerType": {
+      "type": "string",
+      "enum": [
+        "CENTRAL_BANK",
+        "SOVEREIGN",
+        "SUPRANATIONAL",
+        "AGENCY",
+        "MUNICIPAL",
+        "BANK",
+        "CORPORATE"
+      ]
+    },
+    "accountType": {
+      "type": "string",
+      "enum": [
+        "CENTRAL_BANK_ACCOUNT",
+        "TRIPARTY_ACCOUNT",
+        "THIRD_PARTY_CUSTODY",
+        "BILATERAL_CUSTODY",
+        "CCP_CUSTODY_ACCOUNT"
+      ]
+    },
+    "marketPracticeNote": {
+      "type": "string",
+      "enum": [
+        "central_bank_eligibility",
+        "triparty_inventory_control",
+        "ccp_concentration_control",
+        "bilateral_csa_operations"
+      ]
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "name",
+        "description",
+        "owner",
+        "createdBy",
+        "createdAt",
+        "status",
+        "tags",
+        "marketPracticeNotes"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 120
+        },
+        "description": {
+          "type": "string",
+          "minLength": 10,
+          "maxLength": 2000
+        },
+        "owner": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "createdBy": {
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "createdAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "draft",
+            "active",
+            "inactive",
+            "retired"
+          ]
+        },
+        "sourceDocument": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "approvalReference": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120
+        },
+        "tags": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z0-9][a-z0-9._-]{1,31}$"
+          }
+        },
+        "marketPracticeNotes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/marketPracticeNote"
+          }
+        }
+      }
+    },
+    "effectivePeriod": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "effectiveFrom"
+      ],
+      "properties": {
+        "effectiveFrom": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "effectiveUntil": {
+          "$ref": "#/$defs/dateTime"
+        }
+      }
+    },
+    "eligibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "eligibleAssetClasses",
+        "eligibleIssueTypes",
+        "issuerFilters",
+        "custodianFilters",
+        "jurisdictionFilters"
+      ],
+      "properties": {
+        "eligibleAssetClasses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/assetClass"
+          }
+        },
+        "eligibleIssueTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/issueType"
+          }
+        },
+        "issuerFilters": {
+          "$ref": "#/$defs/issuerFilters"
+        },
+        "custodianFilters": {
+          "$ref": "#/$defs/custodianFilters"
+        },
+        "jurisdictionFilters": {
+          "$ref": "#/$defs/jurisdictionFilters"
+        }
+      }
+    },
+    "issuerFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowedIssuerTypes",
+        "allowSelfIssued",
+        "allowCounterpartyIssued"
+      ],
+      "properties": {
+        "allowedIssuerTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/issuerType"
+          }
+        },
+        "allowListedIssuerIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "denyListedIssuerIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "minimumLongTermRating": {
+          "$ref": "#/$defs/rating"
+        },
+        "allowUnratedIssuers": {
+          "type": "boolean"
+        },
+        "allowSelfIssued": {
+          "type": "boolean"
+        },
+        "allowCounterpartyIssued": {
+          "type": "boolean"
+        }
+      }
+    },
+    "custodianFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowedCustodianIds",
+        "allowedAccountTypes",
+        "requireSegregatedAccount",
+        "requireControlAgreement",
+        "allowInternalCustody"
+      ],
+      "properties": {
+        "allowedCustodianIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "deniedCustodianIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "allowedAccountTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/accountType"
+          }
+        },
+        "requireSegregatedAccount": {
+          "type": "boolean"
+        },
+        "requireControlAgreement": {
+          "type": "boolean"
+        },
+        "allowInternalCustody": {
+          "type": "boolean"
+        }
+      }
+    },
+    "jurisdictionFilters": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowedIssuanceJurisdictions",
+        "allowedRiskJurisdictions",
+        "allowedCustodyJurisdictions"
+      ],
+      "properties": {
+        "allowedIssuanceJurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        },
+        "allowedRiskJurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        },
+        "allowedCustodyJurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        },
+        "excludedJurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        }
+      }
+    },
+    "policySelectors": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "assetClasses": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/assetClass"
+          }
+        },
+        "issueTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/issueType"
+          }
+        },
+        "issuerTypes": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/issuerType"
+          }
+        },
+        "issuerIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "currencies": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/currencyCode"
+          }
+        },
+        "issuanceJurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        },
+        "riskJurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        },
+        "custodianIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "minimumLongTermRating": {
+          "$ref": "#/$defs/rating"
+        },
+        "maximumLongTermRating": {
+          "$ref": "#/$defs/rating"
+        },
+        "minResidualMaturityDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "maxResidualMaturityDays": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "anyOf": [
+        {
+          "required": [
+            "assetClasses"
+          ]
+        },
+        {
+          "required": [
+            "issueTypes"
+          ]
+        },
+        {
+          "required": [
+            "issuerTypes"
+          ]
+        },
+        {
+          "required": [
+            "issuerIds"
+          ]
+        },
+        {
+          "required": [
+            "currencies"
+          ]
+        },
+        {
+          "required": [
+            "issuanceJurisdictions"
+          ]
+        },
+        {
+          "required": [
+            "riskJurisdictions"
+          ]
+        },
+        {
+          "required": [
+            "custodianIds"
+          ]
+        },
+        {
+          "required": [
+            "minimumLongTermRating"
+          ]
+        },
+        {
+          "required": [
+            "maxResidualMaturityDays"
+          ]
+        }
+      ]
+    },
+    "haircuts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "valuationBasis",
+        "roundingMode",
+        "schedule",
+        "currencyMismatch"
+      ],
+      "properties": {
+        "valuationBasis": {
+          "type": "string",
+          "enum": [
+            "MARKET_VALUE",
+            "LOWER_OF_MARKET_AND_NOMINAL",
+            "LOWER_OF_MARKET_AND_OUTSTANDING_PRINCIPAL"
+          ]
+        },
+        "roundingMode": {
+          "type": "string",
+          "enum": [
+            "ROUND_HALF_UP",
+            "ROUND_DOWN",
+            "ROUND_UP"
+          ]
+        },
+        "schedule": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/haircutRule"
+          }
+        },
+        "currencyMismatch": {
+          "$ref": "#/$defs/currencyMismatch"
+        }
+      }
+    },
+    "haircutRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "ruleId",
+        "selectors",
+        "haircutBps"
+      ],
+      "properties": {
+        "ruleId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "selectors": {
+          "$ref": "#/$defs/policySelectors"
+        },
+        "haircutBps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      }
+    },
+    "currencyMismatch": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "basis",
+        "defaultHaircutBps",
+        "pairOverrides"
+      ],
+      "properties": {
+        "basis": {
+          "type": "string",
+          "enum": [
+            "COLLATERAL_VS_SETTLEMENT_CURRENCY"
+          ]
+        },
+        "defaultHaircutBps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "pairOverrides": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/currencyPairHaircut"
+          }
+        }
+      }
+    },
+    "currencyPairHaircut": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "collateralCurrency",
+        "settlementCurrency",
+        "haircutBps"
+      ],
+      "properties": {
+        "collateralCurrency": {
+          "$ref": "#/$defs/currencyCode"
+        },
+        "settlementCurrency": {
+          "$ref": "#/$defs/currencyCode"
+        },
+        "haircutBps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        }
+      }
+    },
+    "concentrationLimit": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "limitId",
+        "dimension",
+        "scope",
+        "threshold",
+        "breachAction"
+      ],
+      "properties": {
+        "limitId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "dimension": {
+          "type": "string",
+          "enum": [
+            "ISSUER",
+            "ISSUER_GROUP",
+            "ASSET_CLASS",
+            "ISSUE_TYPE",
+            "CURRENCY",
+            "JURISDICTION",
+            "CUSTODIAN"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "POLICY_PORTFOLIO",
+            "COUNTERPARTY_PORTFOLIO",
+            "SETTLEMENT_DAY",
+            "CUSTODY_LOCATION"
+          ]
+        },
+        "threshold": {
+          "$ref": "#/$defs/threshold"
+        },
+        "appliesTo": {
+          "$ref": "#/$defs/policySelectors"
+        },
+        "breachAction": {
+          "type": "string",
+          "enum": [
+            "REJECT",
+            "ESCALATE",
+            "REVIEW"
+          ]
+        }
+      }
+    },
+    "threshold": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/ratioThreshold"
+        },
+        {
+          "$ref": "#/$defs/amountThreshold"
+        }
+      ]
+    },
+    "ratioThreshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric",
+        "value"
+      ],
+      "properties": {
+        "metric": {
+          "type": "string",
+          "enum": [
+            "PERCENT_OF_COLLATERAL_VALUE",
+            "PERCENT_OF_LENDABLE_VALUE"
+          ]
+        },
+        "value": {
+          "type": "number",
+          "exclusiveMinimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "amountThreshold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "metric",
+        "value",
+        "currency"
+      ],
+      "properties": {
+        "metric": {
+          "type": "string",
+          "const": "ABSOLUTE_MARKET_VALUE"
+        },
+        "value": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "currency": {
+          "$ref": "#/$defs/currencyCode"
+        }
+      }
+    },
+    "controlRequirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "encumbrance",
+        "segregation"
+      ],
+      "properties": {
+        "encumbrance": {
+          "$ref": "#/$defs/encumbrance"
+        },
+        "segregation": {
+          "$ref": "#/$defs/segregation"
+        }
+      }
+    },
+    "encumbrance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requireUnencumbered",
+        "allowReuse",
+        "allowPartialRelease",
+        "minimumFreeAllocationPercent"
+      ],
+      "properties": {
+        "requireUnencumbered": {
+          "type": "boolean"
+        },
+        "allowReuse": {
+          "type": "boolean"
+        },
+        "allowPartialRelease": {
+          "type": "boolean"
+        },
+        "minimumFreeAllocationPercent": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      }
+    },
+    "segregation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "required",
+        "segregationType",
+        "requireThirdPartyAcknowledgement"
+      ],
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "segregationType": {
+          "type": "string",
+          "enum": [
+            "NONE",
+            "OMNIBUS",
+            "SEGREGATED_CLIENT",
+            "FULLY_SEGREGATED",
+            "CENTRAL_BANK_RESTRICTED",
+            "TRIPARTY_CONTROLLED"
+          ]
+        },
+        "eligibleAccountDesignations": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "requireThirdPartyAcknowledgement": {
+          "type": "boolean"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": false
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "properties": {
+              "segregationType": {
+                "const": "NONE"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "required": {
+                "const": true
+              }
+            },
+            "required": [
+              "required"
+            ]
+          },
+          "then": {
+            "not": {
+              "properties": {
+                "segregationType": {
+                  "const": "NONE"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "substitutionRights": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "substitutionAllowed",
+        "replacementCoverageRule",
+        "requiresSecuredPartyConsent",
+        "requiresCustodianConsent",
+        "minimumNotice",
+        "maxSubstitutionsPerDay",
+        "sameDaySettlementRequired",
+        "partialSubstitutionAllowed",
+        "inventoryControl"
+      ],
+      "properties": {
+        "substitutionAllowed": {
+          "type": "boolean"
+        },
+        "replacementCoverageRule": {
+          "type": "string",
+          "enum": [
+            "MARKET_VALUE_MUST_NOT_DECREASE",
+            "LENDABLE_VALUE_MUST_NOT_DECREASE"
+          ]
+        },
+        "requiresSecuredPartyConsent": {
+          "type": "boolean"
+        },
+        "requiresCustodianConsent": {
+          "type": "boolean"
+        },
+        "minimumNotice": {
+          "$ref": "#/$defs/duration"
+        },
+        "maxSubstitutionsPerDay": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sameDaySettlementRequired": {
+          "type": "boolean"
+        },
+        "partialSubstitutionAllowed": {
+          "type": "boolean"
+        },
+        "inventoryControl": {
+          "type": "string",
+          "enum": [
+            "SELF_MANAGED",
+            "TRIPARTY_AGENT",
+            "CCP_CONTROL",
+            "CENTRAL_BANK_OPERATOR"
+          ]
+        }
+      }
+    },
+    "settlement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "currencyConstraints",
+        "settlementWindows",
+        "expiry"
+      ],
+      "properties": {
+        "currencyConstraints": {
+          "$ref": "#/$defs/currencyConstraints"
+        },
+        "settlementWindows": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/settlementWindow"
+          }
+        },
+        "expiry": {
+          "$ref": "#/$defs/expiry"
+        }
+      }
+    },
+    "currencyConstraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "allowedSettlementCurrencies",
+        "requireSettlementCurrencyInHaircutSchedule",
+        "allowCollateralCurrencyMismatch"
+      ],
+      "properties": {
+        "allowedSettlementCurrencies": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/currencyCode"
+          }
+        },
+        "requireSettlementCurrencyInHaircutSchedule": {
+          "type": "boolean"
+        },
+        "allowCollateralCurrencyMismatch": {
+          "type": "boolean"
+        }
+      }
+    },
+    "settlementWindow": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "windowId",
+        "daysOfWeek",
+        "startTime",
+        "endTime",
+        "timeZone",
+        "cutoffAction"
+      ],
+      "properties": {
+        "windowId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "daysOfWeek": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/dayOfWeek"
+          }
+        },
+        "startTime": {
+          "$ref": "#/$defs/timeWithOffset"
+        },
+        "endTime": {
+          "$ref": "#/$defs/timeWithOffset"
+        },
+        "timeZone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64
+        },
+        "cutoffAction": {
+          "type": "string",
+          "enum": [
+            "REJECT",
+            "ESCALATE",
+            "NEXT_WINDOW"
+          ]
+        }
+      }
+    },
+    "expiry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "marginCallTtl",
+        "settlementInstructionTtl",
+        "substitutionRequestTtl"
+      ],
+      "properties": {
+        "marginCallTtl": {
+          "$ref": "#/$defs/duration"
+        },
+        "settlementInstructionTtl": {
+          "$ref": "#/$defs/duration"
+        },
+        "substitutionRequestTtl": {
+          "$ref": "#/$defs/duration"
+        }
+      }
+    },
+    "wrongWayRiskExclusion": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "exclusionId",
+        "type",
+        "action"
+      ],
+      "properties": {
+        "exclusionId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 240
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "ISSUER_EQUALS_EXPOSURE_COUNTERPARTY",
+            "ISSUER_IN_COUNTERPARTY_GROUP",
+            "ISSUER_COUNTRY_EQUALS_EXPOSURE_COUNTRY",
+            "CUSTOM_ISSUER_LIST",
+            "CUSTOM_JURISDICTION_LIST"
+          ]
+        },
+        "action": {
+          "type": "string",
+          "enum": [
+            "REJECT",
+            "ESCALATE"
+          ]
+        },
+        "matchExposureCounterpartyRole": {
+          "type": "string",
+          "enum": [
+            "PLEDGOR",
+            "SECURED_PARTY",
+            "OBLIGOR",
+            "ANY"
+          ]
+        },
+        "counterpartyGroupIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "issuerIds": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "jurisdictions": {
+          "type": "array",
+          "minItems": 1,
+          "uniqueItems": true,
+          "items": {
+            "$ref": "#/$defs/jurisdictionCode"
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ISSUER_IN_COUNTERPARTY_GROUP"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "counterpartyGroupIds"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "CUSTOM_ISSUER_LIST"
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "issuerIds"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "enum": [
+                  "ISSUER_COUNTRY_EQUALS_EXPOSURE_COUNTRY",
+                  "CUSTOM_JURISDICTION_LIST"
+                ]
+              }
+            },
+            "required": [
+              "type"
+            ]
+          },
+          "then": {
+            "required": [
+              "jurisdictions"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

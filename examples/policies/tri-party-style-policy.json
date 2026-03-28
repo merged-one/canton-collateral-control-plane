@@ -1,0 +1,296 @@
+{
+  "$schema": "../../schema/cpl.schema.json",
+  "cplVersion": "0.1.0",
+  "policyId": "tri-party-daily-mobility-policy",
+  "policyVersion": "1.0.0",
+  "profile": "tri_party",
+  "metadata": {
+    "name": "Tri-Party Daily Mobility Policy",
+    "description": "Tri-party-style collateral policy with agent-managed substitution, inventory control, and diversified issuer and asset limits.",
+    "owner": "Collateral Management Desk",
+    "createdBy": "mission-control",
+    "createdAt": "2026-03-28T00:00:00Z",
+    "status": "active",
+    "sourceDocument": "TP-PROFILE-2026-01",
+    "approvalReference": "triparty-governance-2026-q2",
+    "tags": [
+      "tri-party",
+      "substitution",
+      "inventory-control"
+    ],
+    "marketPracticeNotes": [
+      "triparty_inventory_control"
+    ]
+  },
+  "effectivePeriod": {
+    "effectiveFrom": "2026-04-01T00:00:00Z",
+    "effectiveUntil": "2027-04-01T00:00:00Z"
+  },
+  "eligibility": {
+    "eligibleAssetClasses": [
+      "CASH",
+      "SOVEREIGN_BOND",
+      "AGENCY_BOND",
+      "COVERED_BOND",
+      "CORPORATE_BOND",
+      "MONEY_MARKET_FUND"
+    ],
+    "eligibleIssueTypes": [
+      "CASH",
+      "SOVEREIGN",
+      "AGENCY",
+      "COVERED",
+      "SENIOR_UNSECURED"
+    ],
+    "issuerFilters": {
+      "allowedIssuerTypes": [
+        "SOVEREIGN",
+        "AGENCY",
+        "BANK",
+        "CORPORATE"
+      ],
+      "minimumLongTermRating": "BBB-",
+      "allowUnratedIssuers": false,
+      "allowSelfIssued": false,
+      "allowCounterpartyIssued": false
+    },
+    "custodianFilters": {
+      "allowedCustodianIds": [
+        "bny-triparty",
+        "euroclear-triparty"
+      ],
+      "allowedAccountTypes": [
+        "TRIPARTY_ACCOUNT"
+      ],
+      "requireSegregatedAccount": true,
+      "requireControlAgreement": true,
+      "allowInternalCustody": false
+    },
+    "jurisdictionFilters": {
+      "allowedIssuanceJurisdictions": [
+        "US",
+        "CA",
+        "GB",
+        "DE",
+        "FR",
+        "NL"
+      ],
+      "allowedRiskJurisdictions": [
+        "US",
+        "CA",
+        "GB",
+        "DE",
+        "FR",
+        "NL"
+      ],
+      "allowedCustodyJurisdictions": [
+        "US",
+        "BE",
+        "GB"
+      ],
+      "excludedJurisdictions": [
+        "RU"
+      ]
+    }
+  },
+  "haircuts": {
+    "valuationBasis": "MARKET_VALUE",
+    "roundingMode": "ROUND_DOWN",
+    "schedule": [
+      {
+        "ruleId": "cash-same-currency",
+        "description": "Cash collateral in an accepted settlement currency.",
+        "selectors": {
+          "assetClasses": [
+            "CASH"
+          ]
+        },
+        "haircutBps": 0
+      },
+      {
+        "ruleId": "sovereign-and-agency",
+        "description": "Investment-grade sovereign and agency securities.",
+        "selectors": {
+          "assetClasses": [
+            "SOVEREIGN_BOND",
+            "AGENCY_BOND"
+          ],
+          "minimumLongTermRating": "A-"
+        },
+        "haircutBps": 300
+      },
+      {
+        "ruleId": "covered-bond-rule",
+        "description": "Covered bonds accepted through the tri-party agent.",
+        "selectors": {
+          "assetClasses": [
+            "COVERED_BOND"
+          ],
+          "minimumLongTermRating": "A-"
+        },
+        "haircutBps": 500
+      },
+      {
+        "ruleId": "corporate-ig",
+        "description": "Investment-grade corporate bonds.",
+        "selectors": {
+          "assetClasses": [
+            "CORPORATE_BOND"
+          ],
+          "minimumLongTermRating": "BBB-"
+        },
+        "haircutBps": 1200
+      },
+      {
+        "ruleId": "mmf-rule",
+        "description": "Short-duration money market funds.",
+        "selectors": {
+          "assetClasses": [
+            "MONEY_MARKET_FUND"
+          ]
+        },
+        "haircutBps": 150
+      }
+    ],
+    "currencyMismatch": {
+      "basis": "COLLATERAL_VS_SETTLEMENT_CURRENCY",
+      "defaultHaircutBps": 400,
+      "pairOverrides": [
+        {
+          "collateralCurrency": "EUR",
+          "settlementCurrency": "USD",
+          "haircutBps": 250
+        },
+        {
+          "collateralCurrency": "GBP",
+          "settlementCurrency": "USD",
+          "haircutBps": 300
+        }
+      ]
+    }
+  },
+  "concentrationLimits": [
+    {
+      "limitId": "single-issuer-cap",
+      "description": "No issuer may exceed 10 percent of tri-party collateral value.",
+      "dimension": "ISSUER",
+      "scope": "POLICY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.1
+      },
+      "breachAction": "REJECT"
+    },
+    {
+      "limitId": "corporate-bond-bucket",
+      "description": "Corporate bonds remain a minority share of the basket.",
+      "dimension": "ASSET_CLASS",
+      "scope": "POLICY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.35
+      },
+      "appliesTo": {
+        "assetClasses": [
+          "CORPORATE_BOND"
+        ]
+      },
+      "breachAction": "REVIEW"
+    },
+    {
+      "limitId": "non-usd-settlement-value",
+      "description": "Limit non-USD settlement value in the same-day operating queue.",
+      "dimension": "CURRENCY",
+      "scope": "SETTLEMENT_DAY",
+      "threshold": {
+        "metric": "ABSOLUTE_MARKET_VALUE",
+        "value": 25000000,
+        "currency": "USD"
+      },
+      "appliesTo": {
+        "currencies": [
+          "EUR",
+          "GBP"
+        ]
+      },
+      "breachAction": "ESCALATE"
+    }
+  ],
+  "controlRequirements": {
+    "encumbrance": {
+      "requireUnencumbered": true,
+      "allowReuse": false,
+      "allowPartialRelease": true,
+      "minimumFreeAllocationPercent": 1
+    },
+    "segregation": {
+      "required": true,
+      "segregationType": "TRIPARTY_CONTROLLED",
+      "eligibleAccountDesignations": [
+        "triparty-control-account"
+      ],
+      "requireThirdPartyAcknowledgement": true
+    }
+  },
+  "substitutionRights": {
+    "substitutionAllowed": true,
+    "replacementCoverageRule": "LENDABLE_VALUE_MUST_NOT_DECREASE",
+    "requiresSecuredPartyConsent": false,
+    "requiresCustodianConsent": true,
+    "minimumNotice": "PT15M",
+    "maxSubstitutionsPerDay": 24,
+    "sameDaySettlementRequired": true,
+    "partialSubstitutionAllowed": true,
+    "inventoryControl": "TRIPARTY_AGENT"
+  },
+  "settlement": {
+    "currencyConstraints": {
+      "allowedSettlementCurrencies": [
+        "USD",
+        "EUR",
+        "GBP"
+      ],
+      "requireSettlementCurrencyInHaircutSchedule": true,
+      "allowCollateralCurrencyMismatch": true
+    },
+    "settlementWindows": [
+      {
+        "windowId": "agent-operating-day",
+        "daysOfWeek": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "startTime": "06:00:00-05:00",
+        "endTime": "18:00:00-05:00",
+        "timeZone": "America/New_York",
+        "cutoffAction": "NEXT_WINDOW"
+      }
+    ],
+    "expiry": {
+      "marginCallTtl": "P1D",
+      "settlementInstructionTtl": "PT8H",
+      "substitutionRequestTtl": "PT2H"
+    }
+  },
+  "wrongWayRiskExclusions": [
+    {
+      "exclusionId": "issuer-equals-pledgor",
+      "description": "Reject any security issued by the pledgor.",
+      "type": "ISSUER_EQUALS_EXPOSURE_COUNTERPARTY",
+      "action": "REJECT",
+      "matchExposureCounterpartyRole": "PLEDGOR"
+    },
+    {
+      "exclusionId": "affiliate-group",
+      "description": "Reject issuers that sit within the pledgor group.",
+      "type": "ISSUER_IN_COUNTERPARTY_GROUP",
+      "action": "REJECT",
+      "counterpartyGroupIds": [
+        "dealer-group"
+      ]
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 # Master Tracker
 
 Last Updated: 2026-03-28
-Current Phase: Phase 0 - Mission Control Spine
+Current Phase: Milestone 1 / Phase 1 - CPL And Formal Model
 
 ## Mission
 
@@ -34,7 +34,7 @@ Stand up a documentation-first C-COPE repository: a neutral Canton collateral co
 
 ## Current Phase
 
-Phase 0 establishes the mission-control spine. The expected output is an implementation-ready repository with clear rules, tracked risks, proposal-aligned milestones, a richer invariant baseline, ADR-backed solution framing, and lightweight verification commands.
+Milestone 1 / Phase 1 establishes the first formal policy package for the repository. The expected output is a durable `CPL v0.1` contract with machine-readable schema validation, example policy profiles, and enough versioning discipline to support later engine and workflow work without hidden policy semantics.
 
 Prompt 1 status:
 
@@ -56,19 +56,27 @@ Prompt 2 status:
 - Quickstart integration and token-standard alignment assumptions documented for future implementation
 - repository remains documentation-only pending pinned dependencies, schema design, and package boundaries
 
+Prompt 3 status:
+
+- `CPL v0.1` prose specification published under `docs/specs/`
+- machine-readable JSON Schema published at `schema/cpl.schema.json`
+- example central-bank-style, tri-party-style, CCP-style, and bilateral CSA-style policies published and validated
+- `make validate-cpl` added as a reproducible repository control command
+- repository remains implementation-light: policy engine, optimization engine, workflow packages, and report schemas are still pending
+
 ## Next 5 Tasks
 
-1. Draft `CPL v0.1` schema and policy-package structure that matches the architecture and domain model.
+1. Specify machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts plus disclosure profiles.
 2. Pin the target Canton Quickstart release, overlay strategy, and first asset-adapter dependency set.
-3. Specify machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts plus disclosure profiles.
-4. Define the first Daml package boundary for obligations, encumbrance, substitution, return, and settlement instructions.
-5. Define the conformance-suite matrix, including exception, expiry, privacy, and atomicity scenarios.
+3. Define the first Daml package boundary for obligations, encumbrance, substitution, return, and settlement instructions.
+4. Define versioned reference-data contracts for valuation, FX, custodian, and issuer facts consumed by CPL evaluation.
+5. Expand the conformance-suite matrix to cover negative, temporal, privacy, and atomicity scenarios against the new CPL package.
 
 ## Blockers
 
-- No current blocker for documentation work.
-- Implementation should not start until the target Quickstart and asset interface versions are pinned.
-- Economic calibration is intentionally deferred until policy data structures are specified.
+- No current blocker for continued specification work.
+- Policy-engine and workflow implementation should not start until the target Quickstart and asset interface versions are pinned.
+- Economic calibration is intentionally deferred until reference-data contracts and report contracts are specified.
 - The current roadmap reflects the 2026-03-28 proposal and may need ADR-backed revision if the proposal changes materially.
 
 ## Dependency List
@@ -78,7 +86,10 @@ Current repo dependencies:
 - Git
 - `make`
 - POSIX shell
+- `python3`
 - `rg` for lightweight verification
+- repo-local `.venv` bootstrap for pinned schema validation
+- `check-jsonschema==0.37.1` via `requirements-cpl-validation.txt`
 
 Target dependencies to pin in future ADRs:
 
@@ -102,6 +113,9 @@ Target dependencies to pin in future ADRs:
 - [x] Prompt 1 execution report
 - [x] architecture and domain package
 - [x] Quickstart integration and token-alignment guidance
+- [x] `CPL v0.1` prose spec and schema
+- [x] schema validation toolchain and example policy set
+- [x] Prompt 3 execution report
 - [ ] pinned dependency ADRs
 - [ ] executable demo artifacts
 - [ ] implementation-linked tests

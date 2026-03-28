@@ -7,6 +7,7 @@ The future system will manage confidential collateral policy, inventory, valuati
 ## Protected Assets
 
 - confidential policy and position data
+- policy version and effective-window data
 - inventory-lot and custody-account facts
 - authorization decisions and role assignments
 - valuation inputs and haircut parameters
@@ -34,6 +35,7 @@ The future system will manage confidential collateral policy, inventory, valuati
 | Optimizer or reporter treated as authority | Off-ledger services could become hidden sources of truth. | Keep workflow state authoritative on Canton and derive reports from committed state only. |
 | Non-atomic substitution or return | Coverage could be lost during workflow transitions. | Treat atomic workflow completion as a blocking invariant. |
 | Report tampering or drift | Operators could rely on incorrect evidence. | State-derived report generation and report-fidelity checks. |
+| Schema downgrade or undeclared extension | Consumers could derive different results from materially different policy documents. | Pin `cplVersion`, reject unknown fields, and validate policy documents before load. |
 | Runtime overlay drift | Demo or LocalNet shortcuts could alter behavior relative to the documented architecture. | Separate runtime concerns from business semantics and keep overlay changes explicit. |
 | Environment drift | The system could become impossible to reproduce or validate consistently. | Pinned dependencies, explicit bootstrap commands, and release evidence. |
 
@@ -41,6 +43,7 @@ The future system will manage confidential collateral policy, inventory, valuati
 
 - policy authoring and registry versus workflow execution
 - policy evaluation versus optimization proposal generation
+- published CPL schema versus runtime policy ingestion
 - optimization proposal generation versus settlement authority
 - confidential ledger state versus report-generation views
 - LocalNet overlay and adjacent services versus upstream Quickstart base
@@ -52,3 +55,4 @@ The future system will manage confidential collateral policy, inventory, valuati
 - what minimum report profiles satisfy auditability without over-disclosure?
 - what freshness and provenance guarantees must a valuation snapshot prove?
 - which asset-control semantics belong in the adapter layer versus the workflow package?
+- how should future consumers reject or negotiate policies that require a newer `cplVersion` than they support?

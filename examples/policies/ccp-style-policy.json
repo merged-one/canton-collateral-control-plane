@@ -1,0 +1,305 @@
+{
+  "$schema": "../../schema/cpl.schema.json",
+  "cplVersion": "0.1.0",
+  "policyId": "ccp-initial-margin-policy",
+  "policyVersion": "1.0.0",
+  "profile": "ccp",
+  "metadata": {
+    "name": "CCP Initial Margin Eligibility Policy",
+    "description": "CCP-style collateral policy with conservative haircuts, layered concentration caps, and strict operational controls for substitution and settlement.",
+    "owner": "Margin Risk Committee",
+    "createdBy": "mission-control",
+    "createdAt": "2026-03-28T00:00:00Z",
+    "status": "active",
+    "sourceDocument": "CCP-MARGIN-2026-02",
+    "approvalReference": "ccp-risk-2026-q2",
+    "tags": [
+      "ccp",
+      "concentration",
+      "margin"
+    ],
+    "marketPracticeNotes": [
+      "ccp_concentration_control"
+    ]
+  },
+  "effectivePeriod": {
+    "effectiveFrom": "2026-04-01T00:00:00Z",
+    "effectiveUntil": "2027-04-01T00:00:00Z"
+  },
+  "eligibility": {
+    "eligibleAssetClasses": [
+      "CASH",
+      "SOVEREIGN_BOND",
+      "AGENCY_BOND"
+    ],
+    "eligibleIssueTypes": [
+      "CASH",
+      "SOVEREIGN",
+      "AGENCY"
+    ],
+    "issuerFilters": {
+      "allowedIssuerTypes": [
+        "SOVEREIGN",
+        "AGENCY"
+      ],
+      "minimumLongTermRating": "AA-",
+      "allowUnratedIssuers": false,
+      "allowSelfIssued": false,
+      "allowCounterpartyIssued": false
+    },
+    "custodianFilters": {
+      "allowedCustodianIds": [
+        "ccp-margin-bank",
+        "central-securities-depository"
+      ],
+      "allowedAccountTypes": [
+        "CCP_CUSTODY_ACCOUNT",
+        "THIRD_PARTY_CUSTODY"
+      ],
+      "requireSegregatedAccount": true,
+      "requireControlAgreement": true,
+      "allowInternalCustody": false
+    },
+    "jurisdictionFilters": {
+      "allowedIssuanceJurisdictions": [
+        "US",
+        "GB",
+        "DE",
+        "FR",
+        "NL",
+        "CA"
+      ],
+      "allowedRiskJurisdictions": [
+        "US",
+        "GB",
+        "DE",
+        "FR",
+        "NL",
+        "CA"
+      ],
+      "allowedCustodyJurisdictions": [
+        "US",
+        "GB",
+        "BE"
+      ],
+      "excludedJurisdictions": [
+        "RU",
+        "BY"
+      ]
+    }
+  },
+  "haircuts": {
+    "valuationBasis": "LOWER_OF_MARKET_AND_OUTSTANDING_PRINCIPAL",
+    "roundingMode": "ROUND_UP",
+    "schedule": [
+      {
+        "ruleId": "cash-margin",
+        "description": "Same-currency cash posted to the CCP.",
+        "selectors": {
+          "assetClasses": [
+            "CASH"
+          ]
+        },
+        "haircutBps": 0
+      },
+      {
+        "ruleId": "domestic-sovereign-short",
+        "description": "Short-dated sovereign collateral.",
+        "selectors": {
+          "assetClasses": [
+            "SOVEREIGN_BOND"
+          ],
+          "issuanceJurisdictions": [
+            "US",
+            "GB",
+            "DE",
+            "FR",
+            "NL",
+            "CA"
+          ],
+          "maxResidualMaturityDays": 365,
+          "minimumLongTermRating": "AA-"
+        },
+        "haircutBps": 150
+      },
+      {
+        "ruleId": "domestic-sovereign-long",
+        "description": "Longer-dated sovereign collateral.",
+        "selectors": {
+          "assetClasses": [
+            "SOVEREIGN_BOND"
+          ],
+          "issuanceJurisdictions": [
+            "US",
+            "GB",
+            "DE",
+            "FR",
+            "NL",
+            "CA"
+          ],
+          "minResidualMaturityDays": 366,
+          "minimumLongTermRating": "AA-"
+        },
+        "haircutBps": 500
+      },
+      {
+        "ruleId": "agency-paper",
+        "description": "Agency collateral with a CCP-style conservative spread add-on.",
+        "selectors": {
+          "assetClasses": [
+            "AGENCY_BOND"
+          ],
+          "minimumLongTermRating": "AA-"
+        },
+        "haircutBps": 900
+      }
+    ],
+    "currencyMismatch": {
+      "basis": "COLLATERAL_VS_SETTLEMENT_CURRENCY",
+      "defaultHaircutBps": 1000,
+      "pairOverrides": [
+        {
+          "collateralCurrency": "EUR",
+          "settlementCurrency": "USD",
+          "haircutBps": 900
+        },
+        {
+          "collateralCurrency": "GBP",
+          "settlementCurrency": "USD",
+          "haircutBps": 900
+        }
+      ]
+    }
+  },
+  "concentrationLimits": [
+    {
+      "limitId": "single-issuer-limit",
+      "description": "Single issuer exposures remain conservative even for sovereign names.",
+      "dimension": "ISSUER",
+      "scope": "COUNTERPARTY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.2
+      },
+      "breachAction": "REJECT"
+    },
+    {
+      "limitId": "currency-cap",
+      "description": "Any one collateral currency may not dominate the entire margin pool.",
+      "dimension": "CURRENCY",
+      "scope": "COUNTERPARTY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.6
+      },
+      "breachAction": "REJECT"
+    },
+    {
+      "limitId": "non-domestic-jurisdiction-cap",
+      "description": "Non-domestic sovereign paper receives a tighter jurisdiction cap.",
+      "dimension": "JURISDICTION",
+      "scope": "COUNTERPARTY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.35
+      },
+      "appliesTo": {
+        "issuanceJurisdictions": [
+          "GB",
+          "DE",
+          "FR",
+          "NL",
+          "CA"
+        ]
+      },
+      "breachAction": "ESCALATE"
+    }
+  ],
+  "controlRequirements": {
+    "encumbrance": {
+      "requireUnencumbered": true,
+      "allowReuse": false,
+      "allowPartialRelease": false,
+      "minimumFreeAllocationPercent": 1
+    },
+    "segregation": {
+      "required": true,
+      "segregationType": "FULLY_SEGREGATED",
+      "eligibleAccountDesignations": [
+        "ccp-margin-segregated-account"
+      ],
+      "requireThirdPartyAcknowledgement": true
+    }
+  },
+  "substitutionRights": {
+    "substitutionAllowed": true,
+    "replacementCoverageRule": "LENDABLE_VALUE_MUST_NOT_DECREASE",
+    "requiresSecuredPartyConsent": true,
+    "requiresCustodianConsent": true,
+    "minimumNotice": "PT30M",
+    "maxSubstitutionsPerDay": 8,
+    "sameDaySettlementRequired": true,
+    "partialSubstitutionAllowed": true,
+    "inventoryControl": "CCP_CONTROL"
+  },
+  "settlement": {
+    "currencyConstraints": {
+      "allowedSettlementCurrencies": [
+        "USD",
+        "EUR",
+        "GBP"
+      ],
+      "requireSettlementCurrencyInHaircutSchedule": true,
+      "allowCollateralCurrencyMismatch": true
+    },
+    "settlementWindows": [
+      {
+        "windowId": "ccp-operating-window",
+        "daysOfWeek": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "startTime": "07:00:00+00:00",
+        "endTime": "19:00:00+00:00",
+        "timeZone": "UTC",
+        "cutoffAction": "ESCALATE"
+      }
+    ],
+    "expiry": {
+      "marginCallTtl": "PT12H",
+      "settlementInstructionTtl": "PT4H",
+      "substitutionRequestTtl": "PT90M"
+    }
+  },
+  "wrongWayRiskExclusions": [
+    {
+      "exclusionId": "issuer-equals-member",
+      "description": "Reject collateral issued by the clearing member posting it.",
+      "type": "ISSUER_EQUALS_EXPOSURE_COUNTERPARTY",
+      "action": "REJECT",
+      "matchExposureCounterpartyRole": "PLEDGOR"
+    },
+    {
+      "exclusionId": "member-group-issued",
+      "description": "Reject issuers in the same member group.",
+      "type": "ISSUER_IN_COUNTERPARTY_GROUP",
+      "action": "REJECT",
+      "counterpartyGroupIds": [
+        "clearing-member-group"
+      ]
+    },
+    {
+      "exclusionId": "exposure-country-mirror",
+      "description": "Escalate sovereign collateral where issuer country matches the exposure country.",
+      "type": "ISSUER_COUNTRY_EQUALS_EXPOSURE_COUNTRY",
+      "action": "ESCALATE",
+      "jurisdictions": [
+        "US",
+        "GB"
+      ]
+    }
+  ]
+}

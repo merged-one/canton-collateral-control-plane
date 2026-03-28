@@ -23,12 +23,15 @@ Testing in this repository exists to prove invariants, not just to increase cove
 
 ## Current Baseline
 
-At this phase, the repository only supports lightweight documentation checks:
+At this phase, the repository supports lightweight documentation and schema checks:
 
 ```sh
+make validate-cpl
 make docs-lint
 make verify
 ```
+
+`CPL v0.1` schema coverage and the initial negative cases are documented in [CPL_VALIDATION_TEST_PLAN.md](./CPL_VALIDATION_TEST_PLAN.md).
 
 ## Proposal-Aligned Conformance Direction
 
