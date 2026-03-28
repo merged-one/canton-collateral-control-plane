@@ -1,0 +1,91 @@
+{
+  "executionReports": [{
+    "eventStates": ["Closed"],
+    "outcome": "ExecutionCommitted",
+    "eventIds": ["corr-margin-call-demo-001-posting-posting-settled"],
+    "summary": "collateral posting settled and encumbrances committed",
+    "workflowType": "PostingWorkflow",
+    "reportId": "corr-margin-call-demo-001-posting-report"
+  }, {
+    "eventStates": ["Closed"],
+    "outcome": "ExecutionCommitted",
+    "eventIds": ["corr-margin-call-demo-001-margin-call-issued"],
+    "summary": "margin call obligation issued without additional approval",
+    "workflowType": "MarginCallWorkflow",
+    "reportId": "corr-margin-call-demo-001-report"
+  }],
+  "executionReportCount": 2,
+  "postingState": "Closed",
+  "obligationId": "margin-call-positive-obligation",
+  "scenarioId": "positive-margin-call",
+  "steps": [{
+    "actor": "secured-party",
+    "step": 1,
+    "state": "Draft",
+    "phase": "MARGIN_CALL",
+    "detail": "secured party created the draft call obligation"
+  }, {
+    "actor": "secured-party",
+    "step": 2,
+    "state": "UnderEvaluation",
+    "phase": "MARGIN_CALL",
+    "detail": "secured party started obligation evaluation"
+  }, {
+    "actor": "secured-party",
+    "step": 3,
+    "state": "Submitted",
+    "phase": "MARGIN_CALL",
+    "detail": "secured party confirmed the shortfall against the selected policy snapshot"
+  }, {
+    "actor": "secured-party",
+    "step": 4,
+    "state": "Closed",
+    "phase": "MARGIN_CALL",
+    "detail": "secured party issued the margin call without additional approval"
+  }, {
+    "actor": "provider",
+    "step": 5,
+    "state": "Draft",
+    "phase": "POSTING",
+    "detail": "provider staged eligible collateral inventory for the posting intent"
+  }, {
+    "actor": "provider",
+    "step": 6,
+    "state": "Submitted",
+    "phase": "POSTING",
+    "detail": "provider submitted the collateral posting intent"
+  }, {
+    "actor": "provider",
+    "step": 7,
+    "state": "UnderEvaluation",
+    "phase": "POSTING",
+    "detail": "provider moved the posting intent into evaluation"
+  }, {
+    "actor": "provider",
+    "step": 8,
+    "state": "PendingApproval",
+    "phase": "POSTING",
+    "detail": "provider recorded a feasible posting path"
+  }, {
+    "actor": "secured-party",
+    "step": 9,
+    "state": "PendingApproval",
+    "phase": "POSTING",
+    "detail": "secured party approved the posting path"
+  }, {
+    "actor": "custodian",
+    "step": 10,
+    "state": "PendingSettlement",
+    "phase": "POSTING",
+    "detail": "custodian approved the posting path and a settlement instruction was created"
+  }, {
+    "actor": "custodian",
+    "step": 11,
+    "state": "Closed",
+    "phase": "POSTING",
+    "detail": "custodian confirmed settlement and the encumbrances were committed"
+  }],
+  "marginCallState": "Closed",
+  "encumberedLotIds": ["mc-lot-002", "mc-lot-003", "mc-lot-004", "mc-lot-001"],
+  "selectedLotIds": ["mc-lot-001", "mc-lot-002", "mc-lot-003", "mc-lot-004"]
+}

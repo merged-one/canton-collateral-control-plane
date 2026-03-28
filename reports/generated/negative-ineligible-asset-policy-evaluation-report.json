@@ -1,0 +1,109 @@
+{
+  "$schema": "../../reports/schemas/policy-evaluation-report.schema.json",
+  "reportType": "PolicyEvaluationReport",
+  "reportVersion": "0.1.0",
+  "evaluationId": "per-313773a146dda25e",
+  "overallDecision": "REJECT",
+  "policy": {
+    "policyId": "central-bank-domestic-window-policy",
+    "policyVersion": "1.0.0",
+    "cplVersion": "0.1.0",
+    "profile": "central_bank"
+  },
+  "inventory": {
+    "inventorySetId": "margin-call-negative-ineligible-inventory",
+    "inventoryVersion": "1.0.0",
+    "asOf": "2026-04-15T14:00:00Z",
+    "settlementCurrency": "USD",
+    "valuationCurrency": "USD",
+    "candidateLotCount": 1
+  },
+  "summary": {
+    "candidateLotCount": 1,
+    "decisionCounts": {
+      "eligible": 0,
+      "ineligible": 1,
+      "escalate": 0,
+      "review": 0
+    },
+    "totalMarketValue": 150000.0,
+    "totalLendableValue": 0.0,
+    "concentrationIssueCount": 0
+  },
+  "portfolioReasons": [],
+  "assetResults": [
+    {
+      "lotId": "neg-ineligible-001",
+      "assetId": "corp-equity-001",
+      "decision": "INELIGIBLE",
+      "assetClass": "EQUITY",
+      "issueType": "EQUITY",
+      "issuerId": "dealer-a-equity",
+      "issuerType": "CORPORATE",
+      "issuerGroupIds": [
+        "dealer-group"
+      ],
+      "longTermRating": "BBB",
+      "collateralCurrency": "USD",
+      "issuanceJurisdiction": "US",
+      "riskJurisdiction": "US",
+      "custodianId": "new-york-fed",
+      "custodyJurisdiction": "US",
+      "accountType": "CENTRAL_BANK_ACCOUNT",
+      "residualMaturityDays": 30,
+      "marketValue": 150000.0,
+      "valuationBasisValue": 150000.0,
+      "baseHaircutBps": null,
+      "currencyMismatchHaircutBps": 0,
+      "totalHaircutBps": null,
+      "matchedHaircutRuleIds": [],
+      "appliedHaircutRuleIds": [],
+      "lendableValue": 0.0,
+      "reasons": [
+        {
+          "code": "ASSET_CLASS_NOT_ELIGIBLE",
+          "category": "ELIGIBILITY",
+          "severity": "REJECT",
+          "message": "Asset class EQUITY is not listed in eligibleAssetClasses.",
+          "policyPath": "eligibility.eligibleAssetClasses"
+        },
+        {
+          "code": "ISSUER_NOT_ON_ALLOW_LIST",
+          "category": "ELIGIBILITY",
+          "severity": "REJECT",
+          "message": "Issuer dealer-a-equity is not present in allowListedIssuerIds.",
+          "policyPath": "eligibility.issuerFilters.allowListedIssuerIds"
+        },
+        {
+          "code": "ISSUER_RATING_BELOW_MINIMUM",
+          "category": "ELIGIBILITY",
+          "severity": "REJECT",
+          "message": "Issuer rating BBB is below the minimum AA-.",
+          "policyPath": "eligibility.issuerFilters.minimumLongTermRating"
+        },
+        {
+          "code": "ISSUER_TYPE_NOT_ALLOWED",
+          "category": "ELIGIBILITY",
+          "severity": "REJECT",
+          "message": "Issuer type CORPORATE is not allowed by issuerFilters.",
+          "policyPath": "eligibility.issuerFilters.allowedIssuerTypes"
+        },
+        {
+          "code": "ISSUE_TYPE_NOT_ELIGIBLE",
+          "category": "ELIGIBILITY",
+          "severity": "REJECT",
+          "message": "Issue type EQUITY is not listed in eligibleIssueTypes.",
+          "policyPath": "eligibility.eligibleIssueTypes"
+        },
+        {
+          "code": "HAIRCUT_RULE_NOT_FOUND",
+          "category": "HAIRCUT",
+          "severity": "REJECT",
+          "message": "No haircut rule matched the candidate lot selectors.",
+          "policyPath": "haircuts.schedule"
+        }
+      ]
+    }
+  ],
+  "concentrationResults": []
+}

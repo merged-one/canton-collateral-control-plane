@@ -1,0 +1,88 @@
+{
+  "scenarioId": "positive-margin-call",
+  "obligationId": "margin-call-positive-obligation",
+  "correlationId": "corr-margin-call-demo-001",
+  "policyVersion": "1.0.0",
+  "snapshotId": "margin-call-positive-inventory::2026-04-15T14:00:00Z",
+  "decisionReference": "per-c6ca6e747c6f3b12",
+  "requiredCoverage": 560000.0,
+  "dueAt": "2026-04-15T16:00:00Z",
+  "selectedLots": [
+    {
+      "lotId": "mc-lot-001",
+      "assetId": "ust-2027-01",
+      "issuer": "us-treasury",
+      "assetClass": "SOVEREIGN_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/ust-2027-01",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-margin-demo",
+      "quantity": 300000.0,
+      "sourceAccount": "acct-provider-margin-demo",
+      "destinationAccount": "acct-secured-margin-demo"
+    },
+    {
+      "lotId": "mc-lot-002",
+      "assetId": "kfw-2029-01",
+      "issuer": "kfw",
+      "assetClass": "AGENCY_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/kfw-2029-01",
+      "jurisdiction": "DE",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-margin-demo",
+      "quantity": 300000.0,
+      "sourceAccount": "acct-provider-margin-demo",
+      "destinationAccount": "acct-secured-margin-demo"
+    },
+    {
+      "lotId": "mc-lot-003",
+      "assetId": "eib-2030-01",
+      "issuer": "eib",
+      "assetClass": "SUPRANATIONAL_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/eib-2030-01",
+      "jurisdiction": "FR",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-margin-demo",
+      "quantity": 300000.0,
+      "sourceAccount": "acct-provider-margin-demo",
+      "destinationAccount": "acct-secured-margin-demo"
+    },
+    {
+      "lotId": "mc-lot-004",
+      "assetId": "fannie-2028-01",
+      "issuer": "fannie-mae",
+      "assetClass": "AGENCY_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/fannie-2028-01",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-margin-demo",
+      "quantity": 300000.0,
+      "sourceAccount": "acct-provider-margin-demo",
+      "destinationAccount": "acct-secured-margin-demo"
+    }
+  ]
+}

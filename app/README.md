@@ -6,6 +6,7 @@ Current contents:
 
 - `app/policy-engine/` for the deterministic `CPL v0.1` policy evaluation engine and CLI
 - `app/optimizer/` for the deterministic best-to-post and substitution optimizer plus CLI
+- `app/orchestration/` for the first end-to-end margin-call scenario runner and execution-report generation path
 
 Allowed scope:
 

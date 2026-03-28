@@ -16,10 +16,13 @@ CHECK_JSONSCHEMA := $(VENV)/bin/check-jsonschema
 CPL_SCHEMA := schema/cpl.schema.json
 POLICY_EVAL_REPORT_SCHEMA := reports/schemas/policy-evaluation-report.schema.json
 OPTIMIZATION_REPORT_SCHEMA := reports/schemas/optimization-report.schema.json
+EXECUTION_REPORT_SCHEMA := reports/schemas/execution-report.schema.json
 POLICY ?= examples/policies/central-bank-style-policy.json
 INVENTORY ?= examples/inventory/central-bank-eligible-inventory.json
 OBLIGATION ?= examples/obligations/central-bank-window-call.json
 REPORT ?=
+MARGIN_CALL_DEMO_MANIFEST ?= examples/demo-scenarios/margin-call/demo-config.json
+MARGIN_CALL_DEMO_OUTPUT_DIR ?= reports/generated
 LOCALNET_PROFILE ?= lean
 LOCALNET_WORKDIR ?= $(REPO_ROOT)/.runtime/localnet/cn-quickstart
 LOCALNET_PARTY_HINT ?= canton-collateral-1
@@ -50,9 +53,12 @@ REQUIRED_DOCS := \
 	app/optimizer/cli.py \
 	app/optimizer/optimizer.py \
 	app/optimizer/optimizer_constants.py \
+	app/orchestration/cli.py \
+	app/orchestration/margin_call_demo.py \
 	reports/README.md \
 	reports/schemas/policy-evaluation-report.schema.json \
 	reports/schemas/optimization-report.schema.json \
+	reports/schemas/execution-report.schema.json \
 	test/README.md \
 	test/policy-engine/test_policy_engine.py \
 	test/optimizer/test_optimizer.py \
@@ -60,6 +66,16 @@ REQUIRED_DOCS := \
 	examples/inventory/central-bank-eligible-inventory.json \
 	examples/obligations/central-bank-window-call.json \
 	examples/obligations/central-bank-window-remediation.json \
+	examples/demo-scenarios/margin-call/README.md \
+	examples/demo-scenarios/margin-call/demo-config.json \
+	examples/demo-scenarios/margin-call/positive-inventory.json \
+	examples/demo-scenarios/margin-call/positive-obligation.json \
+	examples/demo-scenarios/margin-call/negative-ineligible-inventory.json \
+	examples/demo-scenarios/margin-call/negative-ineligible-obligation.json \
+	examples/demo-scenarios/margin-call/negative-insufficient-inventory.json \
+	examples/demo-scenarios/margin-call/negative-insufficient-obligation.json \
+	examples/demo-scenarios/margin-call/negative-expired-policy-window-inventory.json \
+	examples/demo-scenarios/margin-call/negative-expired-policy-window-obligation.json \
 	infra/README.md \
 	daml/Foundation.daml \
 	daml/Bootstrap.daml \
@@ -74,6 +90,7 @@ REQUIRED_DOCS := \
 	daml/CantonCollateral/Posting.daml \
 	daml/CantonCollateral/Substitution.daml \
 	daml/CantonCollateral/Return.daml \
+	daml/CantonCollateral/Demo.daml \
 	daml/CantonCollateral/Test.daml \
 	docs/mission-control/MASTER_TRACKER.md \
 	docs/mission-control/ROADMAP.md \
@@ -95,7 +112,8 @@ REQUIRED_DOCS := \
 	docs/adrs/0008-policy-evaluation-engine.md \
 	docs/adrs/0009-optimization-objective-and-determinism.md \
 	docs/adrs/0010-rename-to-canton-collateral-control-plane.md \
-	docs/adrs/0011-quickstart-demo-foundation.md \
+	docs/adrs/0011-margin-call-demo-shape.md \
+	docs/adrs/0012-quickstart-demo-foundation.md \
 	docs/setup/LOCAL_DEV_SETUP.md \
 	docs/setup/DEPENDENCY_POLICY.md \
 	docs/invariants/INVARIANT_REGISTRY.md \
@@ -109,8 +127,10 @@ REQUIRED_DOCS := \
 	docs/evidence/prompt-06-execution-report.md \
 	docs/evidence/prompt-07-execution-report.md \
 	docs/evidence/prompt-08-execution-report.md \
+	docs/evidence/prompt-09-execution-report.md \
 	docs/evidence/rename-to-collateral-control-plane-execution-report.md \
 	docs/runbooks/README.md \
+	docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md \
 	docs/integration/INTEGRATION_SURFACES.md \
 	docs/integration/LOCALNET_DEMO_PLAN.md \
 	docs/integration/QUICKSTART_INTEGRATION_PLAN.md \
@@ -125,6 +145,7 @@ REQUIRED_DOCS := \
 	docs/specs/CPL_EXAMPLES.md \
 	docs/specs/POLICY_EVALUATION_REPORT_SPEC.md \
 	docs/specs/OPTIMIZATION_REPORT_SPEC.md \
+	docs/specs/EXECUTION_REPORT_SPEC.md \
 	docs/economic/OPTIMIZATION_OBJECTIVES.md \
 	docs/testing/CPL_VALIDATION_TEST_PLAN.md \
 	docs/testing/DAML_TEST_PLAN.md \
@@ -143,6 +164,7 @@ REQUIRED_DOCS := \
 	$(CPL_SCHEMA) \
 	$(POLICY_EVAL_REPORT_SCHEMA) \
 	$(OPTIMIZATION_REPORT_SCHEMA) \
+	$(EXECUTION_REPORT_SCHEMA) \
 	$(CPL_EXAMPLES) \
 	requirements-cpl-validation.txt
 
@@ -156,7 +178,7 @@ REQUIRED_DIRS := \
 	infra \
 	docs/setup
 
-.PHONY: bootstrap localnet-bootstrap localnet-smoke docs-lint status verify validate-cpl policy-eval optimize test-policy-engine test-optimizer daml-build daml-test demo-run clean-runtime
+.PHONY: bootstrap localnet-bootstrap localnet-smoke docs-lint status verify validate-cpl policy-eval optimize test-policy-engine test-optimizer daml-build daml-test demo-run demo-margin-call clean-runtime
 
 $(CHECK_JSONSCHEMA): requirements-cpl-validation.txt
 	@$(PYTHON) -m venv $(VENV)
@@ -185,6 +207,7 @@ docs-lint:
 	@grep -q "make daml-build" README.md || { echo "docs-lint: README missing daml-build command"; exit 1; }
 	@grep -q "make daml-test" README.md || { echo "docs-lint: README missing daml-test command"; exit 1; }
 	@grep -q "make demo-run" README.md || { echo "docs-lint: README missing demo-run command"; exit 1; }
+	@grep -q "make demo-margin-call" README.md || { echo "docs-lint: README missing demo-margin-call command"; exit 1; }
 	@grep -q "make policy-eval" README.md || { echo "docs-lint: README missing policy-eval command"; exit 1; }
 	@grep -q "make optimize" README.md || { echo "docs-lint: README missing optimize command"; exit 1; }
 	@grep -q "make test-policy-engine" README.md || { echo "docs-lint: README missing test-policy-engine command"; exit 1; }
@@ -192,6 +215,7 @@ docs-lint:
 	@grep -q "make localnet-bootstrap" AGENTS.md || { echo "docs-lint: AGENTS missing localnet-bootstrap command"; exit 1; }
 	@grep -q "make localnet-smoke" AGENTS.md || { echo "docs-lint: AGENTS missing localnet-smoke command"; exit 1; }
 	@grep -q "make daml-test" AGENTS.md || { echo "docs-lint: AGENTS missing daml-test command"; exit 1; }
+	@grep -q "make demo-margin-call" AGENTS.md || { echo "docs-lint: AGENTS missing demo-margin-call command"; exit 1; }
 	@grep -q "make policy-eval" AGENTS.md || { echo "docs-lint: AGENTS missing policy-eval command"; exit 1; }
 	@grep -q "make optimize" AGENTS.md || { echo "docs-lint: AGENTS missing optimize command"; exit 1; }
 	@grep -q "make test-policy-engine" AGENTS.md || { echo "docs-lint: AGENTS missing test-policy-engine command"; exit 1; }
@@ -199,6 +223,7 @@ docs-lint:
 	@grep -q "make localnet-bootstrap" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing localnet-bootstrap command"; exit 1; }
 	@grep -q "make localnet-smoke" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing localnet-smoke command"; exit 1; }
 	@grep -q "make daml-test" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing daml-test command"; exit 1; }
+	@grep -q "make demo-margin-call" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-margin-call command"; exit 1; }
 	@grep -q "make optimize" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing optimize command"; exit 1; }
 	@grep -q "make test-optimizer" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing test-optimizer command"; exit 1; }
 	@grep -q "workflowSmokeTest" daml.yaml || { echo "docs-lint: daml.yaml missing workflow smoke init script"; exit 1; }
@@ -207,27 +232,32 @@ docs-lint:
 	@grep -q "make localnet-bootstrap" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing localnet-bootstrap"; exit 1; }
 	@grep -q "make localnet-smoke" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing localnet-smoke"; exit 1; }
 	@grep -q "make daml-test" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing daml-test"; exit 1; }
+	@grep -q "make demo-margin-call" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-margin-call"; exit 1; }
 	@grep -q "make policy-eval" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing policy-eval"; exit 1; }
 	@grep -q "make optimize" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing optimize"; exit 1; }
 	@grep -q "make test-optimizer" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing test-optimizer"; exit 1; }
 	@grep -q "make localnet-smoke" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing localnet-smoke"; exit 1; }
 	@grep -q "make demo-run" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-run"; exit 1; }
 	@grep -q "make daml-test" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing daml-test"; exit 1; }
+	@grep -q "make demo-margin-call" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-margin-call"; exit 1; }
 	@grep -q "make test-policy-engine" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing test-policy-engine"; exit 1; }
 	@grep -q "make optimize" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing optimize"; exit 1; }
 	@grep -q "make test-optimizer" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing test-optimizer"; exit 1; }
 	@grep -q "ADR 0006" docs/adrs/0006-runtime-foundation.md || { echo "docs-lint: ADR 0006 missing title"; exit 1; }
 	@grep -q "ADR 0007" docs/adrs/0007-daml-contract-boundaries.md || { echo "docs-lint: ADR 0007 missing title"; exit 1; }
-	@grep -q "ADR 0011" docs/adrs/0011-quickstart-demo-foundation.md || { echo "docs-lint: ADR 0011 missing title"; exit 1; }
+	@grep -q "ADR 0011" docs/adrs/0011-margin-call-demo-shape.md || { echo "docs-lint: ADR 0011 missing title"; exit 1; }
+	@grep -q "ADR 0012" docs/adrs/0012-quickstart-demo-foundation.md || { echo "docs-lint: ADR 0012 missing title"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-04-execution-report.md || { echo "docs-lint: prompt 4 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-05-execution-report.md || { echo "docs-lint: prompt 5 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-06-execution-report.md || { echo "docs-lint: prompt 6 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-07-execution-report.md || { echo "docs-lint: prompt 7 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-08-execution-report.md || { echo "docs-lint: prompt 8 execution report incomplete"; exit 1; }
+	@grep -q "^## Results" docs/evidence/prompt-09-execution-report.md || { echo "docs-lint: prompt 9 execution report incomplete"; exit 1; }
 	@grep -q "Prompt 5 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 5 status"; exit 1; }
 	@grep -q "Prompt 6 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 6 status"; exit 1; }
 	@grep -q "Prompt 7 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 7 status"; exit 1; }
 	@grep -q "Prompt 8 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 8 status"; exit 1; }
+	@grep -q "Prompt 9 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 9 status"; exit 1; }
 	@echo "docs-lint: policy engine, optimizer, Quickstart foundation, runtime foundation, Daml workflow skeleton, and command surface documentation are present"
 
 localnet-bootstrap:
@@ -322,6 +352,15 @@ demo-run: daml-build
 		dar_file=$$(find "$(REPO_ROOT)/.daml/dist" -maxdepth 1 -name '*.dar' | head -n 1); \
 		test -n "$$dar_file" || { echo "demo-run: missing DAR file"; exit 1; }; \
 		"$$DAML_BIN" script --dar "$$dar_file" --script-name Bootstrap:workflowSmokeTest --ide-ledger
+
+demo-margin-call: daml-build $(CHECK_JSONSCHEMA)
+	@set -e; \
+		. "$(RUNTIME_ENV)"; \
+		output_path=$$($(PYTHON) app/orchestration/cli.py --manifest "$(MARGIN_CALL_DEMO_MANIFEST)" --output-dir "$(MARGIN_CALL_DEMO_OUTPUT_DIR)" --repo-root "$(REPO_ROOT)"); \
+		$(CHECK_JSONSCHEMA) --schemafile $(EXECUTION_REPORT_SCHEMA) "$$output_path"; \
+		test -f "$(MARGIN_CALL_DEMO_OUTPUT_DIR)/margin-call-demo-summary.md" || { echo "demo-margin-call: missing markdown summary"; exit 1; }; \
+		test -f "$(MARGIN_CALL_DEMO_OUTPUT_DIR)/margin-call-demo-timeline.md" || { echo "demo-margin-call: missing timeline markdown"; exit 1; }; \
+		echo "demo-margin-call: generated $$output_path"
 
 verify:
 	@$(VERIFY_SCRIPT)

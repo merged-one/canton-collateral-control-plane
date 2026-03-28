@@ -1,0 +1,9 @@
+{
+  "obligationId": "margin-call-negative-insufficient-obligation",
+  "obligationVersion": "1.0.0",
+  "asOf": "2026-04-15T14:00:00Z",
+  "settlementCurrency": "USD",
+  "coverageMetric": "LENDABLE_VALUE",
+  "obligationAmount": 1200000.0,
+  "currentPostedLotIds": []
+}

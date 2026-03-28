@@ -838,7 +838,7 @@ Affected files:
 - `docs/integration/ASSET_ADAPTER_PLAN.md`
 - `docs/integration/INTEGRATION_SURFACES.md`
 - `docs/adrs/README.md`
-- `docs/adrs/0011-quickstart-demo-foundation.md`
+- `docs/adrs/0012-quickstart-demo-foundation.md`
 - `docs/mission-control/MASTER_TRACKER.md`
 - `docs/mission-control/ROADMAP.md`
 - `docs/mission-control/DECISION_LOG.md`
@@ -877,7 +877,7 @@ Completed artifacts:
 - pinned Quickstart bootstrap, overlay metadata, and profile templates under `infra/quickstart/`
 - reproducible Quickstart smoke script under `scripts/run-localnet-smoke.sh`
 - new LocalNet and asset-adapter plans under `docs/integration/`
-- new Quickstart foundation ADR under `docs/adrs/0011-quickstart-demo-foundation.md`
+- new Quickstart foundation ADR under `docs/adrs/0012-quickstart-demo-foundation.md`
 - README, setup, runbook, dependency, test-strategy, invariant, evidence, risk, security, roadmap, tracker, and decision-log updates for the new LocalNet layer
 - prompt execution evidence in `docs/evidence/prompt-08-execution-report.md`
 
@@ -907,3 +907,113 @@ Results:
 
 Next step:
 Resolve the Daml runtime bridge needed to deploy the Control Plane DAR into the pinned Quickstart LocalNet, then add the first real asset-adapter and seeded confidential collateral scenario on top of that bridge.
+
+## 2026-03-28 - Prompt 9 - Pre-Change
+
+Intent:
+Implement the first end-to-end confidential margin call prototype for the Canton Collateral Control Plane, with a real demo command that evaluates candidate collateral, records a valid posting path through the existing Daml workflow boundary, emits a machine-readable execution report, and captures operator-facing evidence plus negative-path coverage.
+
+Risks addressed:
+
+- the repository currently has separate policy-evaluation, optimization, and Daml workflow building blocks but no single reproducible command that ties them into one auditable margin-call path
+- a demo could fabricate workflow success or summarize outcomes without grounding them in real policy and Daml execution
+- negative-path behavior for ineligible collateral, insufficient lendable value, and stale obligations or policy windows could remain undocumented or untested
+- execution reporting could stay underspecified, leaving artifact consumers to guess how policy, optimization, and workflow evidence connect
+
+Affected files:
+
+- `Makefile`
+- `README.md`
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- `app/README.md`
+- `app/orchestration/`
+- `daml/Bootstrap.daml`
+- `daml/CantonCollateral/`
+- `examples/README.md`
+- `examples/demo-scenarios/margin-call/`
+- `reports/README.md`
+- `reports/schemas/execution-report.schema.json`
+- `reports/generated/`
+- `test/README.md`
+- `test/orchestration/`
+- `docs/specs/EXECUTION_REPORT_SPEC.md`
+- `docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md`
+- `docs/testing/DAML_TEST_PLAN.md`
+- `docs/testing/TEST_STRATEGY.md`
+- `docs/adrs/README.md`
+- `docs/adrs/0011-margin-call-demo-shape.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/DECISION_LOG.md`
+- `docs/mission-control/WORKLOG.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-09-execution-report.md`
+- `docs/risks/RISK_REGISTER.md`
+- `docs/security/THREAT_MODEL.md`
+
+Acceptance criteria:
+
+- a real `make demo-margin-call` command exists and runs from a clean checkout
+- the demo generates real JSON and Markdown execution artifacts from actual policy, optimization, and Daml workflow execution
+- the positive path shows margin-call issuance, eligible collateral selection or assignment, policy evaluation, and a recorded posting path
+- negative-path coverage exists for ineligible collateral, insufficient lendable value, and an expired obligation or policy window
+- mission-control, ADR, invariant, evidence, and runbook surfaces reflect the new prototype
+- relevant commands are run, the changes are committed, and the worktree is left clean
+
+Planned commands:
+
+```sh
+make demo-margin-call
+make test-policy-engine
+make test-optimizer
+make daml-test
+make docs-lint
+make verify
+git status --short --branch
+```
+
+## 2026-03-28 - Prompt 9 - Post-Change
+
+Outcome:
+Implemented the repository's first end-to-end margin-call prototype by adding a manifest-driven orchestration layer, a parameterized Daml demo workflow path, a machine-readable `ExecutionReport` contract, real positive and negative demo scenarios, and operator-facing summary and timeline artifacts generated from actual execution.
+
+Completed artifacts:
+
+- new orchestration surface under `app/orchestration/` with a real `make demo-margin-call` command
+- new parameterized Daml demo script under `daml/CantonCollateral/Demo.daml`
+- new margin-call scenario bundle under `examples/demo-scenarios/margin-call/`
+- new execution-report schema and specification under `reports/schemas/execution-report.schema.json` and `docs/specs/EXECUTION_REPORT_SPEC.md`
+- new operator runbook under `docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md`
+- new ADR under `docs/adrs/0011-margin-call-demo-shape.md` plus renumbered Quickstart ADR under `docs/adrs/0012-quickstart-demo-foundation.md`
+- regenerated real demo artifacts under `reports/generated/` including the execution report, Markdown summary, timeline, positive workflow result, and negative-path artifacts
+- mission-control, invariant, risk, threat, README, setup, testing, evidence, and command-surface updates aligned to the new prototype
+- prompt execution evidence under `docs/evidence/prompt-09-execution-report.md`
+
+Commands run:
+
+```sh
+make status
+make demo-margin-call
+make test-policy-engine
+make test-optimizer
+make daml-test
+make docs-lint
+make verify
+git status --short --branch
+```
+
+Results:
+
+- `make status` passed and reported `Current Phase: Milestone 4 / Phase 4 - Initial Margin Call Demo And Execution Reporting`
+- `make demo-margin-call` passed and generated `reports/generated/margin-call-demo-execution-report.json` plus the supporting Markdown and workflow artifacts
+- `make test-policy-engine` passed and regenerated the committed policy-evaluation artifact
+- `make test-optimizer` passed and regenerated the committed optimization artifact
+- `make daml-test` passed and preserved the lifecycle-script baseline
+- `make docs-lint` passed after the new orchestration, schema, runbook, ADR, and evidence surfaces were added to the required documentation set
+- `make verify` passed and re-ran docs linting, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml lifecycle tests, the new end-to-end demo command, and the Quickstart compose-preflight smoke check
+- the Daml helper again emitted informational notices that SDK `3.4.11` exists upstream; the repository remains intentionally pinned to `2.10.4`
+- `git status --short --branch` before commit showed only the expected Prompt 9 changes, including the intentional ADR renumbering from Quickstart `0011` to `0012`
+
+Next step:
+Bridge the repo Daml package into the pinned Quickstart runtime line, then add role-scoped execution-report disclosure profiles and workflow-coupled reservation or consent controls on top of the new end-to-end demo path.

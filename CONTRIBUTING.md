@@ -57,8 +57,9 @@ make test-optimizer
 make daml-build
 make daml-test
 make demo-run
+make demo-margin-call
 make docs-lint
 make verify
 ```
 
-The bootstrap installs the pinned repo-local Daml and Java toolchain under `.runtime/` and keeps CPL validation isolated in `.venv/`. `make localnet-bootstrap` stages the pinned upstream CN Quickstart checkout under `.runtime/localnet/`, and `make localnet-smoke` validates the upstream compose topology without pretending the Control Plane DAR is already deployed. The policy engine and optimizer stay stdlib-only and validate their generated report artifacts against the committed report schemas.
+The bootstrap installs the pinned repo-local Daml and Java toolchain under `.runtime/` and keeps CPL validation isolated in `.venv/`. `make localnet-bootstrap` stages the pinned upstream CN Quickstart checkout under `.runtime/localnet/`, and `make localnet-smoke` validates the upstream compose topology without pretending the Control Plane DAR is already deployed. `make demo-margin-call` now provides the first end-to-end operator demo and validates its generated execution report against the committed schema. The policy engine and optimizer stay stdlib-only and validate their generated report artifacts against the committed report schemas.

@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c-cope.dev/reports/execution-report.schema.json",
+  "title": "Execution Report v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reportType",
+    "reportVersion",
+    "executionId",
+    "generatedAt",
+    "overallStatus",
+    "demo",
+    "artifacts",
+    "scenarios",
+    "timeline",
+    "invariantChecks"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "reportType": {
+      "const": "ExecutionReport"
+    },
+    "reportVersion": {
+      "const": "0.1.0"
+    },
+    "executionId": {
+      "type": "string",
+      "pattern": "^exr-[0-9a-f]{16}$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "overallStatus": {
+      "type": "string",
+      "enum": [
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "demo": {
+      "$ref": "#/$defs/demo"
+    },
+    "artifacts": {
+      "$ref": "#/$defs/artifacts"
+    },
+    "scenarios": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/scenario"
+      }
+    },
+    "timeline": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/timelineEntry"
+      }
+    },
+    "invariantChecks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/invariantCheck"
+      }
+    }
+  },
+  "$defs": {
+    "pathString": {
+      "type": "string",
+      "minLength": 1
+    },
+    "identifier": {
+      "type": "string",
+      "minLength": 1
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "stringArray": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "demo": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "demoId",
+        "demoVersion",
+        "command",
+        "manifestPath",
+        "outputDirectory",
+        "primaryPolicyEvaluationArtifact",
+        "scenarioCount",
+        "positiveScenarioCount",
+        "negativeScenarioCount"
+      ],
+      "properties": {
+        "demoId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "demoVersion": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "command": {
+          "const": "make demo-margin-call"
+        },
+        "manifestPath": {
+          "$ref": "#/$defs/pathString"
+        },
+        "outputDirectory": {
+          "$ref": "#/$defs/pathString"
+        },
+        "primaryPolicyEvaluationArtifact": {
+          "$ref": "#/$defs/pathString"
+        },
+        "scenarioCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "positiveScenarioCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "negativeScenarioCount": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "executionReportPath",
+        "markdownSummaryPath",
+        "timelinePath"
+      ],
+      "properties": {
+        "executionReportPath": {
+          "$ref": "#/$defs/pathString"
+        },
+        "markdownSummaryPath": {
+          "$ref": "#/$defs/pathString"
+        },
+        "timelinePath": {
+          "$ref": "#/$defs/pathString"
+        }
+      }
+    },
+    "scenario": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scenarioId",
+        "mode",
+        "description",
+        "result",
+        "summary",
+        "observedReasonCodes",
+        "expectedReasonCodes",
+        "policyEvaluationReportPath",
+        "optimizationReportPath",
+        "workflowInputPath",
+        "workflowResultPath",
+        "policyDecision",
+        "optimizationStatus",
+        "recommendedAction",
+        "selectedLotIds",
+        "workflow"
+      ],
+      "properties": {
+        "scenarioId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "POSITIVE",
+            "NEGATIVE"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "result": {
+          "type": "string",
+          "enum": [
+            "SUCCESS",
+            "EXPECTED_FAILURE"
+          ]
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedReasonCodes": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "expectedReasonCodes": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "policyEvaluationReportPath": {
+          "$ref": "#/$defs/pathString"
+        },
+        "optimizationReportPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workflowInputPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workflowResultPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "policyDecision": {
+          "type": "string",
+          "enum": [
+            "ACCEPT",
+            "REJECT",
+            "ESCALATE",
+            "REVIEW"
+          ]
+        },
+        "optimizationStatus": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "OPTIMAL",
+            "NO_SOLUTION",
+            null
+          ]
+        },
+        "recommendedAction": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "POST_NEW_SET",
+            "SUBSTITUTE",
+            "KEEP_CURRENT_POSTED_SET",
+            "NO_SOLUTION",
+            null
+          ]
+        },
+        "selectedLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "workflow": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/workflowResult"
+            }
+          ]
+        }
+      }
+    },
+    "workflowStep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "step",
+        "phase",
+        "actor",
+        "state",
+        "detail"
+      ],
+      "properties": {
+        "step": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "phase": {
+          "type": "string",
+          "minLength": 1
+        },
+        "actor": {
+          "type": "string",
+          "minLength": 1
+        },
+        "state": {
+          "type": "string",
+          "minLength": 1
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "workflowExecutionReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "reportId",
+        "workflowType",
+        "outcome",
+        "summary",
+        "eventIds",
+        "eventStates"
+      ],
+      "properties": {
+        "reportId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "workflowType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "outcome": {
+          "type": "string",
+          "minLength": 1
+        },
+        "summary": {
+          "type": "string",
+          "minLength": 1
+        },
+        "eventIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "eventStates": {
+          "$ref": "#/$defs/stringArray"
+        }
+      }
+    },
+    "workflowResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scenarioId",
+        "obligationId",
+        "marginCallState",
+        "postingState",
+        "selectedLotIds",
+        "encumberedLotIds",
+        "executionReportCount",
+        "executionReports",
+        "steps"
+      ],
+      "properties": {
+        "scenarioId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "obligationId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "marginCallState": {
+          "type": "string",
+          "minLength": 1
+        },
+        "postingState": {
+          "type": "string",
+          "minLength": 1
+        },
+        "selectedLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "encumberedLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "executionReportCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "executionReports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/workflowExecutionReport"
+          }
+        },
+        "steps": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/workflowStep"
+          }
+        }
+      }
+    },
+    "timelineEntry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "sequence",
+        "scenarioSequence",
+        "scenarioId",
+        "phase",
+        "status",
+        "startedAt",
+        "finishedAt",
+        "artifactPath",
+        "detail"
+      ],
+      "properties": {
+        "sequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scenarioSequence": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "scenarioId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "phase": {
+          "type": "string",
+          "enum": [
+            "POLICY_EVALUATION",
+            "OPTIMIZATION",
+            "WORKFLOW"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "COMPLETED"
+          ]
+        },
+        "startedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "finishedAt": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "artifactPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "detail": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "invariantCheck": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "invariantId",
+        "status",
+        "evidence",
+        "note"
+      ],
+      "properties": {
+        "invariantId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "FAIL"
+          ]
+        },
+        "evidence": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$ref": "#/$defs/pathString"
+          }
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "demoId": "margin-call-prototype",
+  "demoVersion": "0.1.0",
+  "scenarios": [
+    {
+      "scenarioId": "positive-margin-call",
+      "mode": "POSITIVE",
+      "description": "Secured party issues a margin call, the optimizer assigns eligible inventory, and the Daml workflow records a valid collateral posting path.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "positive-inventory.json",
+      "obligation": "positive-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "workflow": {
+        "scriptName": "CantonCollateral.Demo:marginCallDemoWorkflow",
+        "correlationId": "corr-margin-call-demo-001",
+        "dueAt": "2026-04-15T16:00:00Z",
+        "sourceAccount": "acct-provider-margin-demo",
+        "destinationAccount": "acct-secured-margin-demo",
+        "settlementSystem": "Fedwire",
+        "tokenAdapterReferencePrefix": "demo/adapter",
+        "transferabilityFlags": [
+          "deliverable",
+          "pledgeable",
+          "segregated"
+        ]
+      },
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "POST_NEW_SET",
+        "selectedLotIds": [
+          "mc-lot-001",
+          "mc-lot-002",
+          "mc-lot-003",
+          "mc-lot-004"
+        ],
+        "workflowMarginCallState": "Closed",
+        "workflowPostingState": "Closed",
+        "minimumExecutionReportCount": 2,
+        "reasonCodes": []
+      }
+    },
+    {
+      "scenarioId": "negative-ineligible-asset",
+      "mode": "NEGATIVE",
+      "description": "Candidate inventory includes an equity position that the central-bank-style policy rejects as ineligible.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "negative-ineligible-inventory.json",
+      "obligation": "negative-ineligible-obligation.json",
+      "runOptimization": false,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "REJECT",
+        "reasonCodes": [
+          "ASSET_CLASS_NOT_ELIGIBLE"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-insufficient-lendable-value",
+      "mode": "NEGATIVE",
+      "description": "All lots are individually eligible, but the lendable total remains below the required call amount.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "negative-insufficient-inventory.json",
+      "obligation": "negative-insufficient-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "NO_SOLUTION",
+        "reasonCodes": [
+          "INSUFFICIENT_LENDABLE_VALUE"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-expired-policy-window",
+      "mode": "NEGATIVE",
+      "description": "The inventory snapshot falls outside the policy effective period, so the candidate set cannot be used for a real posting path.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "negative-expired-policy-window-inventory.json",
+      "obligation": "negative-expired-policy-window-obligation.json",
+      "runOptimization": false,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "REJECT",
+        "reasonCodes": [
+          "POLICY_NOT_EFFECTIVE"
+        ]
+      }
+    }
+  ]
+}

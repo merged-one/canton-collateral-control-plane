@@ -1,0 +1,9 @@
+{
+  "obligationId": "margin-call-negative-expired-policy-window-obligation",
+  "obligationVersion": "1.0.0",
+  "asOf": "2027-04-02T14:00:00Z",
+  "settlementCurrency": "USD",
+  "coverageMetric": "LENDABLE_VALUE",
+  "obligationAmount": 250000.0,
+  "currentPostedLotIds": []
+}

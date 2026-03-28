@@ -1,0 +1,292 @@
+module CantonCollateral.Demo where
+
+import Daml.Script
+
+import CantonCollateral.Asset
+import CantonCollateral.Encumbrance
+import CantonCollateral.Inventory
+import CantonCollateral.Obligation
+import CantonCollateral.Posting
+import CantonCollateral.Report
+import CantonCollateral.Roles
+import CantonCollateral.Types
+
+data DemoSelectedLot = DemoSelectedLot
+  with
+    lotId : Text
+    assetId : Text
+    issuer : Text
+    assetClass : Text
+    currency : Text
+    settlementSystem : Text
+    tokenAdapterReference : Text
+    jurisdiction : Text
+    transferabilityFlags : [Text]
+    custodyAccount : Text
+    quantity : Decimal
+    sourceAccount : Text
+    destinationAccount : Text
+  deriving (Eq, Show)
+
+data MarginCallDemoInput = MarginCallDemoInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    correlationId : Text
+    policyVersion : Text
+    snapshotId : Text
+    decisionReference : Text
+    requiredCoverage : Decimal
+    dueAt : Time
+    selectedLots : [DemoSelectedLot]
+  deriving (Eq, Show)
+
+data MarginCallDemoStep = MarginCallDemoStep
+  with
+    step : Int
+    phase : Text
+    actor : Text
+    state : Text
+    detail : Text
+  deriving (Eq, Show)
+
+data MarginCallDemoExecutionReport = MarginCallDemoExecutionReport
+  with
+    reportId : Text
+    workflowType : Text
+    outcome : Text
+    summary : Text
+    eventIds : [Text]
+    eventStates : [Text]
+  deriving (Eq, Show)
+
+data MarginCallDemoResult = MarginCallDemoResult
+  with
+    scenarioId : Text
+    obligationId : Text
+    marginCallState : Text
+    postingState : Text
+    selectedLotIds : [Text]
+    encumberedLotIds : [Text]
+    executionReportCount : Int
+    executionReports : [MarginCallDemoExecutionReport]
+    steps : [MarginCallDemoStep]
+  deriving (Eq, Show)
+
+registerBaselineRoles : Party -> Party -> Party -> Party -> Script ()
+registerBaselineRoles operator provider securedParty custodian = do
+  _ <- submit operator do
+    createCmd PartyRoleRegistration with
+      registryOperator = operator
+      participant = provider
+      role = CollateralProviderRole
+      label = "provider"
+  _ <- submit operator do
+    createCmd PartyRoleRegistration with
+      registryOperator = operator
+      participant = securedParty
+      role = SecuredPartyRole
+      label = "secured-party"
+  _ <- submit operator do
+    createCmd PartyRoleRegistration with
+      registryOperator = operator
+      participant = custodian
+      role = CustodianRole
+      label = "custodian"
+  pure ()
+
+expectActiveContract : (HasTemplateTypeRep t, HasToAnyTemplate t, HasFromAnyTemplate t, HasAgreement t) => Party -> ContractId t -> Text -> Script t
+expectActiveContract party cid missingMessage = do
+  contract <- queryContractId party cid
+  case contract of
+    Some activeContract -> pure activeContract
+    None -> error missingMessage
+
+mkPolicyContextFromInput : MarginCallDemoInput -> PolicyContext
+mkPolicyContextFromInput input = PolicyContext with
+  policyVersion = input.policyVersion
+  snapshotId = input.snapshotId
+  decisionReference = input.decisionReference
+
+mkAssetFromLot : DemoSelectedLot -> CollateralAsset
+mkAssetFromLot selectedLot = CollateralAsset with
+  assetId = selectedLot.assetId
+  issuer = selectedLot.issuer
+  assetClass = selectedLot.assetClass
+  currency = selectedLot.currency
+  settlementSystem = selectedLot.settlementSystem
+  tokenAdapterReference = selectedLot.tokenAdapterReference
+  jurisdiction = selectedLot.jurisdiction
+  transferabilityFlags = selectedLot.transferabilityFlags
+
+mkAllocationFromLot : DemoSelectedLot -> LotAllocation
+mkAllocationFromLot selectedLot = LotAllocation with
+  lotId = selectedLot.lotId
+  assetId = selectedLot.assetId
+  quantity = selectedLot.quantity
+  sourceAccount = selectedLot.sourceAccount
+  destinationAccount = selectedLot.destinationAccount
+
+selectedDemoLotIds : [DemoSelectedLot] -> [Text]
+selectedDemoLotIds [] = []
+selectedDemoLotIds (selectedLot :: rest) = selectedLot.lotId :: selectedDemoLotIds rest
+
+reportEventIds : [ExecutionEvent] -> [Text]
+reportEventIds [] = []
+reportEventIds (event :: rest) = event.eventId :: reportEventIds rest
+
+reportEventStates : [ExecutionEvent] -> [Text]
+reportEventStates [] = []
+reportEventStates (event :: rest) = show event.eventState :: reportEventStates rest
+
+reportSummaries : [(ContractId ExecutionReportRecord, ExecutionReportRecord)] -> [MarginCallDemoExecutionReport]
+reportSummaries [] = []
+reportSummaries ((_, report) :: rest) =
+  (MarginCallDemoExecutionReport with
+    reportId = report.reportId
+    workflowType = show report.workflowType
+    outcome = show report.outcome
+    summary = report.summary
+    eventIds = reportEventIds report.events
+    eventStates = reportEventStates report.events)
+    :: reportSummaries rest
+
+pledgedLotIds : [(ContractId EncumbranceState, EncumbranceState)] -> [Text]
+pledgedLotIds encumbrances =
+  map (\(_, encumbrance) -> encumbrance.lotId) (
+    filter (\(_, encumbrance) -> encumbrance.status == EncumbrancePledged) encumbrances
+  )
+
+marginCallDemoWorkflow : MarginCallDemoInput -> Script MarginCallDemoResult
+marginCallDemoWorkflow input = script do
+  let requestedLots = input.selectedLots
+  assertMsg "margin-call demo requires at least one selected lot" (not (null requestedLots))
+  assertMsg "margin-call demo requires positive coverage" (input.requiredCoverage > 0.0)
+
+  operator <- allocateParty "DemoOperator"
+  provider <- allocateParty "CollateralProvider"
+  securedParty <- allocateParty "SecuredParty"
+  custodian <- allocateParty "Custodian"
+  now <- getTime
+
+  registerBaselineRoles operator provider securedParty custodian
+
+  let policyContext = mkPolicyContextFromInput input
+  let nominatedLots = map mkAllocationFromLot requestedLots
+  let workflowSteps =
+        [ MarginCallDemoStep with step = 1, phase = "MARGIN_CALL", actor = "secured-party", state = "Draft", detail = "secured party created the draft call obligation"
+        , MarginCallDemoStep with step = 2, phase = "MARGIN_CALL", actor = "secured-party", state = "UnderEvaluation", detail = "secured party started obligation evaluation"
+        , MarginCallDemoStep with step = 3, phase = "MARGIN_CALL", actor = "secured-party", state = "Submitted", detail = "secured party confirmed the shortfall against the selected policy snapshot"
+        , MarginCallDemoStep with step = 4, phase = "MARGIN_CALL", actor = "secured-party", state = "Closed", detail = "secured party issued the margin call without additional approval"
+        , MarginCallDemoStep with step = 5, phase = "POSTING", actor = "provider", state = "Draft", detail = "provider staged eligible collateral inventory for the posting intent"
+        , MarginCallDemoStep with step = 6, phase = "POSTING", actor = "provider", state = "Submitted", detail = "provider submitted the collateral posting intent"
+        , MarginCallDemoStep with step = 7, phase = "POSTING", actor = "provider", state = "UnderEvaluation", detail = "provider moved the posting intent into evaluation"
+        , MarginCallDemoStep with step = 8, phase = "POSTING", actor = "provider", state = "PendingApproval", detail = "provider recorded a feasible posting path"
+        , MarginCallDemoStep with step = 9, phase = "POSTING", actor = "secured-party", state = "PendingApproval", detail = "secured party approved the posting path"
+        , MarginCallDemoStep with step = 10, phase = "POSTING", actor = "custodian", state = "PendingSettlement", detail = "custodian approved the posting path and a settlement instruction was created"
+        , MarginCallDemoStep with step = 11, phase = "POSTING", actor = "custodian", state = "Closed", detail = "custodian confirmed settlement and the encumbrances were committed"
+        ]
+
+  draftCallCid <- submit securedParty do
+    createCmd CallObligation with
+      obligationId = input.obligationId
+      securedParty
+      provider
+      custodian
+      visibilityObservers = [provider, custodian]
+      policyContext
+      requiredCoverage = input.requiredCoverage
+      uncoveredAmount = 0.0
+      dueAt = input.dueAt
+      correlationId = input.correlationId
+      state = Draft
+      requiresCallApproval = False
+      callApprover = securedParty
+      decisionSummary = "draft margin call created from the demo scenario"
+
+  underEvaluationCallCid <- submit securedParty do
+    exerciseCmd draftCallCid StartEvaluation
+
+  submittedCallCid <- submit securedParty do
+    exerciseCmd underEvaluationCallCid $
+      ConfirmShortfall with
+        nextUncoveredAmount = input.requiredCoverage
+        nextDecisionSummary = "shortfall confirmed against the selected eligible inventory set"
+
+  closedCallCid <- submit securedParty do
+    exerciseCmd submittedCallCid IssueCallWithoutApproval
+
+  _ <- mapA
+    (\selectedLot -> submit provider do
+      createCmd CollateralInventoryLot with
+        lotId = selectedLot.lotId
+        owner = provider
+        custodian
+        visibilityObservers = [securedParty, custodian]
+        asset = mkAssetFromLot selectedLot
+        custodyAccount = selectedLot.custodyAccount
+        quantity = selectedLot.quantity
+        availableQuantity = selectedLot.quantity
+        controlMethod = "policy-approved-control"
+        provenance = "optimizer-selected margin-call demo inventory"
+        availabilityStart = now
+        availabilityEnd = None
+    )
+    requestedLots
+
+  draftPostingCid <- submit provider do
+    createCmd CollateralPostingIntent with
+      postingId = input.correlationId <> "-posting"
+      obligationId = input.obligationId
+      provider
+      securedParty
+      custodian
+      visibilityObservers = [securedParty, custodian]
+      policyContext
+      nominatedLots
+      requiredCoverage = input.requiredCoverage
+      correlationId = input.correlationId <> "-posting"
+      state = Draft
+      requiresSecuredPartyApproval = True
+      requiresCustodianApproval = True
+      securedPartyApproval = ApprovalPending
+      custodianApproval = ApprovalPending
+      decisionSummary = "draft posting intent created from the demo scenario"
+      rejectionReason = ""
+      settlementInstructionCid = None
+
+  submittedPostingCid <- submit provider do
+    exerciseCmd draftPostingCid SubmitPostingIntent
+
+  underEvaluationPostingCid <- submit provider do
+    exerciseCmd submittedPostingCid StartPostingEvaluation
+
+  pendingApprovalPostingCid <- submit provider do
+    exerciseCmd underEvaluationPostingCid $
+      RecordFeasiblePosting with
+        nextDecisionSummary = "selected lots preserve coverage and can be posted through the custodian"
+
+  securedPartyApprovedPostingCid <- submit securedParty do
+    exerciseCmd pendingApprovalPostingCid ApprovePostingBySecuredParty
+
+  pendingSettlementPostingCid <- submit custodian do
+    exerciseCmd securedPartyApprovedPostingCid ApprovePostingByCustodian
+
+  closedPostingCid <- submit custodian do
+    exerciseCmd pendingSettlementPostingCid ConfirmPostingSettlement
+
+  closedCall <- expectActiveContract provider closedCallCid "closed margin call should remain visible to the provider"
+  closedPosting <- expectActiveContract provider closedPostingCid "closed posting intent should remain visible to the provider"
+  reports <- query @ExecutionReportRecord provider
+  encumbrances <- query @EncumbranceState provider
+
+  pure MarginCallDemoResult with
+    scenarioId = input.scenarioId
+    obligationId = input.obligationId
+    marginCallState = show closedCall.state
+    postingState = show closedPosting.state
+    selectedLotIds = selectedDemoLotIds requestedLots
+    encumberedLotIds = pledgedLotIds encumbrances
+    executionReportCount = length reports
+    executionReports = reportSummaries reports
+    steps = workflowSteps

@@ -1,0 +1,368 @@
+{
+  "$schema": "../../reports/schemas/execution-report.schema.json",
+  "reportType": "ExecutionReport",
+  "reportVersion": "0.1.0",
+  "executionId": "exr-9211935147c23ab9",
+  "generatedAt": "2026-03-28T22:38:36Z",
+  "overallStatus": "PASS",
+  "demo": {
+    "demoId": "margin-call-prototype",
+    "demoVersion": "0.1.0",
+    "command": "make demo-margin-call",
+    "manifestPath": "examples/demo-scenarios/margin-call/demo-config.json",
+    "outputDirectory": "reports/generated",
+    "primaryPolicyEvaluationArtifact": "reports/generated/positive-margin-call-policy-evaluation-report.json",
+    "scenarioCount": 4,
+    "positiveScenarioCount": 1,
+    "negativeScenarioCount": 3
+  },
+  "artifacts": {
+    "executionReportPath": "reports/generated/margin-call-demo-execution-report.json",
+    "markdownSummaryPath": "reports/generated/margin-call-demo-summary.md",
+    "timelinePath": "reports/generated/margin-call-demo-timeline.md"
+  },
+  "scenarios": [
+    {
+      "scenarioId": "positive-margin-call",
+      "mode": "POSITIVE",
+      "description": "Secured party issues a margin call, the optimizer assigns eligible inventory, and the Daml workflow records a valid collateral posting path.",
+      "result": "SUCCESS",
+      "summary": "Policy accepted the candidate set, the optimizer recommended POST_NEW_SET, and the Daml workflow closed the margin-call and posting path for lots mc-lot-001, mc-lot-002, mc-lot-003, mc-lot-004.",
+      "observedReasonCodes": [],
+      "expectedReasonCodes": [],
+      "policyEvaluationReportPath": "reports/generated/positive-margin-call-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/positive-margin-call-optimization-report.json",
+      "workflowInputPath": "reports/generated/positive-margin-call-workflow-input.json",
+      "workflowResultPath": "reports/generated/positive-margin-call-workflow-result.json",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "POST_NEW_SET",
+      "selectedLotIds": [
+        "mc-lot-001",
+        "mc-lot-002",
+        "mc-lot-003",
+        "mc-lot-004"
+      ],
+      "workflow": {
+        "executionReports": [
+          {
+            "eventStates": [
+              "Closed"
+            ],
+            "outcome": "ExecutionCommitted",
+            "eventIds": [
+              "corr-margin-call-demo-001-posting-posting-settled"
+            ],
+            "summary": "collateral posting settled and encumbrances committed",
+            "workflowType": "PostingWorkflow",
+            "reportId": "corr-margin-call-demo-001-posting-report"
+          },
+          {
+            "eventStates": [
+              "Closed"
+            ],
+            "outcome": "ExecutionCommitted",
+            "eventIds": [
+              "corr-margin-call-demo-001-margin-call-issued"
+            ],
+            "summary": "margin call obligation issued without additional approval",
+            "workflowType": "MarginCallWorkflow",
+            "reportId": "corr-margin-call-demo-001-report"
+          }
+        ],
+        "executionReportCount": 2,
+        "postingState": "Closed",
+        "obligationId": "margin-call-positive-obligation",
+        "scenarioId": "positive-margin-call",
+        "steps": [
+          {
+            "actor": "secured-party",
+            "step": 1,
+            "state": "Draft",
+            "phase": "MARGIN_CALL",
+            "detail": "secured party created the draft call obligation"
+          },
+          {
+            "actor": "secured-party",
+            "step": 2,
+            "state": "UnderEvaluation",
+            "phase": "MARGIN_CALL",
+            "detail": "secured party started obligation evaluation"
+          },
+          {
+            "actor": "secured-party",
+            "step": 3,
+            "state": "Submitted",
+            "phase": "MARGIN_CALL",
+            "detail": "secured party confirmed the shortfall against the selected policy snapshot"
+          },
+          {
+            "actor": "secured-party",
+            "step": 4,
+            "state": "Closed",
+            "phase": "MARGIN_CALL",
+            "detail": "secured party issued the margin call without additional approval"
+          },
+          {
+            "actor": "provider",
+            "step": 5,
+            "state": "Draft",
+            "phase": "POSTING",
+            "detail": "provider staged eligible collateral inventory for the posting intent"
+          },
+          {
+            "actor": "provider",
+            "step": 6,
+            "state": "Submitted",
+            "phase": "POSTING",
+            "detail": "provider submitted the collateral posting intent"
+          },
+          {
+            "actor": "provider",
+            "step": 7,
+            "state": "UnderEvaluation",
+            "phase": "POSTING",
+            "detail": "provider moved the posting intent into evaluation"
+          },
+          {
+            "actor": "provider",
+            "step": 8,
+            "state": "PendingApproval",
+            "phase": "POSTING",
+            "detail": "provider recorded a feasible posting path"
+          },
+          {
+            "actor": "secured-party",
+            "step": 9,
+            "state": "PendingApproval",
+            "phase": "POSTING",
+            "detail": "secured party approved the posting path"
+          },
+          {
+            "actor": "custodian",
+            "step": 10,
+            "state": "PendingSettlement",
+            "phase": "POSTING",
+            "detail": "custodian approved the posting path and a settlement instruction was created"
+          },
+          {
+            "actor": "custodian",
+            "step": 11,
+            "state": "Closed",
+            "phase": "POSTING",
+            "detail": "custodian confirmed settlement and the encumbrances were committed"
+          }
+        ],
+        "marginCallState": "Closed",
+        "encumberedLotIds": [
+          "mc-lot-002",
+          "mc-lot-003",
+          "mc-lot-004",
+          "mc-lot-001"
+        ],
+        "selectedLotIds": [
+          "mc-lot-001",
+          "mc-lot-002",
+          "mc-lot-003",
+          "mc-lot-004"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-ineligible-asset",
+      "mode": "NEGATIVE",
+      "description": "Candidate inventory includes an equity position that the central-bank-style policy rejects as ineligible.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation blocked the scenario with decision REJECT and reason codes ASSET_CLASS_NOT_ELIGIBLE, HAIRCUT_RULE_NOT_FOUND, ISSUER_NOT_ON_ALLOW_LIST, ISSUER_RATING_BELOW_MINIMUM, ISSUER_TYPE_NOT_ALLOWED, ISSUE_TYPE_NOT_ELIGIBLE.",
+      "observedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE",
+        "HAIRCUT_RULE_NOT_FOUND",
+        "ISSUER_NOT_ON_ALLOW_LIST",
+        "ISSUER_RATING_BELOW_MINIMUM",
+        "ISSUER_TYPE_NOT_ALLOWED",
+        "ISSUE_TYPE_NOT_ELIGIBLE"
+      ],
+      "expectedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-ineligible-asset-policy-evaluation-report.json",
+      "optimizationReportPath": null,
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "policyDecision": "REJECT",
+      "optimizationStatus": null,
+      "recommendedAction": null,
+      "selectedLotIds": [],
+      "workflow": null
+    },
+    {
+      "scenarioId": "negative-insufficient-lendable-value",
+      "mode": "NEGATIVE",
+      "description": "All lots are individually eligible, but the lendable total remains below the required call amount.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation stayed admissible at the lot level, but optimization ended with NO_SOLUTION and reason codes INSUFFICIENT_LENDABLE_VALUE.",
+      "observedReasonCodes": [
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "expectedReasonCodes": [
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-insufficient-lendable-value-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/negative-insufficient-lendable-value-optimization-report.json",
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "NO_SOLUTION",
+      "recommendedAction": "NO_SOLUTION",
+      "selectedLotIds": [],
+      "workflow": null
+    },
+    {
+      "scenarioId": "negative-expired-policy-window",
+      "mode": "NEGATIVE",
+      "description": "The inventory snapshot falls outside the policy effective period, so the candidate set cannot be used for a real posting path.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation blocked the scenario with decision REJECT and reason codes POLICY_NOT_EFFECTIVE.",
+      "observedReasonCodes": [
+        "POLICY_NOT_EFFECTIVE"
+      ],
+      "expectedReasonCodes": [
+        "POLICY_NOT_EFFECTIVE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-expired-policy-window-policy-evaluation-report.json",
+      "optimizationReportPath": null,
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "policyDecision": "REJECT",
+      "optimizationStatus": null,
+      "recommendedAction": null,
+      "selectedLotIds": [],
+      "workflow": null
+    }
+  ],
+  "timeline": [
+    {
+      "sequence": 1,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:32Z",
+      "finishedAt": "2026-03-28T22:38:32Z",
+      "artifactPath": "reports/generated/positive-margin-call-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for positive scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 2,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:32Z",
+      "finishedAt": "2026-03-28T22:38:33Z",
+      "artifactPath": "reports/generated/positive-margin-call-optimization-report.json",
+      "detail": "Optimized collateral for scenario positive-margin-call with recommendation POST_NEW_SET."
+    },
+    {
+      "sequence": 3,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:33Z",
+      "finishedAt": "2026-03-28T22:38:35Z",
+      "artifactPath": "reports/generated/positive-margin-call-workflow-result.json",
+      "detail": "Recorded the Daml margin-call and posting path for scenario positive-margin-call."
+    },
+    {
+      "sequence": 4,
+      "scenarioSequence": 2,
+      "scenarioId": "negative-ineligible-asset",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:35Z",
+      "finishedAt": "2026-03-28T22:38:35Z",
+      "artifactPath": "reports/generated/negative-ineligible-asset-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
+    },
+    {
+      "sequence": 5,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-insufficient-lendable-value",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:35Z",
+      "finishedAt": "2026-03-28T22:38:36Z",
+      "artifactPath": "reports/generated/negative-insufficient-lendable-value-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for negative scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 6,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-insufficient-lendable-value",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:36Z",
+      "finishedAt": "2026-03-28T22:38:36Z",
+      "artifactPath": "reports/generated/negative-insufficient-lendable-value-optimization-report.json",
+      "detail": "Optimized collateral for scenario negative-insufficient-lendable-value with recommendation NO_SOLUTION."
+    },
+    {
+      "sequence": 7,
+      "scenarioSequence": 4,
+      "scenarioId": "negative-expired-policy-window",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T22:38:36Z",
+      "finishedAt": "2026-03-28T22:38:36Z",
+      "artifactPath": "reports/generated/negative-expired-policy-window-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
+    }
+  ],
+  "invariantChecks": [
+    {
+      "invariantId": "PDR-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-policy-evaluation-report.json"
+      ],
+      "note": "The positive path policy report was generated from declared policy and inventory inputs."
+    },
+    {
+      "invariantId": "ALLOC-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-optimization-report.json"
+      ],
+      "note": "The optimizer produced a deterministic selected-lot recommendation with an explanation trace."
+    },
+    {
+      "invariantId": "WF-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-workflow-result.json"
+      ],
+      "note": "The Daml workflow closed the margin-call issuance and collateral-posting path through committed choices."
+    },
+    {
+      "invariantId": "REPT-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-workflow-result.json",
+        "reports/generated/positive-margin-call-policy-evaluation-report.json",
+        "reports/generated/positive-margin-call-optimization-report.json"
+      ],
+      "note": "The execution report references real workflow, policy, and optimization artifacts rather than operator-authored placeholders."
+    },
+    {
+      "invariantId": "EXCP-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/negative-ineligible-asset-policy-evaluation-report.json",
+        "reports/generated/negative-insufficient-lendable-value-policy-evaluation-report.json",
+        "reports/generated/negative-expired-policy-window-policy-evaluation-report.json"
+      ],
+      "note": "The negative scenarios fail with explicit reason codes for ineligible collateral, insufficient lendable value, and an expired policy window."
+    }
+  ]
+}

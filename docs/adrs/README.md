@@ -20,4 +20,5 @@ Architecture Decision Records capture durable technical and operating choices th
 - [0008-policy-evaluation-engine.md](./0008-policy-evaluation-engine.md)
 - [0009-optimization-objective-and-determinism.md](./0009-optimization-objective-and-determinism.md)
 - [0010-rename-to-canton-collateral-control-plane.md](./0010-rename-to-canton-collateral-control-plane.md)
-- [0011-quickstart-demo-foundation.md](./0011-quickstart-demo-foundation.md)
+- [0011-margin-call-demo-shape.md](./0011-margin-call-demo-shape.md)
+- [0012-quickstart-demo-foundation.md](./0012-quickstart-demo-foundation.md)

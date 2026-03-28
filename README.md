@@ -79,6 +79,7 @@ Current scope:
 - `CPL v0.1` prose specification, JSON Schema, validation plan, and example policy set
 - initial deterministic `CPL v0.1` policy engine and machine-readable policy evaluation report contract
 - initial deterministic optimization engine and machine-readable optimization report contract
+- first end-to-end margin-call demo command with a machine-readable execution report, Markdown summary, and timeline artifacts
 - pinned runtime foundation for Daml-centric workflow modeling and local verification
 - pinned Quickstart-based LocalNet bootstrap and compose-config smoke foundation that preserves upstream CN Quickstart workflows as closely as practical
 - first Daml domain model and lifecycle skeletons for obligations, posting, substitution, return, settlement intent, and execution reporting
@@ -130,12 +131,13 @@ make test-optimizer
 make daml-build
 make daml-test
 make demo-run
+make demo-margin-call
 make status
 make docs-lint
 make verify
 ```
 
-`make localnet-bootstrap` now stages a pinned upstream CN Quickstart checkout and writes a repo-owned `.env.local` overlay without forking upstream files. `make localnet-smoke` reuses upstream Docker preflight checks and validates the composed Quickstart LocalNet configuration. `make demo-run` exercises a real Daml workflow smoke script over the initial obligation, posting, substitution, and return skeletons. `make daml-test` runs the script-level lifecycle checks individually. `make policy-eval` validates a real policy input, evaluates normalized inventory, and emits a schema-valid `PolicyEvaluationReport`. `make optimize` validates a real policy input, optimizes against normalized inventory plus obligation inputs, and emits a schema-valid `OptimizationReport`.
+`make localnet-bootstrap` now stages a pinned upstream CN Quickstart checkout and writes a repo-owned `.env.local` overlay without forking upstream files. `make localnet-smoke` reuses upstream Docker preflight checks and validates the composed Quickstart LocalNet configuration. `make demo-run` exercises a real Daml workflow smoke script over the initial obligation, posting, substitution, and return skeletons. `make demo-margin-call` evaluates positive and negative margin-call scenarios, passes the positive recommendation into a Daml Script workflow path, and emits a schema-valid `ExecutionReport` plus Markdown summary and timeline artifacts. `make daml-test` runs the script-level lifecycle checks individually. `make policy-eval` validates a real policy input, evaluates normalized inventory, and emits a schema-valid `PolicyEvaluationReport`. `make optimize` validates a real policy input, optimizes against normalized inventory plus obligation inputs, and emits a schema-valid `OptimizationReport`.
 
 Current CPL artifacts:
 
@@ -162,6 +164,16 @@ Current optimization artifacts:
 - [docs/economic/OPTIMIZATION_OBJECTIVES.md](./docs/economic/OPTIMIZATION_OBJECTIVES.md)
 - [examples/obligations/central-bank-window-call.json](./examples/obligations/central-bank-window-call.json)
 - [reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-central-bank-window-call-optimization-report.json](./reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-central-bank-window-call-optimization-report.json)
+
+Current execution-report artifacts:
+
+- [docs/specs/EXECUTION_REPORT_SPEC.md](./docs/specs/EXECUTION_REPORT_SPEC.md)
+- [reports/schemas/execution-report.schema.json](./reports/schemas/execution-report.schema.json)
+- [docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md](./docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md)
+- [examples/demo-scenarios/margin-call/demo-config.json](./examples/demo-scenarios/margin-call/demo-config.json)
+- [reports/generated/margin-call-demo-execution-report.json](./reports/generated/margin-call-demo-execution-report.json)
+- [reports/generated/margin-call-demo-summary.md](./reports/generated/margin-call-demo-summary.md)
+- [reports/generated/margin-call-demo-timeline.md](./reports/generated/margin-call-demo-timeline.md)
 
 ## Upcoming Phases
 

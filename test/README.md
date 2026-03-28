@@ -6,6 +6,7 @@ Current contents:
 
 - `test/policy-engine/` for the `CPL v0.1` policy engine scenario suite
 - `test/optimizer/` for deterministic best-to-post, substitution, concentration, and no-solution scenarios
+- `make demo-margin-call` as the current executable conformance path for end-to-end positive and negative margin-call scenarios
 
 Expected future contents:
 

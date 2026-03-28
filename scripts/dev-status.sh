@@ -78,6 +78,7 @@ printf '  make test-optimizer\n'
 printf '  make daml-build\n'
 printf '  make daml-test\n'
 printf '  make demo-run\n'
+printf '  make demo-margin-call\n'
 printf '  make verify\n'
 
 printf '\nGit\n'
