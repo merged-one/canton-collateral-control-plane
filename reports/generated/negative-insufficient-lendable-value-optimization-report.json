@@ -36,7 +36,8 @@
     "settlementCurrency": "USD",
     "coverageMetric": "LENDABLE_VALUE",
     "obligationAmount": 1200000.0,
-    "currentPostedLotIds": []
+    "currentPostedLotIds": [],
+    "substitutionRequest": null
   },
   "candidateUniverse": {
     "candidateLotCount": 4,
@@ -94,8 +95,12 @@
   "currentPortfolio": null,
   "recommendedPortfolio": null,
   "substitutionRecommendation": {
+    "requestId": null,
+    "atomicityRequired": false,
+    "mustReplaceLotIds": [],
     "currentPostedLotIds": [],
     "recommendedLotIds": [],
+    "retainedLotIds": [],
     "removeLotIds": [],
     "addLotIds": [],
     "improvesObjective": false
@@ -533,7 +538,10 @@
       "outcome": "NO_SOLUTION",
       "message": "Selected the final optimizer recommendation.",
       "lotIds": [],
-      "reasonCodes": [],
+      "reasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
       "coverageAmount": null,
       "objectiveSnapshot": null
     }

@@ -4,7 +4,7 @@
 
 The future system will manage confidential collateral policy, inventory, valuation, workflow, and reporting state across multiple parties. This document records the threat posture implied by the architecture package and the design areas that must remain visible as implementation begins.
 
-The current repository state now includes an initial off-ledger policy evaluation engine, an initial off-ledger optimizer, initial Daml workflow templates for obligations, posting, substitution, return, settlement intent, and execution reporting, a first end-to-end margin-call demo runner plus execution-report contract, and a pinned Quickstart bootstrap and compose-preflight layer. Those surfaces make privacy, determinism, and authority boundaries concrete, but they are still a skeleton layer rather than a full disclosure-profile, replay-hardening, or adapter-integrated implementation.
+The current repository state now includes an initial off-ledger policy evaluation engine, an initial off-ledger optimizer, initial Daml workflow templates for obligations, posting, substitution, return, settlement intent, and execution reporting, first end-to-end margin-call and substitution demo runners plus their machine-readable report contracts, and a pinned Quickstart bootstrap and compose-preflight layer. Those surfaces make privacy, determinism, and authority boundaries concrete, but they are still a skeleton layer rather than a full disclosure-profile, replay-hardening, or adapter-integrated implementation.
 
 ## Protected Assets
 
@@ -15,7 +15,9 @@ The current repository state now includes an initial off-ledger policy evaluatio
 - valuation inputs and haircut parameters
 - policy evaluation reports and machine-readable failure reasons
 - optimization reports, substitution deltas, and explanation traces
+- substitution request scope, required-release lot sets, and atomicity flags
 - margin-call demo manifests and workflow-input payloads
+- substitution demo manifests, workflow-input payloads, and substitution reports
 - encumbrance state
 - settlement instructions and control acknowledgments
 - execution reports and audit evidence
@@ -40,6 +42,7 @@ The current repository state now includes an initial off-ledger policy evaluatio
 | Replay or duplicate execution | Repeated events could create duplicate pledges or releases. | Idempotent command design and replay-focused tests. |
 | Optimizer or reporter treated as authority | Off-ledger services could become hidden sources of truth. | Keep workflow state authoritative on Canton and derive reports from committed state only. |
 | Hidden optimizer objective drift or non-deterministic tie handling | Similar requests could yield different substitutions or recommendations that operators cannot defend. | Publish the objective in ADRs and report contracts, keep search order deterministic, and retain explanation traces plus no-churn handling for equal economics. |
+| Substitution scope drift or partial settlement acceptance | A request that was approved for one replacement scope could settle a different or incomplete scope. | Carry replacement scope explicitly, enforce atomicity on the Daml boundary, and fail retained-lot or partial-settlement attempts closed. |
 | Non-atomic substitution or return | Coverage could be lost during workflow transitions. | Treat atomic workflow completion as a blocking invariant. |
 | Report tampering or drift | Operators could rely on incorrect evidence. | State-derived report generation, schema validation, and report-fidelity checks. |
 | Scenario-manifest drift | The operator demo could silently stop representing the documented margin-call shape. | Keep scenario inputs versioned in-repo, validate expected outcomes inside the orchestration layer, and fail closed when they drift. |
@@ -66,6 +69,7 @@ The current repository state now includes an initial off-ledger policy evaluatio
 
 - which Quickstart topology extensions can be expressed purely through overlays?
 - what minimum report profiles satisfy auditability without over-disclosure?
+- what minimum substitution-report profile satisfies auditability without exposing unnecessary inventory detail?
 - what freshness and provenance guarantees must a valuation snapshot prove?
 - which asset-control semantics belong in the adapter layer versus the workflow package?
 - which Daml runtime bridge will let the repo DAR be deployed into the pinned Quickstart LocalNet without losing reproducibility?

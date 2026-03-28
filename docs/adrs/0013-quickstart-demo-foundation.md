@@ -1,4 +1,4 @@
-# ADR 0012: Establish A Pinned Quickstart Demo Foundation
+# ADR 0013: Establish A Pinned Quickstart Demo Foundation
 
 - Status: Accepted
 - Date: 2026-03-28

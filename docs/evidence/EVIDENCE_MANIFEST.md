@@ -80,7 +80,7 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0059 | Economic rationale | [docs/economic/OPTIMIZATION_OBJECTIVES.md](../economic/OPTIMIZATION_OBJECTIVES.md) | institutional rationale for best-to-post, concentration control, substitution economics, and deterministic explainability |
 | E-0060 | Demo artifacts | [reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-central-bank-window-call-optimization-report.json](../../reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-central-bank-window-call-optimization-report.json) | real generated optimization artifact from `make optimize` |
 | E-0061 | Demo artifacts | [docs/evidence/prompt-07-execution-report.md](./prompt-07-execution-report.md) | reproducible Prompt 7 execution record for the first optimizer package |
-| E-0062 | ADRs | [docs/adrs/0012-quickstart-demo-foundation.md](../adrs/0012-quickstart-demo-foundation.md) | pinned Quickstart demo foundation and overlay-first LocalNet decision |
+| E-0062 | ADRs | [docs/adrs/0013-quickstart-demo-foundation.md](../adrs/0013-quickstart-demo-foundation.md) | pinned Quickstart demo foundation and overlay-first LocalNet decision |
 | E-0063 | Code | [infra/quickstart/bootstrap-localnet.sh](../../infra/quickstart/bootstrap-localnet.sh) | pinned upstream CN Quickstart bootstrap and `.env.local` overlay writer |
 | E-0064 | Code | [scripts/run-localnet-smoke.sh](../../scripts/run-localnet-smoke.sh) | upstream Docker preflight plus compose-config smoke for the pinned Quickstart stack |
 | E-0065 | Specs | [docs/integration/LOCALNET_DEMO_PLAN.md](../integration/LOCALNET_DEMO_PLAN.md) | staged path from the current Quickstart foundation to a real confidential collateral demo |
@@ -88,18 +88,25 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0067 | Code | [infra/quickstart/overlay](../../infra/quickstart/overlay) | pinned upstream metadata and overlay profiles for Quickstart LocalNet staging |
 | E-0068 | Demo artifacts | [docs/evidence/prompt-08-execution-report.md](./prompt-08-execution-report.md) | reproducible Prompt 8 execution record for the Quickstart LocalNet foundation |
 | E-0069 | ADRs | [docs/adrs/0011-margin-call-demo-shape.md](../adrs/0011-margin-call-demo-shape.md) | first end-to-end margin-call demo shape and execution-report decision |
-| E-0070 | Code | [app/orchestration](../../app/orchestration) | orchestration layer for the end-to-end margin-call demo and execution-report generation |
+| E-0070 | Code | [app/orchestration](../../app/orchestration) | orchestration layer for the end-to-end margin-call and substitution demos plus report generation |
 | E-0071 | Specs | [docs/specs/EXECUTION_REPORT_SPEC.md](../specs/EXECUTION_REPORT_SPEC.md) | normative contract and scope notes for the first end-to-end `ExecutionReport` |
 | E-0072 | Code | [reports/schemas/execution-report.schema.json](../../reports/schemas/execution-report.schema.json) | canonical machine-readable schema for the first end-to-end execution artifact |
 | E-0073 | Code | [examples/demo-scenarios/margin-call](../../examples/demo-scenarios/margin-call) | reproducible positive and negative demo inputs for the margin-call scenario runner |
 | E-0074 | Demo artifacts | [reports/generated/margin-call-demo-execution-report.json](../../reports/generated/margin-call-demo-execution-report.json) | real end-to-end execution artifact from `make demo-margin-call` |
 | E-0075 | Operational runbooks | [docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md](../runbooks/MARGIN_CALL_DEMO_RUNBOOK.md) | operator procedure for the end-to-end margin-call demo |
 | E-0076 | Demo artifacts | [docs/evidence/prompt-09-execution-report.md](./prompt-09-execution-report.md) | reproducible Prompt 9 execution record for the first end-to-end margin-call prototype |
+| E-0077 | ADRs | [docs/adrs/0012-substitution-atomicity.md](../adrs/0012-substitution-atomicity.md) | substitution-scope, approval-gate, and atomicity decision for the first end-to-end substitution prototype |
+| E-0078 | Specs | [docs/specs/SUBSTITUTION_REPORT_SPEC.md](../specs/SUBSTITUTION_REPORT_SPEC.md) | normative contract and scope notes for the first end-to-end `SubstitutionReport` |
+| E-0079 | Code | [reports/schemas/substitution-report.schema.json](../../reports/schemas/substitution-report.schema.json) | canonical machine-readable schema for the first substitution execution artifact |
+| E-0080 | Code | [examples/demo-scenarios/substitution](../../examples/demo-scenarios/substitution) | reproducible positive and negative demo inputs for the substitution scenario runner |
+| E-0081 | Demo artifacts | [reports/generated/substitution-demo-report.json](../../reports/generated/substitution-demo-report.json) | real end-to-end substitution artifact from `make demo-substitution` |
+| E-0082 | Operational runbooks | [docs/runbooks/SUBSTITUTION_DEMO_RUNBOOK.md](../runbooks/SUBSTITUTION_DEMO_RUNBOOK.md) | operator procedure for the end-to-end substitution demo |
+| E-0083 | Demo artifacts | [docs/evidence/prompt-10-execution-report.md](./prompt-10-execution-report.md) | reproducible Prompt 10 execution record for the first end-to-end substitution prototype |
 
 ## Coverage Notes
 
 - The `Code` category now includes the first Daml workflow skeleton package in addition to schema, bootstrap, and toolchain artifacts.
 - The architecture, CPL, policy-engine, optimizer, Daml-boundary, and Quickstart-foundation packages now provide executable evidence, though adapter integration and workflow-coupled reference-data evidence are still pending.
-- The `Demo artifacts` category now includes the first end-to-end margin-call execution report plus its supporting policy, optimization, workflow, and prompt evidence artifacts, but still not a Quickstart-backed deployment proof.
+- The `Demo artifacts` category now includes the first end-to-end margin-call and substitution reports plus their supporting policy, optimization, workflow, and prompt evidence artifacts, but still not a Quickstart-backed deployment proof.
 - The evidence set now records the rename to "Canton Collateral Control Plane" as a semantic clarification of the same subsystem stack rather than a new product direction.
 - Economic rationale is now architecture-, control-, and optimization-objective-oriented rather than calibration-backed.

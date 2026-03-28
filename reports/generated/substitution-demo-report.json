@@ -1,0 +1,688 @@
+{
+  "$schema": "../../reports/schemas/substitution-report.schema.json",
+  "reportType": "SubstitutionReport",
+  "reportVersion": "0.1.0",
+  "substitutionReportId": "srr-867d60ba07862ccd",
+  "generatedAt": "2026-03-28T23:41:00Z",
+  "overallStatus": "PASS",
+  "demo": {
+    "demoId": "substitution-prototype",
+    "demoVersion": "0.1.0",
+    "command": "make demo-substitution",
+    "manifestPath": "examples/demo-scenarios/substitution/demo-config.json",
+    "outputDirectory": "reports/generated",
+    "primaryOptimizationArtifact": "reports/generated/positive-substitution-optimization-report.json",
+    "scenarioCount": 5,
+    "positiveScenarioCount": 1,
+    "negativeScenarioCount": 4
+  },
+  "artifacts": {
+    "substitutionReportPath": "reports/generated/substitution-demo-report.json",
+    "markdownSummaryPath": "reports/generated/substitution-demo-summary.md",
+    "timelinePath": "reports/generated/substitution-demo-timeline.md"
+  },
+  "scenarios": [
+    {
+      "scenarioId": "positive-substitution",
+      "mode": "POSITIVE",
+      "description": "Existing encumbered collateral is replaced with a policy-valid optimizer-selected set after required approvals and atomic settlement confirmation.",
+      "result": "SUCCESS",
+      "summary": "Current encumbrances stayed controlled until approval, the optimizer recommended sub-repl-fannie, sub-repl-ust, and the Daml workflow closed the substitution atomically against outgoing lots sub-current-kfw, sub-current-eib.",
+      "observedReasonCodes": [],
+      "expectedReasonCodes": [],
+      "policyEvaluationReportPath": "reports/generated/positive-substitution-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/positive-substitution-optimization-report.json",
+      "workflowInputPath": "reports/generated/positive-substitution-workflow-input.json",
+      "workflowResultPath": "reports/generated/positive-substitution-workflow-result.json",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "SUBSTITUTE",
+      "currentPostedLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "replacementLotIds": [
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "workflow": {
+        "releasedLotIds": [
+          "sub-current-kfw",
+          "sub-current-eib"
+        ],
+        "executionReports": [
+          {
+            "eventStates": [
+              "Closed"
+            ],
+            "outcome": "ExecutionCommitted",
+            "eventIds": [
+              "corr-substitution-demo-001-substitution-settled"
+            ],
+            "summary": "substitution settled atomically with replacement encumbrances",
+            "workflowType": "SubstitutionWorkflow",
+            "reportId": "corr-substitution-demo-001-report"
+          }
+        ],
+        "executionReportCount": 1,
+        "obligationId": "substitution-positive-obligation",
+        "atomicityOutcome": "COMMITTED_ATOMICALLY",
+        "controlChecks": [
+          {
+            "checkId": "APPROVAL_GATE_BLOCKED",
+            "status": "PASS",
+            "detail": "provider could not create a settlement intent until the required approvals were recorded"
+          }
+        ],
+        "scenarioId": "positive-substitution",
+        "steps": [
+          {
+            "actor": "provider",
+            "step": 1,
+            "state": "Encumbered",
+            "phase": "BASELINE",
+            "detail": "provider started from an already pledged collateral set"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "Draft",
+            "phase": "SUBSTITUTION",
+            "detail": "provider created the draft substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "Submitted",
+            "phase": "SUBSTITUTION",
+            "detail": "provider submitted the substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 4,
+            "state": "UnderEvaluation",
+            "phase": "SUBSTITUTION",
+            "detail": "provider moved the substitution request into evaluation"
+          },
+          {
+            "actor": "provider",
+            "step": 5,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "provider recorded a feasible replacement set from the optimizer"
+          },
+          {
+            "actor": "provider",
+            "step": 6,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider could not create settlement intent before required approvals were recorded"
+          },
+          {
+            "actor": "secured-party",
+            "step": 7,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "secured party approved the substitution request"
+          },
+          {
+            "actor": "custodian",
+            "step": 8,
+            "state": "Approved",
+            "phase": "SUBSTITUTION",
+            "detail": "custodian approved the substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 9,
+            "state": "PendingSettlement",
+            "phase": "SETTLEMENT",
+            "detail": "provider submitted the approved settlement intent for the full replacement set"
+          },
+          {
+            "actor": "custodian",
+            "step": 10,
+            "state": "Closed",
+            "phase": "SETTLEMENT",
+            "detail": "custodian confirmed settlement and the outgoing encumbrances were replaced atomically"
+          }
+        ],
+        "currentEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "substitutionState": "Closed",
+        "custodianApproval": "ApprovalGranted",
+        "activeEncumberedLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "replacementLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "securedPartyApproval": "ApprovalGranted"
+      }
+    },
+    {
+      "scenarioId": "negative-replacement-becomes-ineligible",
+      "mode": "NEGATIVE",
+      "description": "A candidate replacement asset becomes ineligible before execution, so the substitution request is blocked at policy evaluation time.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation blocked the replacement inventory with decision REJECT and reason codes ASSET_CLASS_NOT_ELIGIBLE, HAIRCUT_RULE_NOT_FOUND, ISSUER_NOT_ON_ALLOW_LIST, ISSUER_RATING_BELOW_MINIMUM, ISSUER_TYPE_NOT_ALLOWED, ISSUE_TYPE_NOT_ELIGIBLE.",
+      "observedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE",
+        "HAIRCUT_RULE_NOT_FOUND",
+        "ISSUER_NOT_ON_ALLOW_LIST",
+        "ISSUER_RATING_BELOW_MINIMUM",
+        "ISSUER_TYPE_NOT_ALLOWED",
+        "ISSUE_TYPE_NOT_ELIGIBLE"
+      ],
+      "expectedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE",
+        "HAIRCUT_RULE_NOT_FOUND",
+        "ISSUER_NOT_ON_ALLOW_LIST",
+        "ISSUER_RATING_BELOW_MINIMUM",
+        "ISSUER_TYPE_NOT_ALLOWED",
+        "ISSUE_TYPE_NOT_ELIGIBLE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-replacement-becomes-ineligible-policy-evaluation-report.json",
+      "optimizationReportPath": null,
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "policyDecision": "REJECT",
+      "optimizationStatus": null,
+      "recommendedAction": null,
+      "currentPostedLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "replacementLotIds": [],
+      "workflow": null
+    },
+    {
+      "scenarioId": "negative-concentration-breach",
+      "mode": "NEGATIVE",
+      "description": "The incumbent set remains valid, but every admissible replacement set breaches concentration limits or fails coverage once the released lots are excluded.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation stayed admissible at the lot level, but optimization ended with NO_SOLUTION and reason codes CONCENTRATION_LIMIT_BREACH, INSUFFICIENT_LENDABLE_VALUE.",
+      "observedReasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "expectedReasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-concentration-breach-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/negative-concentration-breach-optimization-report.json",
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "NO_SOLUTION",
+      "recommendedAction": "NO_SOLUTION",
+      "currentPostedLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "replacementLotIds": [],
+      "workflow": null
+    },
+    {
+      "scenarioId": "negative-unauthorized-release",
+      "mode": "NEGATIVE",
+      "description": "The provider reaches pending settlement with a valid replacement set but cannot confirm settlement or release encumbrances without custodian authority.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "The workflow blocked the control path with atomicity outcome BLOCKED_ATOMICALLY and control checks APPROVAL_GATE_BLOCKED, UNAUTHORIZED_RELEASE_BLOCKED.",
+      "observedReasonCodes": [
+        "APPROVAL_GATE_BLOCKED",
+        "UNAUTHORIZED_RELEASE_BLOCKED"
+      ],
+      "expectedReasonCodes": [
+        "APPROVAL_GATE_BLOCKED",
+        "UNAUTHORIZED_RELEASE_BLOCKED"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-unauthorized-release-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/negative-unauthorized-release-optimization-report.json",
+      "workflowInputPath": "reports/generated/negative-unauthorized-release-workflow-input.json",
+      "workflowResultPath": "reports/generated/negative-unauthorized-release-workflow-result.json",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "SUBSTITUTE",
+      "currentPostedLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "replacementLotIds": [
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "workflow": {
+        "releasedLotIds": [],
+        "executionReports": [],
+        "executionReportCount": 0,
+        "obligationId": "substitution-negative-unauthorized-obligation",
+        "atomicityOutcome": "BLOCKED_ATOMICALLY",
+        "controlChecks": [
+          {
+            "checkId": "APPROVAL_GATE_BLOCKED",
+            "status": "PASS",
+            "detail": "provider could not create a settlement intent until the required approvals were recorded"
+          },
+          {
+            "checkId": "UNAUTHORIZED_RELEASE_BLOCKED",
+            "status": "PASS",
+            "detail": "the workflow blocked the provider from confirming settlement or releasing encumbrances without custodian authority"
+          }
+        ],
+        "scenarioId": "negative-unauthorized-release",
+        "steps": [
+          {
+            "actor": "provider",
+            "step": 1,
+            "state": "Encumbered",
+            "phase": "BASELINE",
+            "detail": "provider started from an already pledged collateral set"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "Draft",
+            "phase": "SUBSTITUTION",
+            "detail": "provider created the draft substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "Submitted",
+            "phase": "SUBSTITUTION",
+            "detail": "provider submitted the substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 4,
+            "state": "UnderEvaluation",
+            "phase": "SUBSTITUTION",
+            "detail": "provider moved the substitution request into evaluation"
+          },
+          {
+            "actor": "provider",
+            "step": 5,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "provider recorded a feasible replacement set from the optimizer"
+          },
+          {
+            "actor": "provider",
+            "step": 6,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider could not create settlement intent before required approvals were recorded"
+          },
+          {
+            "actor": "secured-party",
+            "step": 7,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "secured party approved the substitution request"
+          },
+          {
+            "actor": "custodian",
+            "step": 8,
+            "state": "Approved",
+            "phase": "SUBSTITUTION",
+            "detail": "custodian approved the substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 9,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider attempted to confirm settlement without custodian authority and the request remained pending settlement"
+          }
+        ],
+        "currentEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "substitutionState": "PendingSettlement",
+        "custodianApproval": "ApprovalGranted",
+        "activeEncumberedLotIds": [
+          "sub-current-kfw",
+          "sub-current-eib"
+        ],
+        "replacementLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "securedPartyApproval": "ApprovalGranted"
+      }
+    },
+    {
+      "scenarioId": "negative-partial-substitution",
+      "mode": "NEGATIVE",
+      "description": "A partial settlement intent is attempted after approval, but the workflow rejects it because the request requires atomic all-or-nothing replacement.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "The workflow blocked the control path with atomicity outcome BLOCKED_ATOMICALLY and control checks APPROVAL_GATE_BLOCKED, PARTIAL_SUBSTITUTION_BLOCKED.",
+      "observedReasonCodes": [
+        "APPROVAL_GATE_BLOCKED",
+        "PARTIAL_SUBSTITUTION_BLOCKED"
+      ],
+      "expectedReasonCodes": [
+        "APPROVAL_GATE_BLOCKED",
+        "PARTIAL_SUBSTITUTION_BLOCKED"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-partial-substitution-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/negative-partial-substitution-optimization-report.json",
+      "workflowInputPath": "reports/generated/negative-partial-substitution-workflow-input.json",
+      "workflowResultPath": "reports/generated/negative-partial-substitution-workflow-result.json",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "SUBSTITUTE",
+      "currentPostedLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "replacementLotIds": [
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "workflow": {
+        "releasedLotIds": [],
+        "executionReports": [],
+        "executionReportCount": 0,
+        "obligationId": "substitution-negative-partial-obligation",
+        "atomicityOutcome": "BLOCKED_ATOMICALLY",
+        "controlChecks": [
+          {
+            "checkId": "APPROVAL_GATE_BLOCKED",
+            "status": "PASS",
+            "detail": "provider could not create a settlement intent until the required approvals were recorded"
+          },
+          {
+            "checkId": "PARTIAL_SUBSTITUTION_BLOCKED",
+            "status": "PASS",
+            "detail": "the workflow rejected the partial replacement set because atomicity was required"
+          }
+        ],
+        "scenarioId": "negative-partial-substitution",
+        "steps": [
+          {
+            "actor": "provider",
+            "step": 1,
+            "state": "Encumbered",
+            "phase": "BASELINE",
+            "detail": "provider started from an already pledged collateral set"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "Draft",
+            "phase": "SUBSTITUTION",
+            "detail": "provider created the draft substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "Submitted",
+            "phase": "SUBSTITUTION",
+            "detail": "provider submitted the substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 4,
+            "state": "UnderEvaluation",
+            "phase": "SUBSTITUTION",
+            "detail": "provider moved the substitution request into evaluation"
+          },
+          {
+            "actor": "provider",
+            "step": 5,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "provider recorded a feasible replacement set from the optimizer"
+          },
+          {
+            "actor": "provider",
+            "step": 6,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider could not create settlement intent before required approvals were recorded"
+          },
+          {
+            "actor": "secured-party",
+            "step": 7,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "secured party approved the substitution request"
+          },
+          {
+            "actor": "custodian",
+            "step": 8,
+            "state": "Approved",
+            "phase": "SUBSTITUTION",
+            "detail": "custodian approved the substitution request"
+          },
+          {
+            "actor": "provider",
+            "step": 9,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider attempted to submit only part of the approved replacement set and atomicity enforcement rejected it"
+          }
+        ],
+        "currentEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "substitutionState": "Approved",
+        "custodianApproval": "ApprovalGranted",
+        "activeEncumberedLotIds": [
+          "sub-current-kfw",
+          "sub-current-eib"
+        ],
+        "replacementLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "securedPartyApproval": "ApprovalGranted"
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "sequence": 1,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:54Z",
+      "finishedAt": "2026-03-28T23:40:54Z",
+      "artifactPath": "reports/generated/positive-substitution-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for positive scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 2,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:54Z",
+      "finishedAt": "2026-03-28T23:40:54Z",
+      "artifactPath": "reports/generated/positive-substitution-optimization-report.json",
+      "detail": "Optimized the substitution request for scenario positive-substitution with recommendation SUBSTITUTE."
+    },
+    {
+      "sequence": 3,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:54Z",
+      "finishedAt": "2026-03-28T23:40:56Z",
+      "artifactPath": "reports/generated/positive-substitution-workflow-result.json",
+      "detail": "Recorded the Daml substitution workflow for scenario positive-substitution and confirmed atomic encumbrance replacement."
+    },
+    {
+      "sequence": 4,
+      "scenarioSequence": 2,
+      "scenarioId": "negative-replacement-becomes-ineligible",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:56Z",
+      "finishedAt": "2026-03-28T23:40:56Z",
+      "artifactPath": "reports/generated/negative-replacement-becomes-ineligible-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for negative scenario with overall decision REJECT."
+    },
+    {
+      "sequence": 5,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-concentration-breach",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:56Z",
+      "finishedAt": "2026-03-28T23:40:56Z",
+      "artifactPath": "reports/generated/negative-concentration-breach-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 6,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-concentration-breach",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:56Z",
+      "finishedAt": "2026-03-28T23:40:56Z",
+      "artifactPath": "reports/generated/negative-concentration-breach-optimization-report.json",
+      "detail": "Optimized the substitution request for scenario negative-concentration-breach with recommendation NO_SOLUTION."
+    },
+    {
+      "sequence": 7,
+      "scenarioSequence": 4,
+      "scenarioId": "negative-unauthorized-release",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:56Z",
+      "finishedAt": "2026-03-28T23:40:56Z",
+      "artifactPath": "reports/generated/negative-unauthorized-release-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 8,
+      "scenarioSequence": 4,
+      "scenarioId": "negative-unauthorized-release",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:56Z",
+      "finishedAt": "2026-03-28T23:40:56Z",
+      "artifactPath": "reports/generated/negative-unauthorized-release-optimization-report.json",
+      "detail": "Optimized the substitution request for scenario negative-unauthorized-release with recommendation SUBSTITUTE."
+    },
+    {
+      "sequence": 9,
+      "scenarioSequence": 4,
+      "scenarioId": "negative-unauthorized-release",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:56Z",
+      "finishedAt": "2026-03-28T23:40:58Z",
+      "artifactPath": "reports/generated/negative-unauthorized-release-workflow-result.json",
+      "detail": "Recorded the Daml control failure for scenario negative-unauthorized-release with workflow state PendingSettlement."
+    },
+    {
+      "sequence": 10,
+      "scenarioSequence": 5,
+      "scenarioId": "negative-partial-substitution",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:58Z",
+      "finishedAt": "2026-03-28T23:40:58Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 11,
+      "scenarioSequence": 5,
+      "scenarioId": "negative-partial-substitution",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:58Z",
+      "finishedAt": "2026-03-28T23:40:58Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-optimization-report.json",
+      "detail": "Optimized the substitution request for scenario negative-partial-substitution with recommendation SUBSTITUTE."
+    },
+    {
+      "sequence": 12,
+      "scenarioSequence": 5,
+      "scenarioId": "negative-partial-substitution",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-28T23:40:58Z",
+      "finishedAt": "2026-03-28T23:41:00Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-workflow-result.json",
+      "detail": "Recorded the Daml control failure for scenario negative-partial-substitution with workflow state Approved."
+    }
+  ],
+  "invariantChecks": [
+    {
+      "invariantId": "PDR-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-policy-evaluation-report.json"
+      ],
+      "note": "The positive substitution path used a generated policy-evaluation report derived from declared inputs."
+    },
+    {
+      "invariantId": "ALLOC-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-optimization-report.json"
+      ],
+      "note": "The optimizer produced a deterministic replacement recommendation with explicit substitution deltas."
+    },
+    {
+      "invariantId": "CTRL-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-workflow-result.json",
+        "reports/generated/negative-unauthorized-release-workflow-result.json"
+      ],
+      "note": "The workflow blocked pre-approval settlement intent creation and blocked the unauthorized release attempt while preserving the current encumbrances."
+    },
+    {
+      "invariantId": "ATOM-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-workflow-result.json",
+        "reports/generated/negative-partial-substitution-workflow-result.json"
+      ],
+      "note": "The positive path replaced encumbrances atomically, and the partial-substitution path failed without releasing the incumbent encumbrances."
+    },
+    {
+      "invariantId": "REPT-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-workflow-result.json",
+        "reports/generated/positive-substitution-policy-evaluation-report.json",
+        "reports/generated/positive-substitution-optimization-report.json"
+      ],
+      "note": "The substitution report references real workflow, policy, and optimizer artifacts rather than operator-authored summaries."
+    },
+    {
+      "invariantId": "EXCP-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/negative-replacement-becomes-ineligible-policy-evaluation-report.json",
+        "reports/generated/negative-concentration-breach-policy-evaluation-report.json",
+        "reports/generated/negative-concentration-breach-optimization-report.json",
+        "reports/generated/negative-unauthorized-release-policy-evaluation-report.json",
+        "reports/generated/negative-unauthorized-release-optimization-report.json",
+        "reports/generated/negative-unauthorized-release-workflow-result.json",
+        "reports/generated/negative-partial-substitution-policy-evaluation-report.json",
+        "reports/generated/negative-partial-substitution-optimization-report.json",
+        "reports/generated/negative-partial-substitution-workflow-result.json"
+      ],
+      "note": "The negative substitution scenarios failed deterministically for ineligibility, concentration, unauthorized release, and partial-settlement atomicity violations."
+    }
+  ]
+}

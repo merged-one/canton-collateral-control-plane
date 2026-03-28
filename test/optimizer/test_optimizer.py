@@ -32,8 +32,14 @@ class OptimizerTest(unittest.TestCase):
                 limit["threshold"]["value"] = 1
         return policy
 
-    def obligation(self, inventory: dict, amount: float, current_posted=None) -> dict:
-        return {
+    def obligation(
+        self,
+        inventory: dict,
+        amount: float,
+        current_posted=None,
+        substitution_request=None,
+    ) -> dict:
+        obligation = {
             "obligationId": "optimizer-test-obligation",
             "obligationVersion": "1.0.0",
             "asOf": inventory["evaluationContext"]["asOf"],
@@ -42,6 +48,9 @@ class OptimizerTest(unittest.TestCase):
             "obligationAmount": amount,
             "currentPostedLotIds": [] if current_posted is None else current_posted,
         }
+        if substitution_request is not None:
+            obligation["substitutionRequest"] = substitution_request
+        return obligation
 
     def test_cheapest_eligible_asset_wins_when_unconstrained(self) -> None:
         policy = self.relaxed_policy()
@@ -136,8 +145,120 @@ class OptimizerTest(unittest.TestCase):
         self.assertEqual(report["recommendedPortfolio"]["lotIds"], ["best-single"])
         self.assertEqual(report["substitutionRecommendation"]["removeLotIds"], ["current-a", "current-b"])
         self.assertEqual(report["substitutionRecommendation"]["addLotIds"], ["best-single"])
+        self.assertEqual(report["substitutionRecommendation"]["mustReplaceLotIds"], [])
+        self.assertEqual(report["substitutionRecommendation"]["retainedLotIds"], [])
         self.assertTrue(report["substitutionRecommendation"]["improvesObjective"])
         self.assertTrue(report["currentPortfolio"]["isFeasible"])
+
+    def test_forced_substitution_can_replace_a_better_incumbent_when_release_is_required(self) -> None:
+        policy = self.relaxed_policy()
+        inventory = self.load_inventory()
+        inventory["candidateLots"] = [
+            copy.deepcopy(inventory["candidateLots"][0]),
+            copy.deepcopy(inventory["candidateLots"][1]),
+            copy.deepcopy(inventory["candidateLots"][2]),
+        ]
+        inventory["candidateLots"][0]["lotId"] = "current-a"
+        inventory["candidateLots"][0]["assetId"] = "current-a-asset"
+        inventory["candidateLots"][0]["marketValue"] = 120000.0
+        inventory["candidateLots"][0]["nominalValue"] = 120000.0
+        inventory["candidateLots"][0]["outstandingPrincipal"] = 120000.0
+        inventory["candidateLots"][1]["lotId"] = "current-b"
+        inventory["candidateLots"][1]["assetId"] = "current-b-asset"
+        inventory["candidateLots"][1]["marketValue"] = 120000.0
+        inventory["candidateLots"][1]["nominalValue"] = 120000.0
+        inventory["candidateLots"][1]["outstandingPrincipal"] = 120000.0
+        inventory["candidateLots"][2]["lotId"] = "replacement-only"
+        inventory["candidateLots"][2]["assetId"] = "replacement-only-asset"
+        inventory["candidateLots"][2]["marketValue"] = 250000.0
+        inventory["candidateLots"][2]["nominalValue"] = 250000.0
+        inventory["candidateLots"][2]["outstandingPrincipal"] = 250000.0
+
+        report = optimize_collateral(
+            policy,
+            inventory,
+            self.obligation(
+                inventory,
+                210000.0,
+                current_posted=["current-a", "current-b"],
+                substitution_request={
+                    "requestId": "forced-substitution",
+                    "mustReplaceLotIds": ["current-a", "current-b"],
+                    "atomicityRequired": True,
+                },
+            ),
+        )
+
+        self.assertEqual(report["recommendedAction"], "SUBSTITUTE")
+        self.assertEqual(report["recommendedPortfolio"]["lotIds"], ["replacement-only"])
+        self.assertEqual(
+            report["obligation"]["substitutionRequest"]["mustReplaceLotIds"],
+            ["current-a", "current-b"],
+        )
+        self.assertEqual(
+            report["substitutionRecommendation"]["mustReplaceLotIds"],
+            ["current-a", "current-b"],
+        )
+        self.assertFalse(report["substitutionRecommendation"]["improvesObjective"])
+        blocked_scope_traces = [
+            trace
+            for trace in report["explanationTrace"]
+            if trace["outcome"] == "BLOCKED_BY_SCOPE"
+        ]
+        self.assertTrue(blocked_scope_traces)
+
+    def test_forced_substitution_returns_no_solution_when_replacements_breach_concentration(self) -> None:
+        policy = self.load_policy()
+        for limit in policy["concentrationLimits"]:
+            if limit["limitId"] == "issuer-cap":
+                limit["threshold"]["value"] = 0.6
+
+        inventory = self.load_inventory()
+        inventory["candidateLots"] = [
+            copy.deepcopy(inventory["candidateLots"][1]),
+            copy.deepcopy(inventory["candidateLots"][2]),
+            copy.deepcopy(inventory["candidateLots"][0]),
+            copy.deepcopy(inventory["candidateLots"][0]),
+        ]
+        inventory["candidateLots"][0]["lotId"] = "current-kfw"
+        inventory["candidateLots"][0]["assetId"] = "current-kfw-asset"
+        inventory["candidateLots"][1]["lotId"] = "current-eib"
+        inventory["candidateLots"][1]["assetId"] = "current-eib-asset"
+        inventory["candidateLots"][2]["lotId"] = "replacement-ust-a"
+        inventory["candidateLots"][2]["assetId"] = "replacement-ust-a-asset"
+        inventory["candidateLots"][2]["marketValue"] = 220000.0
+        inventory["candidateLots"][2]["nominalValue"] = 220000.0
+        inventory["candidateLots"][2]["outstandingPrincipal"] = 220000.0
+        inventory["candidateLots"][3]["lotId"] = "replacement-ust-b"
+        inventory["candidateLots"][3]["assetId"] = "replacement-ust-b-asset"
+        inventory["candidateLots"][3]["marketValue"] = 220000.0
+        inventory["candidateLots"][3]["nominalValue"] = 220000.0
+        inventory["candidateLots"][3]["outstandingPrincipal"] = 220000.0
+
+        report = optimize_collateral(
+            policy,
+            inventory,
+            self.obligation(
+                inventory,
+                430000.0,
+                current_posted=["current-eib", "current-kfw"],
+                substitution_request={
+                    "requestId": "concentration-breach",
+                    "mustReplaceLotIds": ["current-eib", "current-kfw"],
+                    "atomicityRequired": True,
+                },
+            ),
+        )
+
+        self.assertEqual(report["status"], "NO_SOLUTION")
+        self.assertEqual(report["recommendedAction"], "NO_SOLUTION")
+        self.assertIsNone(report["recommendedPortfolio"])
+        decision_trace = next(
+            trace
+            for trace in report["explanationTrace"]
+            if trace["stage"] == "DECISION"
+        )
+        self.assertIn("CONCENTRATION_LIMIT_BREACH", decision_trace["reasonCodes"])
 
     def test_no_solution_case_is_handled_cleanly(self) -> None:
         policy = self.relaxed_policy()

@@ -31,6 +31,7 @@ The current optimizer consumes:
    - `coverageMetric`
    - `obligationAmount`
    - optional `currentPostedLotIds`
+   - optional `substitutionRequest` with `requestId`, `mustReplaceLotIds`, and `atomicityRequired`
 
 Current obligation assumptions:
 
@@ -54,7 +55,9 @@ The contract depends on these optimizer rules:
    - then minimize lot count
    - then use sorted lot IDs only as a deterministic tie-break
 6. If a current posted set exists and is economically equal to the best alternative on the first four objective dimensions, the optimizer keeps the current set to avoid unnecessary churn.
-7. `optimizationId` is a stable hash of canonicalized policy, inventory, and obligation inputs; the engine does not inject wall-clock timestamps.
+7. If `substitutionRequest.mustReplaceLotIds` is present, candidate subsets that retain one of those lots are invalid even when the incumbent set remains feasible.
+8. If a valid replacement set exists for a scoped substitution request, the optimizer may still recommend `SUBSTITUTE` rather than `KEEP_CURRENT_POSTED_SET` because the request requires release of named incumbent lots.
+9. `optimizationId` is a stable hash of canonicalized policy, inventory, and obligation inputs; the engine does not inject wall-clock timestamps.
 
 ## Top-Level Structure
 
@@ -68,11 +71,11 @@ The contract depends on these optimizer rules:
 | `objective` | Published ranking sequence used by the optimizer. |
 | `policy` | Policy identity and profile. |
 | `inventory` | Inventory snapshot identity and currencies. |
-| `obligation` | Obligation identity, coverage metric, requested amount, and current posted set if supplied. |
+| `obligation` | Obligation identity, coverage metric, requested amount, current posted set if supplied, and substitution-request scope if supplied. |
 | `candidateUniverse` | Candidate-screening counts plus per-lot admissibility summaries. |
 | `currentPortfolio` | Optional evaluation of the currently posted set. |
 | `recommendedPortfolio` | The selected portfolio when a feasible recommendation exists. |
-| `substitutionRecommendation` | Machine-readable add/remove deltas between the current and recommended sets. |
+| `substitutionRecommendation` | Machine-readable add/remove deltas between the current and recommended sets, including scoped-release metadata when present. |
 | `explanationTrace` | Ordered search and decision trace entries. |
 
 ## Portfolio Semantics
@@ -99,6 +102,15 @@ Each explanation trace entry includes:
 - optional `lotIds`, `reasonCodes`, `coverageAmount`, and `objectiveSnapshot`
 
 The trace is intentionally deterministic and append-only for one request. Consumers should not treat it as free-form debug output.
+
+## Substitution Request Semantics
+
+When `obligation.substitutionRequest` is present:
+
+- `mustReplaceLotIds` identifies incumbent lots that must not remain in the recommended set
+- `atomicityRequired` captures whether downstream workflow execution must reject partial replacement scope
+- `substitutionRecommendation` includes `requestId`, `atomicityRequired`, `mustReplaceLotIds`, and `retainedLotIds`
+- `NO_SOLUTION` may occur even when the incumbent current portfolio remains feasible, because the substitution request can force release of encumbered lots that leave no compliant replacement set
 
 ## Current Scope And Limits
 

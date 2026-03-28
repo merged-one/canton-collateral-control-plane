@@ -1,0 +1,647 @@
+{
+  "$schema": "../../reports/schemas/optimization-report.schema.json",
+  "reportType": "OptimizationReport",
+  "reportVersion": "0.1.0",
+  "optimizationId": "opr-34398e0bfa2326c9",
+  "status": "OPTIMAL",
+  "recommendedAction": "SUBSTITUTE",
+  "objective": {
+    "objectiveId": "MINIMIZE_MARKET_VALUE_THEN_HAIRCUT_COST_THEN_EXCESS",
+    "sequence": [
+      "market_value_amount",
+      "haircut_cost_amount",
+      "excess_amount",
+      "lot_count",
+      "lot_ids_lexical_tie_break"
+    ]
+  },
+  "policy": {
+    "policyId": "substitution-atomic-control-policy",
+    "policyVersion": "1.1.0",
+    "cplVersion": "0.1.0",
+    "profile": "central_bank"
+  },
+  "inventory": {
+    "inventorySetId": "substitution-positive-inventory",
+    "inventoryVersion": "1.0.0",
+    "asOf": "2026-04-16T14:00:00Z",
+    "settlementCurrency": "USD",
+    "valuationCurrency": "USD",
+    "candidateLotCount": 4
+  },
+  "obligation": {
+    "obligationId": "substitution-negative-partial-obligation",
+    "obligationVersion": "1.0.0",
+    "asOf": "2026-04-16T14:00:00Z",
+    "settlementCurrency": "USD",
+    "coverageMetric": "LENDABLE_VALUE",
+    "obligationAmount": 430000.0,
+    "currentPostedLotIds": [
+      "sub-current-eib",
+      "sub-current-kfw"
+    ],
+    "substitutionRequest": {
+      "requestId": "sub-request-negative-partial",
+      "mustReplaceLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "atomicityRequired": true
+    }
+  },
+  "candidateUniverse": {
+    "candidateLotCount": 4,
+    "admissibleLotCount": 4,
+    "blockedLotCount": 0,
+    "consideredCombinationCount": 15,
+    "feasibleCombinationCount": 1,
+    "screeningResults": [
+      {
+        "lotId": "sub-current-eib",
+        "assetId": "sub-current-eib-asset",
+        "assetClass": "SUPRANATIONAL_BOND",
+        "issuerId": "eib",
+        "marketValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700,
+        "admissible": true,
+        "reasonCodes": []
+      },
+      {
+        "lotId": "sub-current-kfw",
+        "assetId": "sub-current-kfw-asset",
+        "assetClass": "AGENCY_BOND",
+        "issuerId": "kfw",
+        "marketValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700,
+        "admissible": true,
+        "reasonCodes": []
+      },
+      {
+        "lotId": "sub-repl-fannie",
+        "assetId": "sub-repl-fannie-asset",
+        "assetClass": "AGENCY_BOND",
+        "issuerId": "fannie-mae",
+        "marketValue": 225000.0,
+        "lendableValue": 209250.0,
+        "totalHaircutBps": 700,
+        "admissible": true,
+        "reasonCodes": []
+      },
+      {
+        "lotId": "sub-repl-ust",
+        "assetId": "sub-repl-ust-asset",
+        "assetClass": "SOVEREIGN_BOND",
+        "issuerId": "us-treasury",
+        "marketValue": 250000.0,
+        "lendableValue": 245000.0,
+        "totalHaircutBps": 200,
+        "admissible": true,
+        "reasonCodes": []
+      }
+    ]
+  },
+  "currentPortfolio": {
+    "lotIds": [
+      "sub-current-eib",
+      "sub-current-kfw"
+    ],
+    "policyEvaluationId": "per-55f2d27275bf5ce3",
+    "policyDecision": "ACCEPT",
+    "isFeasible": true,
+    "requiredAmount": 430000.0,
+    "allocatedMarketValue": 500000.0,
+    "allocatedLendableValue": 465000.0,
+    "shortfallAmount": 0.0,
+    "excessAmount": 35000.0,
+    "haircutCostAmount": 35000.0,
+    "lotCount": 2,
+    "objectiveVector": {
+      "marketValueAmount": 500000.0,
+      "haircutCostAmount": 35000.0,
+      "excessAmount": 35000.0,
+      "lotCount": 2,
+      "tieBreakLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ]
+    },
+    "blockingReasonCodes": [],
+    "selectedLots": [
+      {
+        "lotId": "sub-current-eib",
+        "assetId": "sub-current-eib-asset",
+        "issuerId": "eib",
+        "assetClass": "SUPRANATIONAL_BOND",
+        "marketValue": 250000.0,
+        "valuationBasisValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700
+      },
+      {
+        "lotId": "sub-current-kfw",
+        "assetId": "sub-current-kfw-asset",
+        "issuerId": "kfw",
+        "assetClass": "AGENCY_BOND",
+        "marketValue": 250000.0,
+        "valuationBasisValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700
+      }
+    ],
+    "concentrationResults": [
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "eib",
+        "bucketValue": 250000.0,
+        "denominatorValue": 500000.0,
+        "observedRatio": 0.5,
+        "relatedLotIds": [
+          "sub-current-eib"
+        ],
+        "reason": null
+      },
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "kfw",
+        "bucketValue": 250000.0,
+        "denominatorValue": 500000.0,
+        "observedRatio": 0.5,
+        "relatedLotIds": [
+          "sub-current-kfw"
+        ],
+        "reason": null
+      }
+    ]
+  },
+  "recommendedPortfolio": {
+    "lotIds": [
+      "sub-repl-fannie",
+      "sub-repl-ust"
+    ],
+    "policyEvaluationId": "per-51ed4ae151fc4bc3",
+    "policyDecision": "ACCEPT",
+    "isFeasible": true,
+    "requiredAmount": 430000.0,
+    "allocatedMarketValue": 475000.0,
+    "allocatedLendableValue": 454250.0,
+    "shortfallAmount": 0.0,
+    "excessAmount": 24250.0,
+    "haircutCostAmount": 20750.0,
+    "lotCount": 2,
+    "objectiveVector": {
+      "marketValueAmount": 475000.0,
+      "haircutCostAmount": 20750.0,
+      "excessAmount": 24250.0,
+      "lotCount": 2,
+      "tieBreakLotIds": [
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ]
+    },
+    "blockingReasonCodes": [],
+    "selectedLots": [
+      {
+        "lotId": "sub-repl-fannie",
+        "assetId": "sub-repl-fannie-asset",
+        "issuerId": "fannie-mae",
+        "assetClass": "AGENCY_BOND",
+        "marketValue": 225000.0,
+        "valuationBasisValue": 225000.0,
+        "lendableValue": 209250.0,
+        "totalHaircutBps": 700
+      },
+      {
+        "lotId": "sub-repl-ust",
+        "assetId": "sub-repl-ust-asset",
+        "issuerId": "us-treasury",
+        "assetClass": "SOVEREIGN_BOND",
+        "marketValue": 250000.0,
+        "valuationBasisValue": 250000.0,
+        "lendableValue": 245000.0,
+        "totalHaircutBps": 200
+      }
+    ],
+    "concentrationResults": [
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "fannie-mae",
+        "bucketValue": 225000.0,
+        "denominatorValue": 475000.0,
+        "observedRatio": 0.473684,
+        "relatedLotIds": [
+          "sub-repl-fannie"
+        ],
+        "reason": null
+      },
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "us-treasury",
+        "bucketValue": 250000.0,
+        "denominatorValue": 475000.0,
+        "observedRatio": 0.526316,
+        "relatedLotIds": [
+          "sub-repl-ust"
+        ],
+        "reason": null
+      }
+    ]
+  },
+  "substitutionRecommendation": {
+    "requestId": "sub-request-negative-partial",
+    "atomicityRequired": true,
+    "mustReplaceLotIds": [
+      "sub-current-eib",
+      "sub-current-kfw"
+    ],
+    "currentPostedLotIds": [
+      "sub-current-eib",
+      "sub-current-kfw"
+    ],
+    "recommendedLotIds": [
+      "sub-repl-fannie",
+      "sub-repl-ust"
+    ],
+    "retainedLotIds": [],
+    "removeLotIds": [
+      "sub-current-eib",
+      "sub-current-kfw"
+    ],
+    "addLotIds": [
+      "sub-repl-fannie",
+      "sub-repl-ust"
+    ],
+    "improvesObjective": true
+  },
+  "explanationTrace": [
+    {
+      "step": 1,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot sub-current-eib for non-concentration policy feasibility.",
+      "lotIds": [
+        "sub-current-eib"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 2,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot sub-current-kfw for non-concentration policy feasibility.",
+      "lotIds": [
+        "sub-current-kfw"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 3,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot sub-repl-fannie for non-concentration policy feasibility.",
+      "lotIds": [
+        "sub-repl-fannie"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 4,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot sub-repl-ust for non-concentration policy feasibility.",
+      "lotIds": [
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 5,
+      "stage": "CURRENT_PORTFOLIO",
+      "outcome": "FEASIBLE",
+      "message": "Evaluated the currently posted lot set against coverage and portfolio-level policy constraints.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": 465000.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 500000.0,
+        "haircutCostAmount": 35000.0,
+        "excessAmount": 35000.0,
+        "lotCount": 2,
+        "tieBreakLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ]
+      }
+    },
+    {
+      "step": 6,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 7,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-kfw"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 8,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED",
+      "message": "Evaluated subset sub-repl-fannie.",
+      "lotIds": [
+        "sub-repl-fannie"
+      ],
+      "reasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "coverageAmount": 209250.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 225000.0,
+        "haircutCostAmount": 15750.0,
+        "excessAmount": 0.0,
+        "lotCount": 1,
+        "tieBreakLotIds": [
+          "sub-repl-fannie"
+        ]
+      }
+    },
+    {
+      "step": 9,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED",
+      "message": "Evaluated subset sub-repl-ust.",
+      "lotIds": [
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "coverageAmount": 245000.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 250000.0,
+        "haircutCostAmount": 5000.0,
+        "excessAmount": 0.0,
+        "lotCount": 1,
+        "tieBreakLotIds": [
+          "sub-repl-ust"
+        ]
+      }
+    },
+    {
+      "step": 10,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 11,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-repl-fannie"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 12,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 13,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-kfw",
+        "sub-repl-fannie"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 14,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-kfw",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 15,
+      "stage": "SEARCH",
+      "outcome": "NEW_INCUMBENT",
+      "message": "Evaluated subset sub-repl-fannie,sub-repl-ust.",
+      "lotIds": [
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": 454250.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 475000.0,
+        "haircutCostAmount": 20750.0,
+        "excessAmount": 24250.0,
+        "lotCount": 2,
+        "tieBreakLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ]
+      }
+    },
+    {
+      "step": 16,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-current-kfw",
+        "sub-repl-fannie"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 17,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-current-kfw",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 18,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 19,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-kfw",
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 20,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "sub-current-eib",
+        "sub-current-kfw",
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 21,
+      "stage": "DECISION",
+      "outcome": "SUBSTITUTE",
+      "message": "Selected the final optimizer recommendation.",
+      "lotIds": [
+        "sub-repl-fannie",
+        "sub-repl-ust"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": 454250.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 475000.0,
+        "haircutCostAmount": 20750.0,
+        "excessAmount": 24250.0,
+        "lotCount": 2,
+        "tieBreakLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ]
+      }
+    }
+  ]
+}

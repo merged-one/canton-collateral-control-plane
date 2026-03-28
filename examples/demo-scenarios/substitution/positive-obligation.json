@@ -1,0 +1,20 @@
+{
+  "obligationId": "substitution-positive-obligation",
+  "obligationVersion": "1.0.0",
+  "asOf": "2026-04-16T14:00:00Z",
+  "settlementCurrency": "USD",
+  "coverageMetric": "LENDABLE_VALUE",
+  "obligationAmount": 430000.0,
+  "currentPostedLotIds": [
+    "sub-current-eib",
+    "sub-current-kfw"
+  ],
+  "substitutionRequest": {
+    "requestId": "sub-request-positive",
+    "mustReplaceLotIds": [
+      "sub-current-eib",
+      "sub-current-kfw"
+    ],
+    "atomicityRequired": true
+  }
+}

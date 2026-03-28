@@ -1,0 +1,279 @@
+{
+  "$schema": "../../schema/cpl.schema.json",
+  "cplVersion": "0.1.0",
+  "policyId": "substitution-atomic-control-policy",
+  "policyVersion": "1.1.0",
+  "profile": "central_bank",
+  "metadata": {
+    "name": "Central Bank Domestic Eligibility Window",
+    "description": "Conservative substitution-demo policy with central-bank-style eligibility, explicit two-party approval requirements, and atomic no-partial replacement handling.",
+    "owner": "Reserve Operations Committee",
+    "createdBy": "mission-control",
+    "createdAt": "2026-03-28T00:00:00Z",
+    "status": "active",
+    "sourceDocument": "CB-WINDOW-2026-01",
+    "approvalReference": "cb-ops-2026-q2",
+    "tags": [
+      "central-bank",
+      "eligibility",
+      "haircuts"
+    ],
+    "marketPracticeNotes": [
+      "central_bank_eligibility"
+    ]
+  },
+  "effectivePeriod": {
+    "effectiveFrom": "2026-04-01T00:00:00Z",
+    "effectiveUntil": "2027-04-01T00:00:00Z"
+  },
+  "eligibility": {
+    "eligibleAssetClasses": [
+      "SOVEREIGN_BOND",
+      "AGENCY_BOND",
+      "SUPRANATIONAL_BOND",
+      "COVERED_BOND"
+    ],
+    "eligibleIssueTypes": [
+      "SOVEREIGN",
+      "AGENCY",
+      "SUPRANATIONAL",
+      "COVERED"
+    ],
+    "issuerFilters": {
+      "allowedIssuerTypes": [
+        "SOVEREIGN",
+        "AGENCY",
+        "SUPRANATIONAL"
+      ],
+      "allowListedIssuerIds": [
+        "us-treasury",
+        "kfw",
+        "eib",
+        "fannie-mae"
+      ],
+      "minimumLongTermRating": "AA-",
+      "allowUnratedIssuers": false,
+      "allowSelfIssued": false,
+      "allowCounterpartyIssued": false
+    },
+    "custodianFilters": {
+      "allowedCustodianIds": [
+        "new-york-fed",
+        "euroclear-bank"
+      ],
+      "allowedAccountTypes": [
+        "CENTRAL_BANK_ACCOUNT",
+        "THIRD_PARTY_CUSTODY"
+      ],
+      "requireSegregatedAccount": true,
+      "requireControlAgreement": true,
+      "allowInternalCustody": false
+    },
+    "jurisdictionFilters": {
+      "allowedIssuanceJurisdictions": [
+        "US",
+        "CA",
+        "GB",
+        "DE",
+        "FR",
+        "NL"
+      ],
+      "allowedRiskJurisdictions": [
+        "US",
+        "CA",
+        "GB",
+        "DE",
+        "FR",
+        "NL"
+      ],
+      "allowedCustodyJurisdictions": [
+        "US",
+        "BE"
+      ],
+      "excludedJurisdictions": [
+        "RU",
+        "BY"
+      ]
+    }
+  },
+  "haircuts": {
+    "valuationBasis": "LOWER_OF_MARKET_AND_OUTSTANDING_PRINCIPAL",
+    "roundingMode": "ROUND_HALF_UP",
+    "schedule": [
+      {
+        "ruleId": "domestic-sovereign-short",
+        "description": "Domestic sovereign debt up to one year residual maturity.",
+        "selectors": {
+          "assetClasses": [
+            "SOVEREIGN_BOND"
+          ],
+          "issueTypes": [
+            "SOVEREIGN"
+          ],
+          "currencies": [
+            "USD"
+          ],
+          "maxResidualMaturityDays": 365
+        },
+        "haircutBps": 200
+      },
+      {
+        "ruleId": "domestic-sovereign-long",
+        "description": "Domestic sovereign debt above one year residual maturity.",
+        "selectors": {
+          "assetClasses": [
+            "SOVEREIGN_BOND"
+          ],
+          "issueTypes": [
+            "SOVEREIGN"
+          ],
+          "currencies": [
+            "USD"
+          ],
+          "minResidualMaturityDays": 366,
+          "minimumLongTermRating": "AA-"
+        },
+        "haircutBps": 600
+      },
+      {
+        "ruleId": "agency-and-supranational",
+        "description": "Agency and supranational debt with strong external credit quality.",
+        "selectors": {
+          "assetClasses": [
+            "AGENCY_BOND",
+            "SUPRANATIONAL_BOND"
+          ],
+          "minimumLongTermRating": "AA-"
+        },
+        "haircutBps": 700
+      },
+      {
+        "ruleId": "covered-bonds",
+        "description": "Covered bonds remain eligible but with a higher base haircut.",
+        "selectors": {
+          "assetClasses": [
+            "COVERED_BOND"
+          ],
+          "minimumLongTermRating": "AA-"
+        },
+        "haircutBps": 1000
+      }
+    ],
+    "currencyMismatch": {
+      "basis": "COLLATERAL_VS_SETTLEMENT_CURRENCY",
+      "defaultHaircutBps": 800,
+      "pairOverrides": [
+        {
+          "collateralCurrency": "EUR",
+          "settlementCurrency": "USD",
+          "haircutBps": 600
+        }
+      ]
+    }
+  },
+  "concentrationLimits": [
+    {
+      "limitId": "issuer-cap",
+      "description": "No more than 60 percent of posted collateral value from any single issuer in the substitution demo policy.",
+      "dimension": "ISSUER",
+      "scope": "POLICY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.6
+      },
+      "breachAction": "REJECT"
+    },
+    {
+      "limitId": "covered-bond-cap",
+      "description": "Covered bonds may not exceed 20 percent of the pool.",
+      "dimension": "ASSET_CLASS",
+      "scope": "POLICY_PORTFOLIO",
+      "threshold": {
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "value": 0.2
+      },
+      "appliesTo": {
+        "assetClasses": [
+          "COVERED_BOND"
+        ]
+      },
+      "breachAction": "REJECT"
+    }
+  ],
+  "controlRequirements": {
+    "encumbrance": {
+      "requireUnencumbered": true,
+      "allowReuse": false,
+      "allowPartialRelease": false,
+      "minimumFreeAllocationPercent": 1
+    },
+    "segregation": {
+      "required": true,
+      "segregationType": "CENTRAL_BANK_RESTRICTED",
+      "eligibleAccountDesignations": [
+        "pledge-window-account"
+      ],
+      "requireThirdPartyAcknowledgement": true
+    }
+  },
+  "substitutionRights": {
+    "substitutionAllowed": true,
+    "replacementCoverageRule": "LENDABLE_VALUE_MUST_NOT_DECREASE",
+    "requiresSecuredPartyConsent": true,
+    "requiresCustodianConsent": true,
+    "minimumNotice": "PT1H",
+    "maxSubstitutionsPerDay": 4,
+    "sameDaySettlementRequired": true,
+    "partialSubstitutionAllowed": false,
+    "inventoryControl": "CENTRAL_BANK_OPERATOR"
+  },
+  "settlement": {
+    "currencyConstraints": {
+      "allowedSettlementCurrencies": [
+        "USD"
+      ],
+      "requireSettlementCurrencyInHaircutSchedule": true,
+      "allowCollateralCurrencyMismatch": true
+    },
+    "settlementWindows": [
+      {
+        "windowId": "weekday-domestic-window",
+        "daysOfWeek": [
+          "MON",
+          "TUE",
+          "WED",
+          "THU",
+          "FRI"
+        ],
+        "startTime": "08:00:00-05:00",
+        "endTime": "17:00:00-05:00",
+        "timeZone": "America/New_York",
+        "cutoffAction": "NEXT_WINDOW"
+      }
+    ],
+    "expiry": {
+      "marginCallTtl": "P1D",
+      "settlementInstructionTtl": "PT6H",
+      "substitutionRequestTtl": "PT4H"
+    }
+  },
+  "wrongWayRiskExclusions": [
+    {
+      "exclusionId": "issuer-equals-obligor",
+      "description": "Reject any asset issued by the exposure obligor itself.",
+      "type": "ISSUER_EQUALS_EXPOSURE_COUNTERPARTY",
+      "action": "REJECT",
+      "matchExposureCounterpartyRole": "OBLIGOR"
+    },
+    {
+      "exclusionId": "policy-deny-list",
+      "description": "Reject known policy-specific issuers even if they otherwise match eligibility filters.",
+      "type": "CUSTOM_ISSUER_LIST",
+      "action": "REJECT",
+      "issuerIds": [
+        "dealer-parent-bank",
+        "dealer-funding-vehicle"
+      ]
+    }
+  ]
+}

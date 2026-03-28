@@ -1,0 +1,94 @@
+{
+  "scenarioId": "negative-unauthorized-release",
+  "obligationId": "substitution-negative-unauthorized-obligation",
+  "correlationId": "corr-substitution-demo-unauthorized-001",
+  "policyVersion": "1.1.0",
+  "snapshotId": "substitution-positive-inventory::2026-04-16T14:00:00Z",
+  "decisionReference": "per-2fcbb87d2aabab7d",
+  "requiredCoverage": 430000.0,
+  "currentPostedLots": [
+    {
+      "lotId": "sub-current-eib",
+      "assetId": "sub-current-eib-asset",
+      "issuer": "eib",
+      "assetClass": "SUPRANATIONAL_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/sub-current-eib-asset",
+      "jurisdiction": "FR",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-sub-demo",
+      "quantity": 250000.0,
+      "sourceAccount": "acct-provider-sub-demo",
+      "destinationAccount": "acct-secured-sub-demo"
+    },
+    {
+      "lotId": "sub-current-kfw",
+      "assetId": "sub-current-kfw-asset",
+      "issuer": "kfw",
+      "assetClass": "AGENCY_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/sub-current-kfw-asset",
+      "jurisdiction": "DE",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-sub-demo",
+      "quantity": 250000.0,
+      "sourceAccount": "acct-provider-sub-demo",
+      "destinationAccount": "acct-secured-sub-demo"
+    }
+  ],
+  "replacementLots": [
+    {
+      "lotId": "sub-repl-fannie",
+      "assetId": "sub-repl-fannie-asset",
+      "issuer": "fannie-mae",
+      "assetClass": "AGENCY_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/sub-repl-fannie-asset",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-sub-demo",
+      "quantity": 225000.0,
+      "sourceAccount": "acct-provider-sub-demo",
+      "destinationAccount": "acct-secured-sub-demo"
+    },
+    {
+      "lotId": "sub-repl-ust",
+      "assetId": "sub-repl-ust-asset",
+      "issuer": "us-treasury",
+      "assetClass": "SOVEREIGN_BOND",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "demo/adapter/sub-repl-ust-asset",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable",
+        "segregated"
+      ],
+      "custodyAccount": "acct-provider-sub-demo",
+      "quantity": 250000.0,
+      "sourceAccount": "acct-provider-sub-demo",
+      "destinationAccount": "acct-secured-sub-demo"
+    }
+  ],
+  "requiresSecuredPartyApproval": true,
+  "requiresCustodianApproval": true,
+  "atomicityRequired": true,
+  "simulateUnauthorizedReleaseAttempt": true,
+  "simulatePartialSettlementAttempt": false
+}

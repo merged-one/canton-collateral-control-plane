@@ -1,0 +1,78 @@
+{
+  "releasedLotIds": [],
+  "executionReports": [],
+  "executionReportCount": 0,
+  "obligationId": "substitution-negative-unauthorized-obligation",
+  "atomicityOutcome": "BLOCKED_ATOMICALLY",
+  "controlChecks": [{
+    "checkId": "APPROVAL_GATE_BLOCKED",
+    "status": "PASS",
+    "detail": "provider could not create a settlement intent until the required approvals were recorded"
+  }, {
+    "checkId": "UNAUTHORIZED_RELEASE_BLOCKED",
+    "status": "PASS",
+    "detail": "the workflow blocked the provider from confirming settlement or releasing encumbrances without custodian authority"
+  }],
+  "scenarioId": "negative-unauthorized-release",
+  "steps": [{
+    "actor": "provider",
+    "step": 1,
+    "state": "Encumbered",
+    "phase": "BASELINE",
+    "detail": "provider started from an already pledged collateral set"
+  }, {
+    "actor": "provider",
+    "step": 2,
+    "state": "Draft",
+    "phase": "SUBSTITUTION",
+    "detail": "provider created the draft substitution request"
+  }, {
+    "actor": "provider",
+    "step": 3,
+    "state": "Submitted",
+    "phase": "SUBSTITUTION",
+    "detail": "provider submitted the substitution request"
+  }, {
+    "actor": "provider",
+    "step": 4,
+    "state": "UnderEvaluation",
+    "phase": "SUBSTITUTION",
+    "detail": "provider moved the substitution request into evaluation"
+  }, {
+    "actor": "provider",
+    "step": 5,
+    "state": "PendingApproval",
+    "phase": "SUBSTITUTION",
+    "detail": "provider recorded a feasible replacement set from the optimizer"
+  }, {
+    "actor": "provider",
+    "step": 6,
+    "state": "Blocked",
+    "phase": "CONTROL",
+    "detail": "provider could not create settlement intent before required approvals were recorded"
+  }, {
+    "actor": "secured-party",
+    "step": 7,
+    "state": "PendingApproval",
+    "phase": "SUBSTITUTION",
+    "detail": "secured party approved the substitution request"
+  }, {
+    "actor": "custodian",
+    "step": 8,
+    "state": "Approved",
+    "phase": "SUBSTITUTION",
+    "detail": "custodian approved the substitution request"
+  }, {
+    "actor": "provider",
+    "step": 9,
+    "state": "Blocked",
+    "phase": "CONTROL",
+    "detail": "provider attempted to confirm settlement without custodian authority and the request remained pending settlement"
+  }],
+  "currentEncumberedLotIds": ["sub-current-eib", "sub-current-kfw"],
+  "substitutionState": "PendingSettlement",
+  "custodianApproval": "ApprovalGranted",
+  "activeEncumberedLotIds": ["sub-current-kfw", "sub-current-eib"],
+  "replacementLotIds": ["sub-repl-fannie", "sub-repl-ust"],
+  "securedPartyApproval": "ApprovalGranted"
+}

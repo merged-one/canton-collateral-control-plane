@@ -1,0 +1,87 @@
+{
+  "releasedLotIds": ["sub-current-kfw", "sub-current-eib"],
+  "executionReports": [{
+    "eventStates": ["Closed"],
+    "outcome": "ExecutionCommitted",
+    "eventIds": ["corr-substitution-demo-001-substitution-settled"],
+    "summary": "substitution settled atomically with replacement encumbrances",
+    "workflowType": "SubstitutionWorkflow",
+    "reportId": "corr-substitution-demo-001-report"
+  }],
+  "executionReportCount": 1,
+  "obligationId": "substitution-positive-obligation",
+  "atomicityOutcome": "COMMITTED_ATOMICALLY",
+  "controlChecks": [{
+    "checkId": "APPROVAL_GATE_BLOCKED",
+    "status": "PASS",
+    "detail": "provider could not create a settlement intent until the required approvals were recorded"
+  }],
+  "scenarioId": "positive-substitution",
+  "steps": [{
+    "actor": "provider",
+    "step": 1,
+    "state": "Encumbered",
+    "phase": "BASELINE",
+    "detail": "provider started from an already pledged collateral set"
+  }, {
+    "actor": "provider",
+    "step": 2,
+    "state": "Draft",
+    "phase": "SUBSTITUTION",
+    "detail": "provider created the draft substitution request"
+  }, {
+    "actor": "provider",
+    "step": 3,
+    "state": "Submitted",
+    "phase": "SUBSTITUTION",
+    "detail": "provider submitted the substitution request"
+  }, {
+    "actor": "provider",
+    "step": 4,
+    "state": "UnderEvaluation",
+    "phase": "SUBSTITUTION",
+    "detail": "provider moved the substitution request into evaluation"
+  }, {
+    "actor": "provider",
+    "step": 5,
+    "state": "PendingApproval",
+    "phase": "SUBSTITUTION",
+    "detail": "provider recorded a feasible replacement set from the optimizer"
+  }, {
+    "actor": "provider",
+    "step": 6,
+    "state": "Blocked",
+    "phase": "CONTROL",
+    "detail": "provider could not create settlement intent before required approvals were recorded"
+  }, {
+    "actor": "secured-party",
+    "step": 7,
+    "state": "PendingApproval",
+    "phase": "SUBSTITUTION",
+    "detail": "secured party approved the substitution request"
+  }, {
+    "actor": "custodian",
+    "step": 8,
+    "state": "Approved",
+    "phase": "SUBSTITUTION",
+    "detail": "custodian approved the substitution request"
+  }, {
+    "actor": "provider",
+    "step": 9,
+    "state": "PendingSettlement",
+    "phase": "SETTLEMENT",
+    "detail": "provider submitted the approved settlement intent for the full replacement set"
+  }, {
+    "actor": "custodian",
+    "step": 10,
+    "state": "Closed",
+    "phase": "SETTLEMENT",
+    "detail": "custodian confirmed settlement and the outgoing encumbrances were replaced atomically"
+  }],
+  "currentEncumberedLotIds": ["sub-current-eib", "sub-current-kfw"],
+  "substitutionState": "Closed",
+  "custodianApproval": "ApprovalGranted",
+  "activeEncumberedLotIds": ["sub-repl-fannie", "sub-repl-ust"],
+  "replacementLotIds": ["sub-repl-fannie", "sub-repl-ust"],
+  "securedPartyApproval": "ApprovalGranted"
+}

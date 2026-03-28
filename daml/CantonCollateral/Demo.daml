@@ -9,6 +9,7 @@ import CantonCollateral.Obligation
 import CantonCollateral.Posting
 import CantonCollateral.Report
 import CantonCollateral.Roles
+import CantonCollateral.Substitution
 import CantonCollateral.Types
 
 data DemoSelectedLot = DemoSelectedLot
@@ -70,6 +71,49 @@ data MarginCallDemoResult = MarginCallDemoResult
     encumberedLotIds : [Text]
     executionReportCount : Int
     executionReports : [MarginCallDemoExecutionReport]
+    steps : [MarginCallDemoStep]
+  deriving (Eq, Show)
+
+data SubstitutionDemoInput = SubstitutionDemoInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    correlationId : Text
+    policyVersion : Text
+    snapshotId : Text
+    decisionReference : Text
+    requiredCoverage : Decimal
+    currentPostedLots : [DemoSelectedLot]
+    replacementLots : [DemoSelectedLot]
+    requiresSecuredPartyApproval : Bool
+    requiresCustodianApproval : Bool
+    atomicityRequired : Bool
+    simulateUnauthorizedReleaseAttempt : Bool
+    simulatePartialSettlementAttempt : Bool
+  deriving (Eq, Show)
+
+data SubstitutionDemoControlCheck = SubstitutionDemoControlCheck
+  with
+    checkId : Text
+    status : Text
+    detail : Text
+  deriving (Eq, Show)
+
+data SubstitutionDemoResult = SubstitutionDemoResult
+  with
+    scenarioId : Text
+    obligationId : Text
+    substitutionState : Text
+    securedPartyApproval : Text
+    custodianApproval : Text
+    currentEncumberedLotIds : [Text]
+    releasedLotIds : [Text]
+    replacementLotIds : [Text]
+    activeEncumberedLotIds : [Text]
+    atomicityOutcome : Text
+    executionReportCount : Int
+    executionReports : [MarginCallDemoExecutionReport]
+    controlChecks : [SubstitutionDemoControlCheck]
     steps : [MarginCallDemoStep]
   deriving (Eq, Show)
 
@@ -155,6 +199,12 @@ pledgedLotIds : [(ContractId EncumbranceState, EncumbranceState)] -> [Text]
 pledgedLotIds encumbrances =
   map (\(_, encumbrance) -> encumbrance.lotId) (
     filter (\(_, encumbrance) -> encumbrance.status == EncumbrancePledged) encumbrances
+  )
+
+releasedEncumbranceLotIds : [(ContractId EncumbranceState, EncumbranceState)] -> [Text]
+releasedEncumbranceLotIds encumbrances =
+  map (\(_, encumbrance) -> encumbrance.lotId) (
+    filter (\(_, encumbrance) -> encumbrance.status == EncumbranceReleased) encumbrances
   )
 
 marginCallDemoWorkflow : MarginCallDemoInput -> Script MarginCallDemoResult
@@ -289,4 +339,214 @@ marginCallDemoWorkflow input = script do
     encumberedLotIds = pledgedLotIds encumbrances
     executionReportCount = length reports
     executionReports = reportSummaries reports
+    steps = workflowSteps
+
+substitutionDemoWorkflow : SubstitutionDemoInput -> Script SubstitutionDemoResult
+substitutionDemoWorkflow input = script do
+  assertMsg "substitution demo requires at least one currently encumbered lot" (not (null input.currentPostedLots))
+  assertMsg "substitution demo requires at least one replacement lot" (not (null input.replacementLots))
+  assertMsg "substitution demo requires positive coverage" (input.requiredCoverage > 0.0)
+  assertMsg
+    "partial-settlement negative path requires multiple replacement lots"
+    (not input.simulatePartialSettlementAttempt || length input.replacementLots > 1)
+
+  operator <- allocateParty "DemoOperator"
+  provider <- allocateParty "CollateralProvider"
+  securedParty <- allocateParty "SecuredParty"
+  custodian <- allocateParty "Custodian"
+  now <- getTime
+
+  registerBaselineRoles operator provider securedParty custodian
+
+  let policyContext = PolicyContext with
+        policyVersion = input.policyVersion
+        snapshotId = input.snapshotId
+        decisionReference = input.decisionReference
+  let currentAllocations = map mkAllocationFromLot input.currentPostedLots
+  let replacementAllocations = map mkAllocationFromLot input.replacementLots
+  let currentLotIds = selectedDemoLotIds input.currentPostedLots
+  let replacementLotIdsList = selectedDemoLotIds input.replacementLots
+  let baseSteps =
+        [ MarginCallDemoStep with step = 1, phase = "BASELINE", actor = "provider", state = "Encumbered", detail = "provider started from an already pledged collateral set"
+        , MarginCallDemoStep with step = 2, phase = "SUBSTITUTION", actor = "provider", state = "Draft", detail = "provider created the draft substitution request"
+        , MarginCallDemoStep with step = 3, phase = "SUBSTITUTION", actor = "provider", state = "Submitted", detail = "provider submitted the substitution request"
+        , MarginCallDemoStep with step = 4, phase = "SUBSTITUTION", actor = "provider", state = "UnderEvaluation", detail = "provider moved the substitution request into evaluation"
+        , MarginCallDemoStep with step = 5, phase = "SUBSTITUTION", actor = "provider", state = "PendingApproval", detail = "provider recorded a feasible replacement set from the optimizer"
+        ]
+  let approvalSteps =
+        [ MarginCallDemoStep with step = 6, phase = "CONTROL", actor = "provider", state = "Blocked", detail = "provider could not create settlement intent before required approvals were recorded"
+        , MarginCallDemoStep with step = 7, phase = "SUBSTITUTION", actor = "secured-party", state = "PendingApproval", detail = "secured party approved the substitution request"
+        , MarginCallDemoStep with step = 8, phase = "SUBSTITUTION", actor = "custodian", state = "Approved", detail = "custodian approved the substitution request"
+        ]
+  let successSteps =
+        [ MarginCallDemoStep with step = 9, phase = "SETTLEMENT", actor = "provider", state = "PendingSettlement", detail = "provider submitted the approved settlement intent for the full replacement set"
+        , MarginCallDemoStep with step = 10, phase = "SETTLEMENT", actor = "custodian", state = "Closed", detail = "custodian confirmed settlement and the outgoing encumbrances were replaced atomically"
+        ]
+  let unauthorizedSteps =
+        [ MarginCallDemoStep with step = 9, phase = "CONTROL", actor = "provider", state = "Blocked", detail = "provider attempted to confirm settlement without custodian authority and the request remained pending settlement"
+        ]
+  let partialSteps =
+        [ MarginCallDemoStep with step = 9, phase = "CONTROL", actor = "provider", state = "Blocked", detail = "provider attempted to submit only part of the approved replacement set and atomicity enforcement rejected it"
+        ]
+
+  _ <- mapA
+    (\selectedLot -> submit provider do
+      createCmd CollateralInventoryLot with
+        lotId = selectedLot.lotId
+        owner = provider
+        custodian
+        visibilityObservers = [securedParty, custodian]
+        asset = mkAssetFromLot selectedLot
+        custodyAccount = selectedLot.custodyAccount
+        quantity = selectedLot.quantity
+        availableQuantity = selectedLot.quantity
+        controlMethod = "policy-approved-control"
+        provenance = "substitution demo inventory"
+        availabilityStart = now
+        availabilityEnd = None
+    )
+    (input.currentPostedLots ++ input.replacementLots)
+
+  encumbranceCids <- mapA
+    (\allocation -> submit provider do
+      createCmd EncumbranceState with
+        encumbranceId = input.correlationId <> "-current-" <> allocation.lotId
+        obligationId = input.obligationId
+        lotId = allocation.lotId
+        provider
+        securedParty
+        custodian
+        visibilityObservers = [securedParty, custodian]
+        quantity = allocation.quantity
+        status = EncumbrancePledged
+        policyContext
+        correlationId = input.correlationId <> "-baseline"
+    )
+    currentAllocations
+
+  draftSubstitutionCid <- submit provider do
+    createCmd SubstitutionRequest with
+      substitutionId = input.correlationId <> "-substitution"
+      obligationId = input.obligationId
+      provider
+      securedParty
+      custodian
+      visibilityObservers = [securedParty, custodian]
+      policyContext
+      encumbrancesToRelease = encumbranceCids
+      replacementLots = replacementAllocations
+      expiryAt = now
+      correlationId = input.correlationId
+      state = Draft
+      requiresSecuredPartyApproval = input.requiresSecuredPartyApproval
+      requiresCustodianApproval = input.requiresCustodianApproval
+      securedPartyApproval = if input.requiresSecuredPartyApproval then ApprovalPending else ApprovalGranted
+      custodianApproval = if input.requiresCustodianApproval then ApprovalPending else ApprovalGranted
+      decisionSummary = "draft substitution request created from optimizer-selected replacement lots"
+      rejectionReason = ""
+      atomicityRequired = input.atomicityRequired
+      settlementInstructionCid = None
+
+  submittedSubstitutionCid <- submit provider do
+    exerciseCmd draftSubstitutionCid SubmitSubstitutionRequest
+
+  evaluationSubstitutionCid <- submit provider do
+    exerciseCmd submittedSubstitutionCid StartSubstitutionEvaluation
+
+  feasibleSubstitutionCid <- submit provider do
+    exerciseCmd evaluationSubstitutionCid $
+      RecordFeasibleSubstitution with
+        nextDecisionSummary = "optimizer-selected replacement lots preserve the required lendable-value coverage"
+
+  approvalGateChecks <-
+    if input.requiresSecuredPartyApproval || input.requiresCustodianApproval then do
+      submitMustFail provider do
+        exerciseCmd feasibleSubstitutionCid $
+          SubmitSubstitutionSettlementIntent with settlementLots = replacementAllocations
+      pure
+        [ SubstitutionDemoControlCheck with
+            checkId = "APPROVAL_GATE_BLOCKED"
+            status = "PASS"
+            detail = "provider could not create a settlement intent until the required approvals were recorded"
+        ]
+    else pure []
+
+  afterSecuredPartyApprovalCid <-
+    if input.requiresSecuredPartyApproval then
+      submit securedParty do
+        exerciseCmd feasibleSubstitutionCid ApproveSubstitutionBySecuredParty
+    else pure feasibleSubstitutionCid
+
+  afterCustodianApprovalCid <-
+    if input.requiresCustodianApproval then
+      submit custodian do
+        exerciseCmd afterSecuredPartyApprovalCid ApproveSubstitutionByCustodian
+    else pure afterSecuredPartyApprovalCid
+
+  approvedSubstitution <- expectActiveContract provider afterCustodianApprovalCid "approved substitution should remain visible to the provider"
+
+  let authorizedSettlementLots = replacementAllocations
+  let partialSettlementLots =
+        case replacementAllocations of
+          allocation :: _ -> [allocation]
+          [] -> []
+
+  (finalSubstitutionCid, controlChecks, workflowSteps) <-
+    if input.simulatePartialSettlementAttempt then do
+      submitMustFail provider do
+        exerciseCmd afterCustodianApprovalCid $
+          SubmitSubstitutionSettlementIntent with settlementLots = partialSettlementLots
+      pure
+        ( afterCustodianApprovalCid
+        , approvalGateChecks
+              ++ [ SubstitutionDemoControlCheck with
+                    checkId = "PARTIAL_SUBSTITUTION_BLOCKED"
+                    status = "PASS"
+                    detail = "the workflow rejected the partial replacement set because atomicity was required"
+                 ]
+        , baseSteps ++ approvalSteps ++ partialSteps
+        )
+    else do
+      pendingSettlementCid <-
+        if approvedSubstitution.state == PendingSettlement then pure afterCustodianApprovalCid else
+          submit provider do
+            exerciseCmd afterCustodianApprovalCid $
+              SubmitSubstitutionSettlementIntent with settlementLots = authorizedSettlementLots
+      if input.simulateUnauthorizedReleaseAttempt then do
+        submitMustFail provider do
+          exerciseCmd pendingSettlementCid ConfirmSubstitutionSettlement
+        pure
+          ( pendingSettlementCid
+          , approvalGateChecks
+              ++ [ SubstitutionDemoControlCheck with
+                    checkId = "UNAUTHORIZED_RELEASE_BLOCKED"
+                    status = "PASS"
+                    detail = "the workflow blocked the provider from confirming settlement or releasing encumbrances without custodian authority"
+                 ]
+          , baseSteps ++ approvalSteps ++ unauthorizedSteps
+          )
+      else do
+        closedSubstitutionCid <- submit custodian do
+          exerciseCmd pendingSettlementCid ConfirmSubstitutionSettlement
+        pure (closedSubstitutionCid, approvalGateChecks, baseSteps ++ approvalSteps ++ successSteps)
+
+  finalSubstitution <- expectActiveContract provider finalSubstitutionCid "final substitution request should remain visible to the provider"
+  reports <- query @ExecutionReportRecord provider
+  encumbrances <- query @EncumbranceState provider
+
+  pure SubstitutionDemoResult with
+    scenarioId = input.scenarioId
+    obligationId = input.obligationId
+    substitutionState = show finalSubstitution.state
+    securedPartyApproval = show finalSubstitution.securedPartyApproval
+    custodianApproval = show finalSubstitution.custodianApproval
+    currentEncumberedLotIds = currentLotIds
+    releasedLotIds = releasedEncumbranceLotIds encumbrances
+    replacementLotIds = replacementLotIdsList
+    activeEncumberedLotIds = pledgedLotIds encumbrances
+    atomicityOutcome =
+      if finalSubstitution.state == Closed then "COMMITTED_ATOMICALLY" else "BLOCKED_ATOMICALLY"
+    executionReportCount = length reports
+    executionReports = reportSummaries reports
+    controlChecks = controlChecks
     steps = workflowSteps

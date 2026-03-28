@@ -43,6 +43,8 @@ def optimize_collateral(
 ) -> dict[str, Any]:
     _validate_obligation_shape(obligation)
     _validate_request_consistency(inventory, obligation)
+    substitution_request = _substitution_request(obligation)
+    must_replace_lot_ids = _must_replace_lot_ids(obligation)
 
     screened = screen_inventory(policy, inventory)
     lot_by_id = {
@@ -115,16 +117,36 @@ def optimize_collateral(
     feasible_combination_count = 0
     considered_combination_count = 0
     global_blocking_codes = [reason["code"] for reason in screened["portfolioReasons"]]
+    search_failure_reason_codes = set(global_blocking_codes)
+    considered_replacement_portfolios = 0
 
     if not global_blocking_codes:
         for size in range(1, len(admissible_lot_ids) + 1):
             for subset in combinations(admissible_lot_ids, size):
                 considered_combination_count += 1
+                candidate_lot_ids = list(subset)
+                if _retains_must_replace_lots(candidate_lot_ids, must_replace_lot_ids):
+                    traces.append(
+                        _trace_entry(
+                            step=step,
+                            stage="SEARCH",
+                            outcome="BLOCKED_BY_SCOPE",
+                            message=(
+                                "Rejected the subset because it retains one or more lots that the substitution request requires to be released."
+                            ),
+                            lot_ids=sorted(candidate_lot_ids),
+                            reason_codes=["SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"],
+                        )
+                    )
+                    step += 1
+                    continue
+
+                considered_replacement_portfolios += 1
                 candidate_portfolio = _evaluate_portfolio(
                     policy,
                     inventory,
                     obligation,
-                    list(subset),
+                    candidate_lot_ids,
                     lot_by_id,
                     screened_result_by_id,
                     screened["portfolioReasons"],
@@ -142,6 +164,10 @@ def optimize_collateral(
                         outcome = "NEW_INCUMBENT"
                     else:
                         outcome = "FEASIBLE_BUT_INFERIOR"
+                elif candidate_portfolio["blockingReasonCodes"]:
+                    search_failure_reason_codes.update(
+                        candidate_portfolio["blockingReasonCodes"]
+                    )
 
                 traces.append(
                     _trace_entry(
@@ -172,13 +198,25 @@ def optimize_collateral(
         )
         step += 1
 
+    if (
+        substitution_request is not None
+        and considered_replacement_portfolios == 0
+        and not search_failure_reason_codes
+    ):
+        search_failure_reason_codes.add("SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED")
+
     (
         status,
         recommended_action,
         recommended_portfolio,
         substitution_recommendation,
         final_reason_codes,
-    ) = _select_recommendation(best_portfolio, current_portfolio)
+    ) = _select_recommendation(
+        best_portfolio,
+        current_portfolio,
+        substitution_request=substitution_request,
+        search_failure_reason_codes=sorted(search_failure_reason_codes),
+    )
 
     traces.append(
         _trace_entry(
@@ -234,6 +272,15 @@ def optimize_collateral(
             "coverageMetric": obligation.get("coverageMetric", "LENDABLE_VALUE"),
             "obligationAmount": _json_number(obligation_amount),
             "currentPostedLotIds": current_posted_lot_ids,
+            "substitutionRequest": (
+                None
+                if substitution_request is None
+                else {
+                    "requestId": substitution_request["requestId"],
+                    "mustReplaceLotIds": must_replace_lot_ids,
+                    "atomicityRequired": substitution_request["atomicityRequired"],
+                }
+            ),
         },
         "candidateUniverse": {
             "candidateLotCount": len(candidate_universe),
@@ -294,6 +341,38 @@ def _validate_obligation_shape(obligation: dict[str, Any]) -> None:
     if not isinstance(current_posted, list):
         raise OptimizationInputError("currentPostedLotIds must be an array when present")
 
+    substitution_request = _substitution_request(obligation)
+    if substitution_request is None:
+        return
+
+    required_request_fields = [
+        "requestId",
+        "mustReplaceLotIds",
+        "atomicityRequired",
+    ]
+    for field in required_request_fields:
+        if field not in substitution_request:
+            raise OptimizationInputError(
+                f"substitutionRequest is missing required field {field!r}"
+            )
+
+    if not substitution_request["requestId"]:
+        raise OptimizationInputError("substitutionRequest.requestId must be non-empty")
+
+    must_replace = substitution_request["mustReplaceLotIds"]
+    if not isinstance(must_replace, list) or not must_replace:
+        raise OptimizationInputError(
+            "substitutionRequest.mustReplaceLotIds must be a non-empty array"
+        )
+    if len(must_replace) != len(set(must_replace)):
+        raise OptimizationInputError(
+            "substitutionRequest.mustReplaceLotIds must not contain duplicates"
+        )
+    if not isinstance(substitution_request["atomicityRequired"], bool):
+        raise OptimizationInputError(
+            "substitutionRequest.atomicityRequired must be a boolean"
+        )
+
 
 def _validate_request_consistency(
     inventory: dict[str, Any],
@@ -320,6 +399,29 @@ def _validate_request_consistency(
         raise OptimizationInputError(
             "currentPostedLotIds references unknown inventory lots: "
             + ", ".join(unknown_current_ids)
+        )
+
+    substitution_request = _substitution_request(obligation)
+    if substitution_request is None:
+        return
+
+    unknown_must_replace = sorted(
+        set(substitution_request["mustReplaceLotIds"]) - set(lot_ids)
+    )
+    if unknown_must_replace:
+        raise OptimizationInputError(
+            "substitutionRequest.mustReplaceLotIds references unknown inventory lots: "
+            + ", ".join(unknown_must_replace)
+        )
+
+    missing_from_current = sorted(
+        set(substitution_request["mustReplaceLotIds"])
+        - set(obligation.get("currentPostedLotIds", []))
+    )
+    if missing_from_current:
+        raise OptimizationInputError(
+            "substitutionRequest.mustReplaceLotIds must be a subset of currentPostedLotIds: "
+            + ", ".join(missing_from_current)
         )
 
 
@@ -416,35 +518,63 @@ def _evaluate_portfolio(
 def _select_recommendation(
     best_portfolio: dict[str, Any] | None,
     current_portfolio: dict[str, Any] | None,
+    *,
+    substitution_request: dict[str, Any] | None,
+    search_failure_reason_codes: list[str],
 ) -> tuple[str, str, dict[str, Any] | None, dict[str, Any], list[str]]:
+    must_replace_lot_ids = [] if substitution_request is None else sorted(
+        substitution_request["mustReplaceLotIds"]
+    )
+    atomicity_required = (
+        False
+        if substitution_request is None
+        else substitution_request["atomicityRequired"]
+    )
+    request_id = None if substitution_request is None else substitution_request["requestId"]
+
+    def recommendation_for(
+        current_lot_ids: list[str],
+        recommended_lot_ids: list[str],
+        *,
+        improves_objective: bool,
+    ) -> dict[str, Any]:
+        return {
+            "requestId": request_id,
+            "atomicityRequired": atomicity_required,
+            "mustReplaceLotIds": must_replace_lot_ids,
+            "currentPostedLotIds": current_lot_ids,
+            "recommendedLotIds": recommended_lot_ids,
+            "retainedLotIds": sorted(
+                set(current_lot_ids).intersection(recommended_lot_ids)
+            ),
+            "removeLotIds": sorted(set(current_lot_ids) - set(recommended_lot_ids)),
+            "addLotIds": sorted(set(recommended_lot_ids) - set(current_lot_ids)),
+            "improvesObjective": improves_objective,
+        }
+
     if best_portfolio is None:
         current_lot_ids = [] if current_portfolio is None else current_portfolio["lotIds"]
         return (
             "NO_SOLUTION",
             "NO_SOLUTION",
             None,
-            {
-                "currentPostedLotIds": current_lot_ids,
-                "recommendedLotIds": [],
-                "removeLotIds": current_lot_ids,
-                "addLotIds": [],
-                "improvesObjective": False,
-            },
-            [] if current_portfolio is None else current_portfolio["blockingReasonCodes"],
+            recommendation_for(
+                current_lot_ids,
+                [],
+                improves_objective=False,
+            ),
+            (
+                search_failure_reason_codes
+                or ([] if current_portfolio is None else current_portfolio["blockingReasonCodes"])
+            ),
         )
 
     if current_portfolio is None:
         return (
             "OPTIMAL",
-            "POST_NEW_SET",
+            "SUBSTITUTE" if substitution_request is not None else "POST_NEW_SET",
             best_portfolio,
-            {
-                "currentPostedLotIds": [],
-                "recommendedLotIds": best_portfolio["lotIds"],
-                "removeLotIds": [],
-                "addLotIds": best_portfolio["lotIds"],
-                "improvesObjective": True,
-            },
+            recommendation_for([], best_portfolio["lotIds"], improves_objective=True),
             [],
         )
 
@@ -453,18 +583,28 @@ def _select_recommendation(
             "OPTIMAL",
             "SUBSTITUTE",
             best_portfolio,
-            {
-                "currentPostedLotIds": current_portfolio["lotIds"],
-                "recommendedLotIds": best_portfolio["lotIds"],
-                "removeLotIds": sorted(
-                    set(current_portfolio["lotIds"]) - set(best_portfolio["lotIds"])
-                ),
-                "addLotIds": sorted(
-                    set(best_portfolio["lotIds"]) - set(current_portfolio["lotIds"])
-                ),
-                "improvesObjective": True,
-            },
+            recommendation_for(
+                current_portfolio["lotIds"],
+                best_portfolio["lotIds"],
+                improves_objective=True,
+            ),
             current_portfolio["blockingReasonCodes"],
+        )
+
+    if substitution_request is not None:
+        return (
+            "OPTIMAL",
+            "SUBSTITUTE",
+            best_portfolio,
+            recommendation_for(
+                current_portfolio["lotIds"],
+                best_portfolio["lotIds"],
+                improves_objective=(
+                    _economic_vector(best_portfolio["objectiveVector"])
+                    < _economic_vector(current_portfolio["objectiveVector"])
+                ),
+            ),
+            [],
         )
 
     if current_portfolio["lotIds"] == best_portfolio["lotIds"]:
@@ -472,13 +612,11 @@ def _select_recommendation(
             "OPTIMAL",
             "KEEP_CURRENT_POSTED_SET",
             current_portfolio,
-            {
-                "currentPostedLotIds": current_portfolio["lotIds"],
-                "recommendedLotIds": current_portfolio["lotIds"],
-                "removeLotIds": [],
-                "addLotIds": [],
-                "improvesObjective": False,
-            },
+            recommendation_for(
+                current_portfolio["lotIds"],
+                current_portfolio["lotIds"],
+                improves_objective=False,
+            ),
             [],
         )
 
@@ -489,13 +627,11 @@ def _select_recommendation(
             "OPTIMAL",
             "KEEP_CURRENT_POSTED_SET",
             current_portfolio,
-            {
-                "currentPostedLotIds": current_portfolio["lotIds"],
-                "recommendedLotIds": current_portfolio["lotIds"],
-                "removeLotIds": [],
-                "addLotIds": [],
-                "improvesObjective": False,
-            },
+            recommendation_for(
+                current_portfolio["lotIds"],
+                current_portfolio["lotIds"],
+                improves_objective=False,
+            ),
             [],
         )
 
@@ -503,19 +639,31 @@ def _select_recommendation(
         "OPTIMAL",
         "SUBSTITUTE",
         best_portfolio,
-        {
-            "currentPostedLotIds": current_portfolio["lotIds"],
-            "recommendedLotIds": best_portfolio["lotIds"],
-            "removeLotIds": sorted(
-                set(current_portfolio["lotIds"]) - set(best_portfolio["lotIds"])
-            ),
-            "addLotIds": sorted(
-                set(best_portfolio["lotIds"]) - set(current_portfolio["lotIds"])
-            ),
-            "improvesObjective": True,
-        },
+        recommendation_for(
+            current_portfolio["lotIds"],
+            best_portfolio["lotIds"],
+            improves_objective=True,
+        ),
         [],
     )
+
+
+def _substitution_request(obligation: dict[str, Any]) -> dict[str, Any] | None:
+    return obligation.get("substitutionRequest")
+
+
+def _must_replace_lot_ids(obligation: dict[str, Any]) -> list[str]:
+    substitution_request = _substitution_request(obligation)
+    if substitution_request is None:
+        return []
+    return sorted(substitution_request["mustReplaceLotIds"])
+
+
+def _retains_must_replace_lots(
+    candidate_lot_ids: list[str],
+    must_replace_lot_ids: list[str],
+) -> bool:
+    return bool(set(candidate_lot_ids).intersection(must_replace_lot_ids))
 
 
 def _blocking_reason_codes(

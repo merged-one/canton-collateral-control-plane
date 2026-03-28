@@ -2,8 +2,8 @@
   "$schema": "../../reports/schemas/execution-report.schema.json",
   "reportType": "ExecutionReport",
   "reportVersion": "0.1.0",
-  "executionId": "exr-9211935147c23ab9",
-  "generatedAt": "2026-03-28T22:38:36Z",
+  "executionId": "exr-763400d6e09fb191",
+  "generatedAt": "2026-03-28T23:40:48Z",
   "overallStatus": "PASS",
   "demo": {
     "demoId": "margin-call-prototype",
@@ -200,8 +200,9 @@
       "mode": "NEGATIVE",
       "description": "All lots are individually eligible, but the lendable total remains below the required call amount.",
       "result": "EXPECTED_FAILURE",
-      "summary": "Policy evaluation stayed admissible at the lot level, but optimization ended with NO_SOLUTION and reason codes INSUFFICIENT_LENDABLE_VALUE.",
+      "summary": "Policy evaluation stayed admissible at the lot level, but optimization ended with NO_SOLUTION and reason codes CONCENTRATION_LIMIT_BREACH, INSUFFICIENT_LENDABLE_VALUE.",
       "observedReasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
         "INSUFFICIENT_LENDABLE_VALUE"
       ],
       "expectedReasonCodes": [
@@ -247,8 +248,8 @@
       "scenarioId": "positive-margin-call",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:32Z",
-      "finishedAt": "2026-03-28T22:38:32Z",
+      "startedAt": "2026-03-28T23:40:45Z",
+      "finishedAt": "2026-03-28T23:40:45Z",
       "artifactPath": "reports/generated/positive-margin-call-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for positive scenario with overall decision ACCEPT."
     },
@@ -258,8 +259,8 @@
       "scenarioId": "positive-margin-call",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:32Z",
-      "finishedAt": "2026-03-28T22:38:33Z",
+      "startedAt": "2026-03-28T23:40:45Z",
+      "finishedAt": "2026-03-28T23:40:45Z",
       "artifactPath": "reports/generated/positive-margin-call-optimization-report.json",
       "detail": "Optimized collateral for scenario positive-margin-call with recommendation POST_NEW_SET."
     },
@@ -269,8 +270,8 @@
       "scenarioId": "positive-margin-call",
       "phase": "WORKFLOW",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:33Z",
-      "finishedAt": "2026-03-28T22:38:35Z",
+      "startedAt": "2026-03-28T23:40:45Z",
+      "finishedAt": "2026-03-28T23:40:47Z",
       "artifactPath": "reports/generated/positive-margin-call-workflow-result.json",
       "detail": "Recorded the Daml margin-call and posting path for scenario positive-margin-call."
     },
@@ -280,8 +281,8 @@
       "scenarioId": "negative-ineligible-asset",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:35Z",
-      "finishedAt": "2026-03-28T22:38:35Z",
+      "startedAt": "2026-03-28T23:40:47Z",
+      "finishedAt": "2026-03-28T23:40:47Z",
       "artifactPath": "reports/generated/negative-ineligible-asset-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
     },
@@ -291,8 +292,8 @@
       "scenarioId": "negative-insufficient-lendable-value",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:35Z",
-      "finishedAt": "2026-03-28T22:38:36Z",
+      "startedAt": "2026-03-28T23:40:47Z",
+      "finishedAt": "2026-03-28T23:40:47Z",
       "artifactPath": "reports/generated/negative-insufficient-lendable-value-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for negative scenario with overall decision ACCEPT."
     },
@@ -302,8 +303,8 @@
       "scenarioId": "negative-insufficient-lendable-value",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:36Z",
-      "finishedAt": "2026-03-28T22:38:36Z",
+      "startedAt": "2026-03-28T23:40:47Z",
+      "finishedAt": "2026-03-28T23:40:47Z",
       "artifactPath": "reports/generated/negative-insufficient-lendable-value-optimization-report.json",
       "detail": "Optimized collateral for scenario negative-insufficient-lendable-value with recommendation NO_SOLUTION."
     },
@@ -313,8 +314,8 @@
       "scenarioId": "negative-expired-policy-window",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-28T22:38:36Z",
-      "finishedAt": "2026-03-28T22:38:36Z",
+      "startedAt": "2026-03-28T23:40:47Z",
+      "finishedAt": "2026-03-28T23:40:48Z",
       "artifactPath": "reports/generated/negative-expired-policy-window-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
     }

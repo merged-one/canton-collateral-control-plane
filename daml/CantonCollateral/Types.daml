@@ -101,6 +101,45 @@ totalAllocatedQuantity : [LotAllocation] -> Decimal
 totalAllocatedQuantity [] = 0.0
 totalAllocatedQuantity (allocation :: rest) = allocation.quantity + totalAllocatedQuantity rest
 
+containsText : Text -> [Text] -> Bool
+containsText target values =
+  case values of
+    [] -> False
+    value :: rest -> value == target || containsText target rest
+
+allocationSignature : LotAllocation -> Text
+allocationSignature allocation =
+  allocation.lotId
+    <> "|"
+    <> allocation.assetId
+    <> "|"
+    <> show allocation.quantity
+    <> "|"
+    <> allocation.sourceAccount
+    <> "|"
+    <> allocation.destinationAccount
+
+containsAllocationSignature : Text -> [LotAllocation] -> Bool
+containsAllocationSignature target allocations =
+  case allocations of
+    [] -> False
+    allocation :: rest ->
+      allocationSignature allocation == target
+        || containsAllocationSignature target rest
+
+sameAllocationScope : [LotAllocation] -> [LotAllocation] -> Bool
+sameAllocationScope expected actual =
+  length expected == length actual
+    && allAllocationSignaturesPresent expected actual
+
+allAllocationSignaturesPresent : [LotAllocation] -> [LotAllocation] -> Bool
+allAllocationSignaturesPresent expected actual =
+  case expected of
+    [] -> True
+    allocation :: rest ->
+      containsAllocationSignature (allocationSignature allocation) actual
+        && allAllocationSignaturesPresent rest actual
+
 requireSome : Text -> Optional a -> a
 requireSome message value =
   case value of

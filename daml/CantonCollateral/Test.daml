@@ -156,6 +156,21 @@ postingAndSubstitutionLifecycleTest = script do
       availabilityStart = now
       availabilityEnd = None
 
+  _ <- submit provider do
+    createCmd CollateralInventoryLot with
+      lotId = "lot-substitute-002"
+      owner = provider
+      custodian
+      visibilityObservers = [custodian]
+      asset = testAsset
+      custodyAccount = "acct-provider-1"
+      quantity = 150.0
+      availableQuantity = 150.0
+      controlMethod = "custody-control"
+      provenance = "replacement inventory"
+      availabilityStart = now
+      availabilityEnd = None
+
   postingDraftCid <- submit provider do
     createCmd CollateralPostingIntent with
       postingId = "posting-001"
@@ -200,6 +215,9 @@ postingAndSubstitutionLifecycleTest = script do
 
   (postedEncumbranceCid, _) <- findEncumbranceByLot provider "lot-post-001" EncumbrancePledged
 
+  submitMustFail provider do
+    exerciseCmd postedEncumbranceCid MarkPendingRelease
+
   substitutionDraftCid <- submit provider do
     createCmd SubstitutionRequest with
       substitutionId = "sub-001"
@@ -210,7 +228,10 @@ postingAndSubstitutionLifecycleTest = script do
       visibilityObservers = [securedParty, custodian]
       policyContext = testPolicyContext
       encumbrancesToRelease = [postedEncumbranceCid]
-      replacementLots = [lotAllocation "lot-substitute-001" 100.0 "acct-provider-1" "acct-secured-1"]
+      replacementLots =
+        [ lotAllocation "lot-substitute-001" 60.0 "acct-provider-1" "acct-secured-1"
+        , lotAllocation "lot-substitute-002" 40.0 "acct-provider-1" "acct-secured-1"
+        ]
       expiryAt = now
       correlationId = "corr-sub-001"
       state = Draft
@@ -220,6 +241,7 @@ postingAndSubstitutionLifecycleTest = script do
       custodianApproval = ApprovalPending
       decisionSummary = "draft substitution request"
       rejectionReason = ""
+      atomicityRequired = True
       settlementInstructionCid = None
 
   substitutionSubmittedCid <- submit provider do
@@ -238,7 +260,12 @@ postingAndSubstitutionLifecycleTest = script do
     exerciseCmd substitutionPendingApprovalCid2 ApproveSubstitutionByCustodian
 
   substitutionPendingSettlementCid <- submit provider do
-    exerciseCmd substitutionApprovedCid SubmitSubstitutionSettlementIntent
+    exerciseCmd substitutionApprovedCid $
+      SubmitSubstitutionSettlementIntent with
+        settlementLots =
+          [ lotAllocation "lot-substitute-001" 60.0 "acct-provider-1" "acct-secured-1"
+          , lotAllocation "lot-substitute-002" 40.0 "acct-provider-1" "acct-secured-1"
+          ]
 
   substitutionClosedCid <- submit custodian do
     exerciseCmd substitutionPendingSettlementCid ConfirmSubstitutionSettlement
@@ -247,7 +274,8 @@ postingAndSubstitutionLifecycleTest = script do
   assertMsg "substitution should be closed after settlement" (substitutionClosed.state == Closed)
 
   _ <- findEncumbranceByLot provider "lot-post-001" EncumbranceReleased
-  (replacementEncumbranceCid, _) <- findEncumbranceByLot provider "lot-substitute-001" EncumbrancePledged
+  _ <- findEncumbranceByLot provider "lot-substitute-001" EncumbrancePledged
+  (replacementEncumbranceCid, _) <- findEncumbranceByLot provider "lot-substitute-002" EncumbrancePledged
 
   rejectedSubstitutionDraftCid <- submit provider do
     createCmd SubstitutionRequest with
@@ -269,6 +297,7 @@ postingAndSubstitutionLifecycleTest = script do
       custodianApproval = ApprovalGranted
       decisionSummary = "draft rejection test"
       rejectionReason = ""
+      atomicityRequired = True
       settlementInstructionCid = None
 
   rejectedSubstitutionSubmittedCid <- submit provider do

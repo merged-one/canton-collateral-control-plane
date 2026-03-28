@@ -234,7 +234,8 @@
         "settlementCurrency",
         "coverageMetric",
         "obligationAmount",
-        "currentPostedLotIds"
+        "currentPostedLotIds",
+        "substitutionRequest"
       ],
       "properties": {
         "obligationId": {
@@ -261,6 +262,44 @@
             "$ref": "#/$defs/identifier"
           },
           "uniqueItems": true
+        },
+        "substitutionRequest": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/substitutionRequest"
+            }
+          ]
+        }
+      }
+    },
+    "substitutionRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "requestId",
+        "mustReplaceLotIds",
+        "atomicityRequired"
+      ],
+      "properties": {
+        "requestId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "mustReplaceLotIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "atomicityRequired": {
+          "type": "boolean"
         }
       }
     },
@@ -598,13 +637,41 @@
       "type": "object",
       "additionalProperties": false,
       "required": [
+        "requestId",
+        "atomicityRequired",
+        "mustReplaceLotIds",
         "currentPostedLotIds",
         "recommendedLotIds",
+        "retainedLotIds",
         "removeLotIds",
         "addLotIds",
         "improvesObjective"
       ],
       "properties": {
+        "requestId": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/identifier"
+            }
+          ]
+        },
+        "atomicityRequired": {
+          "type": "boolean"
+        },
+        "mustReplaceLotIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
         "currentPostedLotIds": {
           "type": "array",
           "items": {
@@ -613,6 +680,13 @@
           "uniqueItems": true
         },
         "recommendedLotIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          },
+          "uniqueItems": true
+        },
+        "retainedLotIds": {
           "type": "array",
           "items": {
             "$ref": "#/$defs/identifier"

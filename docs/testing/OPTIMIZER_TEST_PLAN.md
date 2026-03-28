@@ -11,6 +11,7 @@ The first optimizer test suite must prove:
 - best-to-post selection under a published policy and obligation amount
 - concentration-aware portfolio selection
 - substitution recommendation against an existing posted set
+- forced replacement of declared encumbered lots when a substitution request scopes the release set
 - clean no-solution handling
 - deterministic repeatability for identical inputs
 
@@ -29,9 +30,11 @@ make test-optimizer
    Use a portfolio where the lowest-cost same-issuer solution is blocked and a diversified set becomes optimal.
 3. Substitution improves the objective while preserving compliance.
    Start from a feasible current posted set and show the optimizer recommends a lower-cost replacement.
-4. No solution case is handled cleanly.
+4. Request-scoped substitution can force release of incumbent lots.
+   Start from a current posted set that remains feasible, declare `mustReplaceLotIds`, and show the optimizer recommends a valid replacement set instead of keeping the incumbent set.
+5. No solution case is handled cleanly.
    Show the optimizer emits `NO_SOLUTION` with explicit blocking reason codes instead of raising an unstructured error.
-5. Determinism.
+6. Determinism.
    Run the same optimization twice and require byte-equivalent report objects before serialization.
 
 ## Validation Expectations
@@ -39,6 +42,7 @@ make test-optimizer
 - `make test-optimizer` must run the Python unit suite under `test/optimizer/`
 - the target must regenerate at least one committed optimization report artifact through the real CLI path
 - the generated report must validate against [reports/schemas/optimization-report.schema.json](../../reports/schemas/optimization-report.schema.json)
+- substitution-request fields such as `mustReplaceLotIds` and `atomicityRequired` must appear in the machine-readable report when present on the obligation input
 - policy-engine tests remain in place because optimizer correctness depends on stable policy semantics
 
 ## Deferred Coverage

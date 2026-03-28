@@ -57,12 +57,13 @@ template SubstitutionRequest
     custodianApproval : ApprovalDecision
     decisionSummary : Text
     rejectionReason : Text
+    atomicityRequired : Bool
     settlementInstructionCid : Optional (ContractId SettlementInstruction)
   where
     signatory provider
     observer visibilityObservers
 
-    ensure totalAllocatedQuantity replacementLots > 0.0
+    ensure not (null encumbrancesToRelease) && totalAllocatedQuantity replacementLots > 0.0
 
     choice SubmitSubstitutionRequest : ContractId SubstitutionRequest
       controller provider
@@ -142,10 +143,16 @@ template SubstitutionRequest
           custodianApproval = ApprovalRejected
 
     choice SubmitSubstitutionSettlementIntent : ContractId SubstitutionRequest
+      with
+        settlementLots : [LotAllocation]
       controller provider
       do
         assertMsg "substitution must be approved before settlement intent" (state == Approved)
-        instructionCid <- create (mkSettlementInstruction provider provider securedParty custodian visibilityObservers SubstitutionWorkflow ReplaceCollateral obligationId correlationId replacementLots policyContext "substitution settlement intent created after approvals")
+        assertMsg "substitution settlement intent must include at least one replacement lot" (totalAllocatedQuantity settlementLots > 0.0)
+        assertMsg
+          "partial substitution settlement is forbidden when atomicity is required"
+          (not atomicityRequired || sameAllocationScope replacementLots settlementLots)
+        instructionCid <- create (mkSettlementInstruction provider provider securedParty custodian visibilityObservers SubstitutionWorkflow ReplaceCollateral obligationId correlationId settlementLots policyContext "substitution settlement intent created after approvals")
         create this with
           state = PendingSettlement
           settlementInstructionCid = Some instructionCid

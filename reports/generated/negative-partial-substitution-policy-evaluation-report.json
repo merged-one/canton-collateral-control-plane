@@ -1,0 +1,238 @@
+{
+  "$schema": "../../reports/schemas/policy-evaluation-report.schema.json",
+  "reportType": "PolicyEvaluationReport",
+  "reportVersion": "0.1.0",
+  "evaluationId": "per-2fcbb87d2aabab7d",
+  "overallDecision": "ACCEPT",
+  "policy": {
+    "policyId": "substitution-atomic-control-policy",
+    "policyVersion": "1.1.0",
+    "cplVersion": "0.1.0",
+    "profile": "central_bank"
+  },
+  "inventory": {
+    "inventorySetId": "substitution-positive-inventory",
+    "inventoryVersion": "1.0.0",
+    "asOf": "2026-04-16T14:00:00Z",
+    "settlementCurrency": "USD",
+    "valuationCurrency": "USD",
+    "candidateLotCount": 4
+  },
+  "summary": {
+    "candidateLotCount": 4,
+    "decisionCounts": {
+      "eligible": 4,
+      "ineligible": 0,
+      "escalate": 0,
+      "review": 0
+    },
+    "totalMarketValue": 975000.0,
+    "totalLendableValue": 919250.0,
+    "concentrationIssueCount": 0
+  },
+  "portfolioReasons": [],
+  "assetResults": [
+    {
+      "lotId": "sub-current-eib",
+      "assetId": "sub-current-eib-asset",
+      "decision": "ELIGIBLE",
+      "assetClass": "SUPRANATIONAL_BOND",
+      "issueType": "SUPRANATIONAL",
+      "issuerId": "eib",
+      "issuerType": "SUPRANATIONAL",
+      "issuerGroupIds": [
+        "eib-group"
+      ],
+      "longTermRating": "AAA",
+      "collateralCurrency": "USD",
+      "issuanceJurisdiction": "FR",
+      "riskJurisdiction": "FR",
+      "custodianId": "euroclear-bank",
+      "custodyJurisdiction": "BE",
+      "accountType": "THIRD_PARTY_CUSTODY",
+      "residualMaturityDays": 900,
+      "marketValue": 250000.0,
+      "valuationBasisValue": 250000.0,
+      "baseHaircutBps": 700,
+      "currencyMismatchHaircutBps": 0,
+      "totalHaircutBps": 700,
+      "matchedHaircutRuleIds": [
+        "agency-and-supranational"
+      ],
+      "appliedHaircutRuleIds": [
+        "agency-and-supranational"
+      ],
+      "lendableValue": 232500.0,
+      "reasons": []
+    },
+    {
+      "lotId": "sub-current-kfw",
+      "assetId": "sub-current-kfw-asset",
+      "decision": "ELIGIBLE",
+      "assetClass": "AGENCY_BOND",
+      "issueType": "AGENCY",
+      "issuerId": "kfw",
+      "issuerType": "AGENCY",
+      "issuerGroupIds": [
+        "kfw-group"
+      ],
+      "longTermRating": "AAA",
+      "collateralCurrency": "USD",
+      "issuanceJurisdiction": "DE",
+      "riskJurisdiction": "DE",
+      "custodianId": "euroclear-bank",
+      "custodyJurisdiction": "BE",
+      "accountType": "THIRD_PARTY_CUSTODY",
+      "residualMaturityDays": 720,
+      "marketValue": 250000.0,
+      "valuationBasisValue": 250000.0,
+      "baseHaircutBps": 700,
+      "currencyMismatchHaircutBps": 0,
+      "totalHaircutBps": 700,
+      "matchedHaircutRuleIds": [
+        "agency-and-supranational"
+      ],
+      "appliedHaircutRuleIds": [
+        "agency-and-supranational"
+      ],
+      "lendableValue": 232500.0,
+      "reasons": []
+    },
+    {
+      "lotId": "sub-repl-fannie",
+      "assetId": "sub-repl-fannie-asset",
+      "decision": "ELIGIBLE",
+      "assetClass": "AGENCY_BOND",
+      "issueType": "AGENCY",
+      "issuerId": "fannie-mae",
+      "issuerType": "AGENCY",
+      "issuerGroupIds": [
+        "fannie-group"
+      ],
+      "longTermRating": "AA",
+      "collateralCurrency": "USD",
+      "issuanceJurisdiction": "US",
+      "riskJurisdiction": "US",
+      "custodianId": "new-york-fed",
+      "custodyJurisdiction": "US",
+      "accountType": "CENTRAL_BANK_ACCOUNT",
+      "residualMaturityDays": 540,
+      "marketValue": 225000.0,
+      "valuationBasisValue": 225000.0,
+      "baseHaircutBps": 700,
+      "currencyMismatchHaircutBps": 0,
+      "totalHaircutBps": 700,
+      "matchedHaircutRuleIds": [
+        "agency-and-supranational"
+      ],
+      "appliedHaircutRuleIds": [
+        "agency-and-supranational"
+      ],
+      "lendableValue": 209250.0,
+      "reasons": []
+    },
+    {
+      "lotId": "sub-repl-ust",
+      "assetId": "sub-repl-ust-asset",
+      "decision": "ELIGIBLE",
+      "assetClass": "SOVEREIGN_BOND",
+      "issueType": "SOVEREIGN",
+      "issuerId": "us-treasury",
+      "issuerType": "SOVEREIGN",
+      "issuerGroupIds": [
+        "us-sovereign-group"
+      ],
+      "longTermRating": "AA+",
+      "collateralCurrency": "USD",
+      "issuanceJurisdiction": "US",
+      "riskJurisdiction": "US",
+      "custodianId": "new-york-fed",
+      "custodyJurisdiction": "US",
+      "accountType": "CENTRAL_BANK_ACCOUNT",
+      "residualMaturityDays": 180,
+      "marketValue": 250000.0,
+      "valuationBasisValue": 250000.0,
+      "baseHaircutBps": 200,
+      "currencyMismatchHaircutBps": 0,
+      "totalHaircutBps": 200,
+      "matchedHaircutRuleIds": [
+        "domestic-sovereign-short"
+      ],
+      "appliedHaircutRuleIds": [
+        "domestic-sovereign-short"
+      ],
+      "lendableValue": 245000.0,
+      "reasons": []
+    }
+  ],
+  "concentrationResults": [
+    {
+      "limitId": "issuer-cap",
+      "dimension": "ISSUER",
+      "scope": "POLICY_PORTFOLIO",
+      "metric": "PERCENT_OF_COLLATERAL_VALUE",
+      "decision": "PASS",
+      "thresholdValue": 0.6,
+      "thresholdCurrency": null,
+      "bucket": "eib",
+      "bucketValue": 250000.0,
+      "denominatorValue": 975000.0,
+      "observedRatio": 0.25641,
+      "relatedLotIds": [
+        "sub-current-eib"
+      ],
+      "reason": null
+    },
+    {
+      "limitId": "issuer-cap",
+      "dimension": "ISSUER",
+      "scope": "POLICY_PORTFOLIO",
+      "metric": "PERCENT_OF_COLLATERAL_VALUE",
+      "decision": "PASS",
+      "thresholdValue": 0.6,
+      "thresholdCurrency": null,
+      "bucket": "fannie-mae",
+      "bucketValue": 225000.0,
+      "denominatorValue": 975000.0,
+      "observedRatio": 0.230769,
+      "relatedLotIds": [
+        "sub-repl-fannie"
+      ],
+      "reason": null
+    },
+    {
+      "limitId": "issuer-cap",
+      "dimension": "ISSUER",
+      "scope": "POLICY_PORTFOLIO",
+      "metric": "PERCENT_OF_COLLATERAL_VALUE",
+      "decision": "PASS",
+      "thresholdValue": 0.6,
+      "thresholdCurrency": null,
+      "bucket": "kfw",
+      "bucketValue": 250000.0,
+      "denominatorValue": 975000.0,
+      "observedRatio": 0.25641,
+      "relatedLotIds": [
+        "sub-current-kfw"
+      ],
+      "reason": null
+    },
+    {
+      "limitId": "issuer-cap",
+      "dimension": "ISSUER",
+      "scope": "POLICY_PORTFOLIO",
+      "metric": "PERCENT_OF_COLLATERAL_VALUE",
+      "decision": "PASS",
+      "thresholdValue": 0.6,
+      "thresholdCurrency": null,
+      "bucket": "us-treasury",
+      "bucketValue": 250000.0,
+      "denominatorValue": 975000.0,
+      "observedRatio": 0.25641,
+      "relatedLotIds": [
+        "sub-repl-ust"
+      ],
+      "reason": null
+    }
+  ]
+}

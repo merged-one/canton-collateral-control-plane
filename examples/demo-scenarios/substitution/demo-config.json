@@ -1,0 +1,176 @@
+{
+  "demoId": "substitution-prototype",
+  "demoVersion": "0.1.0",
+  "scenarios": [
+    {
+      "scenarioId": "positive-substitution",
+      "mode": "POSITIVE",
+      "description": "Existing encumbered collateral is replaced with a policy-valid optimizer-selected set after required approvals and atomic settlement confirmation.",
+      "policy": "substitution-policy.json",
+      "inventory": "positive-inventory.json",
+      "obligation": "positive-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "workflow": {
+        "scriptName": "CantonCollateral.Demo:substitutionDemoWorkflow",
+        "correlationId": "corr-substitution-demo-001",
+        "sourceAccount": "acct-provider-sub-demo",
+        "destinationAccount": "acct-secured-sub-demo",
+        "settlementSystem": "Fedwire",
+        "tokenAdapterReferencePrefix": "demo/adapter",
+        "transferabilityFlags": [
+          "deliverable",
+          "pledgeable",
+          "segregated"
+        ]
+      },
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "SUBSTITUTE",
+        "workflowSubstitutionState": "Closed",
+        "activeEncumberedLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "releasedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "atomicityOutcome": "COMMITTED_ATOMICALLY",
+        "minimumExecutionReportCount": 1,
+        "reasonCodes": []
+      }
+    },
+    {
+      "scenarioId": "negative-replacement-becomes-ineligible",
+      "mode": "NEGATIVE",
+      "description": "A candidate replacement asset becomes ineligible before execution, so the substitution request is blocked at policy evaluation time.",
+      "policy": "substitution-policy.json",
+      "inventory": "negative-ineligible-inventory.json",
+      "obligation": "negative-ineligible-obligation.json",
+      "runOptimization": false,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "REJECT",
+        "reasonCodes": [
+          "ASSET_CLASS_NOT_ELIGIBLE",
+          "HAIRCUT_RULE_NOT_FOUND",
+          "ISSUER_NOT_ON_ALLOW_LIST",
+          "ISSUER_RATING_BELOW_MINIMUM",
+          "ISSUER_TYPE_NOT_ALLOWED",
+          "ISSUE_TYPE_NOT_ELIGIBLE"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-concentration-breach",
+      "mode": "NEGATIVE",
+      "description": "The incumbent set remains valid, but every admissible replacement set breaches concentration limits or fails coverage once the released lots are excluded.",
+      "policy": "substitution-policy.json",
+      "inventory": "negative-concentration-inventory.json",
+      "obligation": "negative-concentration-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "NO_SOLUTION",
+        "recommendedAction": "NO_SOLUTION",
+        "reasonCodes": [
+          "CONCENTRATION_LIMIT_BREACH",
+          "INSUFFICIENT_LENDABLE_VALUE"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-unauthorized-release",
+      "mode": "NEGATIVE",
+      "description": "The provider reaches pending settlement with a valid replacement set but cannot confirm settlement or release encumbrances without custodian authority.",
+      "policy": "substitution-policy.json",
+      "inventory": "positive-inventory.json",
+      "obligation": "negative-unauthorized-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "workflow": {
+        "scriptName": "CantonCollateral.Demo:substitutionDemoWorkflow",
+        "correlationId": "corr-substitution-demo-unauthorized-001",
+        "sourceAccount": "acct-provider-sub-demo",
+        "destinationAccount": "acct-secured-sub-demo",
+        "settlementSystem": "Fedwire",
+        "tokenAdapterReferencePrefix": "demo/adapter",
+        "transferabilityFlags": [
+          "deliverable",
+          "pledgeable",
+          "segregated"
+        ],
+        "simulateUnauthorizedReleaseAttempt": true
+      },
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "SUBSTITUTE",
+        "workflowSubstitutionState": "PendingSettlement",
+        "activeEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "releasedLotIds": [],
+        "atomicityOutcome": "BLOCKED_ATOMICALLY",
+        "minimumExecutionReportCount": 0,
+        "requiredControlChecks": [
+          "APPROVAL_GATE_BLOCKED",
+          "UNAUTHORIZED_RELEASE_BLOCKED"
+        ],
+        "reasonCodes": [
+          "APPROVAL_GATE_BLOCKED",
+          "UNAUTHORIZED_RELEASE_BLOCKED"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-partial-substitution",
+      "mode": "NEGATIVE",
+      "description": "A partial settlement intent is attempted after approval, but the workflow rejects it because the request requires atomic all-or-nothing replacement.",
+      "policy": "substitution-policy.json",
+      "inventory": "positive-inventory.json",
+      "obligation": "negative-partial-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "workflow": {
+        "scriptName": "CantonCollateral.Demo:substitutionDemoWorkflow",
+        "correlationId": "corr-substitution-demo-partial-001",
+        "sourceAccount": "acct-provider-sub-demo",
+        "destinationAccount": "acct-secured-sub-demo",
+        "settlementSystem": "Fedwire",
+        "tokenAdapterReferencePrefix": "demo/adapter",
+        "transferabilityFlags": [
+          "deliverable",
+          "pledgeable",
+          "segregated"
+        ],
+        "simulatePartialSettlementAttempt": true
+      },
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "SUBSTITUTE",
+        "workflowSubstitutionState": "Approved",
+        "activeEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "releasedLotIds": [],
+        "atomicityOutcome": "BLOCKED_ATOMICALLY",
+        "minimumExecutionReportCount": 0,
+        "requiredControlChecks": [
+          "APPROVAL_GATE_BLOCKED",
+          "PARTIAL_SUBSTITUTION_BLOCKED"
+        ],
+        "reasonCodes": [
+          "APPROVAL_GATE_BLOCKED",
+          "PARTIAL_SUBSTITUTION_BLOCKED"
+        ]
+      }
+    }
+  ]
+}

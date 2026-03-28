@@ -36,7 +36,8 @@
     "settlementCurrency": "USD",
     "coverageMetric": "LENDABLE_VALUE",
     "obligationAmount": 900000.0,
-    "currentPostedLotIds": []
+    "currentPostedLotIds": [],
+    "substitutionRequest": null
   },
   "candidateUniverse": {
     "candidateLotCount": 4,
@@ -236,6 +237,9 @@
     ]
   },
   "substitutionRecommendation": {
+    "requestId": null,
+    "atomicityRequired": false,
+    "mustReplaceLotIds": [],
     "currentPostedLotIds": [],
     "recommendedLotIds": [
       "cb-lot-001",
@@ -243,6 +247,7 @@
       "cb-lot-003",
       "cb-lot-004"
     ],
+    "retainedLotIds": [],
     "removeLotIds": [],
     "addLotIds": [
       "cb-lot-001",

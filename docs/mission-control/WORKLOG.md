@@ -838,7 +838,7 @@ Affected files:
 - `docs/integration/ASSET_ADAPTER_PLAN.md`
 - `docs/integration/INTEGRATION_SURFACES.md`
 - `docs/adrs/README.md`
-- `docs/adrs/0012-quickstart-demo-foundation.md`
+- `docs/adrs/0013-quickstart-demo-foundation.md`
 - `docs/mission-control/MASTER_TRACKER.md`
 - `docs/mission-control/ROADMAP.md`
 - `docs/mission-control/DECISION_LOG.md`
@@ -877,7 +877,7 @@ Completed artifacts:
 - pinned Quickstart bootstrap, overlay metadata, and profile templates under `infra/quickstart/`
 - reproducible Quickstart smoke script under `scripts/run-localnet-smoke.sh`
 - new LocalNet and asset-adapter plans under `docs/integration/`
-- new Quickstart foundation ADR under `docs/adrs/0012-quickstart-demo-foundation.md`
+- new Quickstart foundation ADR under `docs/adrs/0013-quickstart-demo-foundation.md`
 - README, setup, runbook, dependency, test-strategy, invariant, evidence, risk, security, roadmap, tracker, and decision-log updates for the new LocalNet layer
 - prompt execution evidence in `docs/evidence/prompt-08-execution-report.md`
 
@@ -985,7 +985,7 @@ Completed artifacts:
 - new margin-call scenario bundle under `examples/demo-scenarios/margin-call/`
 - new execution-report schema and specification under `reports/schemas/execution-report.schema.json` and `docs/specs/EXECUTION_REPORT_SPEC.md`
 - new operator runbook under `docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md`
-- new ADR under `docs/adrs/0011-margin-call-demo-shape.md` plus renumbered Quickstart ADR under `docs/adrs/0012-quickstart-demo-foundation.md`
+- new ADR under `docs/adrs/0011-margin-call-demo-shape.md` plus renumbered Quickstart ADR under `docs/adrs/0013-quickstart-demo-foundation.md`
 - regenerated real demo artifacts under `reports/generated/` including the execution report, Markdown summary, timeline, positive workflow result, and negative-path artifacts
 - mission-control, invariant, risk, threat, README, setup, testing, evidence, and command-surface updates aligned to the new prototype
 - prompt execution evidence under `docs/evidence/prompt-09-execution-report.md`
@@ -1003,6 +1003,53 @@ make verify
 git status --short --branch
 ```
 
+## 2026-03-28 - Prompt 10 - Post-Change
+
+Outcome:
+Implemented the repository's first end-to-end substitution prototype by extending the optimizer for scoped substitution requests, adding a parameterized Daml substitution demo workflow, publishing a machine-readable `SubstitutionReport` contract, generating real positive and negative substitution artifacts, and aligning the mission-control, ADR, runbook, and evidence surfaces to the new control model.
+
+Completed artifacts:
+
+- scoped substitution-request support in `app/optimizer/` plus deterministic optimizer tests for forced incumbent replacement and clean no-solution handling
+- new substitution orchestration surface under `app/orchestration/` with a real `make demo-substitution` command
+- expanded Daml substitution workflow, demo script, and lifecycle tests under `daml/CantonCollateral/`
+- new substitution scenario bundle under `examples/demo-scenarios/substitution/`
+- new substitution-report schema and specification under `reports/schemas/substitution-report.schema.json` and `docs/specs/SUBSTITUTION_REPORT_SPEC.md`
+- new operator runbook under `docs/runbooks/SUBSTITUTION_DEMO_RUNBOOK.md`
+- new ADR under `docs/adrs/0012-substitution-atomicity.md` plus renumbered Quickstart ADR under `docs/adrs/0013-quickstart-demo-foundation.md`
+- regenerated real demo artifacts under `reports/generated/` including the substitution report, Markdown summary, timeline, positive workflow result, and negative-path policy, optimization, and workflow artifacts
+- mission-control, invariant, risk, threat, README, setup, testing, evidence, and command-surface updates aligned to the new prototype
+- prompt execution evidence under `docs/evidence/prompt-10-execution-report.md`
+
+Commands run:
+
+```sh
+make status
+make demo-substitution
+make test-policy-engine
+make test-optimizer
+make daml-test
+make docs-lint
+make verify
+git diff --check
+git status --short --branch
+```
+
+Results:
+
+- `make status` passed and reported `Current Phase: Milestone 4 / Phase 4 - Initial Margin Call And Substitution Demo Reporting`
+- `make demo-substitution` passed and generated `reports/generated/substitution-demo-report.json` plus the supporting JSON and Markdown artifacts for one positive and four negative scenarios
+- `make test-policy-engine` passed and regenerated the committed baseline `PolicyEvaluationReport` artifact
+- `make test-optimizer` passed and regenerated the committed baseline `OptimizationReport` artifact with the substitution-request contract extensions intact
+- `make daml-test` passed and preserved the Daml lifecycle-script baseline for margin call, posting, substitution, and return flows
+- `make docs-lint` passed after the new substitution docs, ADR, runbook, tracker, and evidence surfaces were added to the required documentation set
+- `make verify` passed and re-ran docs linting, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml lifecycle tests, both end-to-end demos, and the Quickstart compose-preflight smoke path
+- `git diff --check` passed with no whitespace or patch-format issues
+- `git status --short --branch` before commit showed only the expected Prompt 10 changes, including the new substitution artifacts and the ADR renumber from Quickstart `0012` to `0013`
+
+Next step:
+Bridge the repo Daml package into the pinned Quickstart runtime line, then define role-scoped execution and substitution report profiles plus workflow-coupled reservation and consent interfaces on top of the new end-to-end demo paths.
+
 Results:
 
 - `make status` passed and reported `Current Phase: Milestone 4 / Phase 4 - Initial Margin Call Demo And Execution Reporting`
@@ -1017,3 +1064,71 @@ Results:
 
 Next step:
 Bridge the repo Daml package into the pinned Quickstart runtime line, then add role-scoped execution-report disclosure profiles and workflow-coupled reservation or consent controls on top of the new end-to-end demo path.
+
+## 2026-03-28 - Prompt 10 - Pre-Change
+
+Intent:
+Implement the first confidential collateral substitution prototype for the Canton Collateral Control Plane, with deterministic positive and negative substitution scenarios, workflow-enforced approvals and atomicity, real optimizer-orchestrator integration, and machine-readable substitution reporting.
+
+Risks addressed:
+
+- the repository currently proves a margin-call posting path but does not yet expose a real end-to-end substitution demo that starts from encumbered collateral and shows replacement under policy
+- substitution control semantics could remain implicit, especially around approval enforcement, unauthorized release prevention, and atomic all-or-nothing replacement behavior
+- the optimizer currently recommends substitutions off-ledger, but the orchestration and Daml workflow layers do not yet prove that a recommended replacement set can be executed atomically or fail deterministically
+- reporting consumers currently lack a substitution-specific machine-readable contract that ties policy, optimization, approval, workflow, and failure evidence together
+
+Affected files:
+
+- `Makefile`
+- `README.md`
+- `AGENTS.md`
+- `CONTRIBUTING.md`
+- `app/README.md`
+- `app/optimizer/`
+- `app/orchestration/`
+- `daml/Bootstrap.daml`
+- `daml/CantonCollateral/`
+- `examples/README.md`
+- `examples/demo-scenarios/substitution/`
+- `reports/README.md`
+- `reports/generated/`
+- `reports/schemas/`
+- `test/README.md`
+- `test/optimizer/`
+- `docs/specs/SUBSTITUTION_REPORT_SPEC.md`
+- `docs/specs/EXECUTION_REPORT_SPEC.md`
+- `docs/runbooks/SUBSTITUTION_DEMO_RUNBOOK.md`
+- `docs/testing/DAML_TEST_PLAN.md`
+- `docs/testing/OPTIMIZER_TEST_PLAN.md`
+- `docs/testing/TEST_STRATEGY.md`
+- `docs/adrs/README.md`
+- `docs/adrs/0012-substitution-atomicity.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/DECISION_LOG.md`
+- `docs/mission-control/WORKLOG.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-10-execution-report.md`
+- `docs/risks/RISK_REGISTER.md`
+- `docs/security/THREAT_MODEL.md`
+
+Acceptance criteria:
+
+- a real `make demo-substitution` command exists and runs from a clean checkout
+- the demo starts from existing encumbered collateral, initiates a substitution request, enforces the required approvals, and executes the replacement atomically or fails atomically
+- the optimizer-orchestrator path produces a valid replacement set under the declared policy and emits explicit deterministic failures for the negative scenarios
+- real JSON and Markdown substitution artifacts are generated from actual policy, optimization, and Daml workflow execution
+- mission-control, ADR, invariant, evidence, runbook, and report-spec surfaces reflect the substitution prototype
+- relevant commands are run, the changes are committed, and the worktree is left clean
+
+Planned commands:
+
+```sh
+make demo-substitution
+make test-policy-engine
+make test-optimizer
+make daml-test
+make docs-lint
+make verify
+git status --short --branch
+```

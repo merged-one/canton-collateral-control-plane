@@ -17,6 +17,8 @@
 
 The contract exists to prove that the Canton Collateral Control Plane can now generate auditable end-to-end demo evidence without inventing workflow success or hiding the relationship between policy, optimization, and execution artifacts.
 
+Substitution now uses a separate [SUBSTITUTION_REPORT_SPEC.md](./SUBSTITUTION_REPORT_SPEC.md) contract so the margin-call `ExecutionReport` does not absorb substitution-specific approval and atomicity semantics.
+
 ## Inputs
 
 The current execution-report path consumes one manifest under `examples/demo-scenarios/margin-call/` and resolves:
@@ -105,6 +107,7 @@ The current `ExecutionReport` contract covers:
 
 The current contract does not yet cover:
 
+- substitution-specific workflow reporting, which now lives in `SubstitutionReport`
 - role-scoped disclosure profiles
 - Quickstart-backed workflow execution
 - live asset-adapter evidence
