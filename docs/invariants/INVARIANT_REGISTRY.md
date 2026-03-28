@@ -22,6 +22,7 @@ This registry defines system properties that future code, reports, and tests mus
 - replay safety
 - workflow authority
 - runtime and demo separation
+- toolchain reproducibility
 - auditability
 
 ## Proposal-Aligned Starter Invariants
@@ -47,11 +48,12 @@ This registry defines system properties that future code, reports, and tests mus
 | REPL-001 | Replay safety | Retried or replayed messages, commands, or events must not create duplicate pledges, duplicate releases, or inconsistent reports. | idempotency design, replay tests, event-correlation evidence |
 | WF-001 | Workflow authority | Obligation, encumbrance, approval, and settlement state may change only through committed workflow transitions on Canton; off-ledger services may propose or report changes but may not authoritatively apply them. | Daml workflow spec, integration tests, execution evidence |
 | RUNTIME-001 | Runtime and demo separation | LocalNet overlays, demo bootstrap data, and runtime services must not alter policy semantics, bypass approvals, or fabricate successful reports. | deployment model, runbooks, demo evidence |
+| TOOL-001 | Toolchain reproducibility | Build, validation, and smoke-run commands must resolve to pinned Daml, Java, and validation-tool versions that are documented, checksum-verified where downloaded, and reproducible from a clean checkout. | dependency policy, bootstrap script, setup docs, verification commands |
 | AUD-001 | Auditability | Every material state transition must be traceable to inputs, policy version, actors, timestamps, and resulting state changes without requiring hidden manual reconstruction. | audit log design, report schema, operational runbooks |
 | EXCP-001 | Exception-path determinism | Negative-path scenarios such as expired calls, insufficient lendable value, concentration breaches, unauthorized release attempts, or stale-snapshot failures must fail reproducibly with explicit reasons rather than implicit or silent failure modes. | conformance suite, negative-path scenarios, decision reports |
 
 ## Notes
 
-- The registry now carries 21 named invariants spanning schema discipline, timing, wrong-way risk, architecture, privacy, workflow authority, and runtime discipline in addition to the original control properties.
+- The registry now carries 22 named invariants spanning schema discipline, timing, wrong-way risk, architecture, privacy, workflow authority, runtime discipline, and toolchain reproducibility in addition to the original control properties.
 - These invariants are still intentionally technology-agnostic at the repository-bootstrap stage, but the architecture package narrows their intended implementation boundaries.
 - Future invariants should add explicit links to tests and evidence entries once implementation begins.

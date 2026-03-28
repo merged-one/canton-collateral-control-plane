@@ -10,6 +10,12 @@ Start every task with:
 make status
 ```
 
+After a fresh clone or when the local toolchain is missing, run:
+
+```sh
+make bootstrap
+```
+
 Then follow this sequence:
 
 1. Read [AGENTS.md](./AGENTS.md) and [docs/mission-control/MASTER_TRACKER.md](./docs/mission-control/MASTER_TRACKER.md).
@@ -40,8 +46,12 @@ When relevant, each contribution must leave behind:
 Current baseline verification:
 
 ```sh
+make bootstrap
+make validate-cpl
+make daml-build
+make demo-run
 make docs-lint
 make verify
 ```
 
-As the implementation grows, this file should evolve to include pinned toolchain setup and test commands.
+The bootstrap installs the pinned repo-local Daml and Java toolchain under `.runtime/` and keeps CPL validation isolated in `.venv/`.

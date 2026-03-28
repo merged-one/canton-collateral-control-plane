@@ -11,3 +11,4 @@ This log captures concise decision records. Significant architectural or operati
 | D-0005 | 2026-03-28 | Keep policy evaluation deterministic, optimization advisory, and workflow state authoritative on Canton. | Accepted | [ADR 0003](../adrs/0003-policy-optimization-workflow-separation.md) |
 | D-0006 | 2026-03-28 | Treat reports and execution evidence as state-derived outputs rather than operator-authored summaries. | Accepted | [ADR 0004](../adrs/0004-report-fidelity-and-evidence.md) |
 | D-0007 | 2026-03-28 | Publish `CPL v0.1` as strict JSON validated by JSON Schema, with separate language-version and policy-version fields. | Accepted | [ADR 0005](../adrs/0005-cpl-format-and-versioning.md) |
+| D-0008 | 2026-03-28 | Adopt a pinned repo-local Daml runtime foundation with checksum-verified bootstrap, a minimal executable package, and a stable build/demo command surface. | Accepted | [ADR 0006](../adrs/0006-runtime-foundation.md) |

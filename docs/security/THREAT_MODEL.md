@@ -36,8 +36,9 @@ The future system will manage confidential collateral policy, inventory, valuati
 | Non-atomic substitution or return | Coverage could be lost during workflow transitions. | Treat atomic workflow completion as a blocking invariant. |
 | Report tampering or drift | Operators could rely on incorrect evidence. | State-derived report generation and report-fidelity checks. |
 | Schema downgrade or undeclared extension | Consumers could derive different results from materially different policy documents. | Pin `cplVersion`, reject unknown fields, and validate policy documents before load. |
+| Tool-download tampering or drift | A compromised or drifting bootstrap source could change local behavior invisibly. | Pin download URLs and SHA-256 checksums and install runtime tools repo-locally. |
 | Runtime overlay drift | Demo or LocalNet shortcuts could alter behavior relative to the documented architecture. | Separate runtime concerns from business semantics and keep overlay changes explicit. |
-| Environment drift | The system could become impossible to reproduce or validate consistently. | Pinned dependencies, explicit bootstrap commands, and release evidence. |
+| Environment drift | The system could become impossible to reproduce or validate consistently. | Pinned dependencies, checksum-verified bootstrap commands, and release evidence. |
 
 ## Trust Boundaries
 

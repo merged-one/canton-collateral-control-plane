@@ -61,6 +61,7 @@ Current scope:
 - mission-control documents and decision tracking
 - proposal-aligned architecture, milestone, invariant, and evidence structure
 - `CPL v0.1` prose specification, JSON Schema, validation plan, and example policy set
+- pinned runtime foundation for Daml-centric workflow modeling and local verification
 - implementation-ready planning for CPL, policy-engine, optimization, workflow, and conformance phases
 - reusable framing for margin, repo, securities-lending, treasury, and collateral-mobility workflows
 
@@ -74,7 +75,7 @@ Current non-goals:
 - live integrations with custodians, CCPs, central-bank systems, or external pricing stacks
 - UI development
 - performance tuning
-- implementation of business logic in this prompt
+- implementation of collateral business logic in this phase
 
 ## Mission Control
 
@@ -96,11 +97,16 @@ Working rules:
 Reproducible commands today:
 
 ```sh
+make bootstrap
 make validate-cpl
+make daml-build
+make demo-run
 make status
 make docs-lint
 make verify
 ```
+
+`make demo-run` currently exercises a minimal Daml runtime-foundation smoke test. It proves the pinned toolchain and package layout work without claiming collateral workflow semantics yet.
 
 Current CPL artifacts:
 
@@ -108,6 +114,8 @@ Current CPL artifacts:
 - [docs/specs/CPL_EXAMPLES.md](./docs/specs/CPL_EXAMPLES.md)
 - [schema/cpl.schema.json](./schema/cpl.schema.json)
 - [docs/testing/CPL_VALIDATION_TEST_PLAN.md](./docs/testing/CPL_VALIDATION_TEST_PLAN.md)
+- [docs/setup/LOCAL_DEV_SETUP.md](./docs/setup/LOCAL_DEV_SETUP.md)
+- [docs/setup/DEPENDENCY_POLICY.md](./docs/setup/DEPENDENCY_POLICY.md)
 
 ## Upcoming Phases
 

@@ -15,3 +15,4 @@ Architecture Decision Records capture durable technical and operating choices th
 - [0003-policy-optimization-workflow-separation.md](./0003-policy-optimization-workflow-separation.md)
 - [0004-report-fidelity-and-evidence.md](./0004-report-fidelity-and-evidence.md)
 - [0005-cpl-format-and-versioning.md](./0005-cpl-format-and-versioning.md)
+- [0006-runtime-foundation.md](./0006-runtime-foundation.md)

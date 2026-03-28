@@ -43,6 +43,6 @@ A task is not done until all applicable items are complete:
 
 ## Current Repo Posture
 
-- This repository is in a documentation-and-controls phase.
-- Business logic is intentionally absent.
-- Lightweight verification currently flows through `make docs-lint`, `make status`, and `make verify`.
+- This repository is in a documentation-and-controls plus runtime-foundation phase.
+- Collateral business logic is still intentionally absent.
+- Reproducible control commands now include `make bootstrap`, `make validate-cpl`, `make daml-build`, `make demo-run`, `make status`, and `make verify`.

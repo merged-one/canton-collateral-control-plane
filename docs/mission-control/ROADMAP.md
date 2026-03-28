@@ -14,7 +14,7 @@ Exit criteria:
 - invariant, risk, and evidence registries exist
 - lightweight verification commands succeed
 
-## Milestone 1 / Phase 1: Collateral Policy Language And Formal Model
+## Milestone 1 / Phase 1: Collateral Policy Language, Formal Model, And Runtime Foundation
 
 Objective:
 Define the reusable Collateral Policy Language and formal model that future engines and workflows will consume.
@@ -26,6 +26,7 @@ Expected outputs:
 - formal invariant catalog
 - architecture and data-model documentation
 - sample policy profiles for bilateral, tri-party, CCP-style, and central-bank-style usage
+- pinned local Daml and Java runtime foundation with reproducible bootstrap and smoke-run commands
 
 Acceptance focus:
 

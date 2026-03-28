@@ -1,0 +1,17 @@
+module Bootstrap where
+
+import Daml.Script
+
+import Foundation
+
+foundationSmokeTest : Script Text
+foundationSmokeTest = script do
+  operator <- allocateParty "PrototypeOperator"
+  reviewer <- allocateParty "PrototypeReviewer"
+  foundationCid <- submit operator do
+    createCmd RuntimeFoundation with
+      operator
+      reviewer
+      stage = "runtime-foundation"
+  submit reviewer do
+    exerciseCmd foundationCid ConfirmFoundation

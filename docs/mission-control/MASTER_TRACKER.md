@@ -1,7 +1,7 @@
 # Master Tracker
 
 Last Updated: 2026-03-28
-Current Phase: Milestone 1 / Phase 1 - CPL And Formal Model
+Current Phase: Milestone 1 / Phase 1 - CPL, Formal Model, And Runtime Foundation
 
 ## Mission
 
@@ -64,18 +64,25 @@ Prompt 3 status:
 - `make validate-cpl` added as a reproducible repository control command
 - repository remains implementation-light: policy engine, optimization engine, workflow packages, and report schemas are still pending
 
+Prompt 4 status:
+
+- Daml runtime foundation pinned to Daml SDK `2.10.4`, Canton `2.10.4`, and Temurin JDK `17.0.18+8`
+- repo-local bootstrap, status, build, demo, and verify commands published under `Makefile` and `scripts/`
+- minimal executable Daml package added under `daml/` to prove compile-and-run readiness without collateral business logic
+- future service-layer code now has reserved `app/`, `reports/`, `test/`, `examples/`, and `infra/` surfaces
+
 ## Next 5 Tasks
 
 1. Specify machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts plus disclosure profiles.
-2. Pin the target Canton Quickstart release, overlay strategy, and first asset-adapter dependency set.
-3. Define the first Daml package boundary for obligations, encumbrance, substitution, return, and settlement instructions.
+2. Pin the target Quickstart release and overlay strategy that will sit on top of the current Daml and Canton baseline.
+3. Define the first Daml package boundary for obligations, encumbrance, substitution, return, and settlement instructions beyond the runtime-foundation smoke package.
 4. Define versioned reference-data contracts for valuation, FX, custodian, and issuer facts consumed by CPL evaluation.
-5. Expand the conformance-suite matrix to cover negative, temporal, privacy, and atomicity scenarios against the new CPL package.
+5. Expand the conformance-suite matrix to cover negative, temporal, privacy, atomicity, and runtime-bootstrap scenarios against the new foundation.
 
 ## Blockers
 
 - No current blocker for continued specification work.
-- Policy-engine and workflow implementation should not start until the target Quickstart and asset interface versions are pinned.
+- Policy-engine and workflow implementation should not start until the target Quickstart overlay and asset interface versions are pinned on top of the current Daml and Canton baseline.
 - Economic calibration is intentionally deferred until reference-data contracts and report contracts are specified.
 - The current roadmap reflects the 2026-03-28 proposal and may need ADR-backed revision if the proposal changes materially.
 
@@ -84,11 +91,17 @@ Prompt 3 status:
 Current repo dependencies:
 
 - Git
+- `curl`
 - `make`
 - POSIX shell
+- `tar`
 - `python3`
 - `rg` for lightweight verification
+- repo-local `.runtime` bootstrap for pinned Daml and Java tooling
 - repo-local `.venv` bootstrap for pinned schema validation
+- Temurin JDK `17.0.18+8`
+- Daml SDK `2.10.4`
+- Canton `2.10.4` as the current runtime compatibility baseline
 - `check-jsonschema==0.37.1` via `requirements-cpl-validation.txt`
 
 Target dependencies to pin in future ADRs:
@@ -116,7 +129,7 @@ Target dependencies to pin in future ADRs:
 - [x] `CPL v0.1` prose spec and schema
 - [x] schema validation toolchain and example policy set
 - [x] Prompt 3 execution report
-- [ ] pinned dependency ADRs
+- [x] pinned dependency ADRs
 - [ ] executable demo artifacts
 - [ ] implementation-linked tests
 

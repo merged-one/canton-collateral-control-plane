@@ -35,7 +35,8 @@ The prototype is intended to run on a Quickstart-based LocalNet with C-COPE comp
 ### Documentation layer
 
 - repository ADRs, architecture docs, invariants, and evidence records
-- no executable business logic in this phase
+- pinned bootstrap, Daml scaffold, and verification commands for the runtime foundation
+- no executable collateral business logic in this phase
 
 ### LocalNet development layer
 

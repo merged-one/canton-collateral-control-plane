@@ -4,6 +4,16 @@
 
 Use an upstream Quickstart-based LocalNet as the prototype's Canton runtime while keeping C-COPE-specific topology, packages, and services in overlays or adjacent services. The goal is to maximize compatibility with the Quickstart ecosystem and minimize long-lived forks.
 
+## Current Pinned Runtime Foundation
+
+The repository now pins the first executable foundation around:
+
+- Daml SDK `2.10.4`
+- Canton open-source `2.10.4`
+- Temurin JDK `17.0.18+8`
+
+These versions support local package compilation and a minimal Daml smoke scenario today. Quickstart overlay wiring remains a follow-on task.
+
 ## Integration Principles
 
 - start from a pinned upstream Quickstart release
@@ -26,6 +36,7 @@ Use an upstream Quickstart-based LocalNet as the prototype's Canton runtime whil
 ### Step 1: Pin the base
 
 - select and pin the Quickstart release that will anchor LocalNet development
+- use the already pinned Daml SDK and Canton `2.10.4` foundation as the compatibility floor
 - record image or package versions in a dedicated dependency ADR before workflow code starts
 
 ### Step 2: Add overlays, not forks
@@ -81,6 +92,7 @@ A Quickstart fork is acceptable only if all of the following are true:
 ## Exit Criteria For Moving Beyond Planning
 
 - Quickstart version pinned
+- Daml SDK and Canton baseline pinned for local compilation
 - overlay strategy documented in repo-controlled config
 - Daml package boundary defined
 - adjacent service contracts defined for policy, valuation, optimization, and reporting

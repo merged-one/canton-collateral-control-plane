@@ -13,4 +13,10 @@ Runbooks turn design intent into operator steps. They should contain real comman
 
 ## Current State
 
-No executable workflow runbooks exist yet because business logic is intentionally absent. The repository now includes one operator-facing control command, `make validate-cpl`, for schema-validating published policy artifacts. When implementation begins, each major workflow should add or update at least one runbook and one reproducible command.
+Collateral workflow runbooks do not exist yet because business logic is intentionally absent. The repository now includes:
+
+- [docs/setup/LOCAL_DEV_SETUP.md](../setup/LOCAL_DEV_SETUP.md) for pinned local bootstrap and verification
+- `make validate-cpl` for schema-validating published policy artifacts
+- `make demo-run` for a Daml runtime-foundation smoke scenario
+
+When workflow implementation begins, each major workflow should add or update at least one runbook and one reproducible command.

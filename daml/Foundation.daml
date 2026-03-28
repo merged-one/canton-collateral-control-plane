@@ -1,0 +1,15 @@
+module Foundation where
+
+template RuntimeFoundation
+  with
+    operator : Party
+    reviewer : Party
+    stage : Text
+  where
+    signatory operator
+    observer reviewer
+
+    choice ConfirmFoundation : Text
+      controller reviewer
+      do
+        pure ("confirmed:" <> stage)

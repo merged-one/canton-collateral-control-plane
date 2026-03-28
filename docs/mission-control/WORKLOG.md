@@ -289,3 +289,105 @@ Results:
 
 Next step:
 Define machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts, then pin the Quickstart and asset-adapter dependencies that will consume `CPL v0.1`.
+
+## 2026-03-28 - Prompt 4 - Pre-Change
+
+Intent:
+Establish a runnable technical foundation for the prototype with a pinned Daml-centric toolchain, reproducible bootstrap and verification scripts, and directory/package scaffolding that future implementation prompts can extend without restructuring the repository.
+
+Risks addressed:
+
+- dependency drift could block later Daml and Canton work or make local reproduction inconsistent
+- the repo's current `verify` contract rejects all implementation files and therefore no longer matches the next prototype phase
+- future prompts could start adding workflow, integration, and reporting code without a stable package layout or operator command surface
+- service-layer scope could sprawl unless the runtime foundation keeps policy, workflow, reporting, and integration concerns explicitly separated
+
+Affected files:
+
+- `daml.yaml`
+- `.tool-versions`
+- `Makefile`
+- `scripts/bootstrap.sh`
+- `scripts/verify.sh`
+- `scripts/dev-status.sh`
+- `docs/setup/LOCAL_DEV_SETUP.md`
+- `docs/setup/DEPENDENCY_POLICY.md`
+- `docs/adrs/0006-runtime-foundation.md`
+- `docs/adrs/README.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/DECISION_LOG.md`
+- `docs/mission-control/WORKLOG.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-04-execution-report.md`
+- `docs/testing/TEST_STRATEGY.md`
+- `docs/runbooks/README.md`
+- `docs/risks/RISK_REGISTER.md`
+- `docs/security/THREAT_MODEL.md`
+- `README.md`
+- `daml/`
+- `app/`
+- `reports/`
+- `test/`
+- `examples/`
+- `infra/`
+
+Acceptance criteria:
+
+- the repo exposes a real runtime and build foundation rooted in Daml for workflow modeling
+- bootstrap, status, verify, CPL validation, future Daml build, and future demo commands are reproducible and documented
+- pinned dependencies are justified, locally installable, and visible in both code and docs
+- future prompts can add Daml packages and small helper services without restructuring the repo
+- mission-control, invariant, ADR, and evidence documents reflect the new foundation phase
+
+Planned commands:
+
+```sh
+make bootstrap
+make status
+make validate-cpl
+make daml-build
+make demo-run
+make verify
+git status --short --branch
+```
+
+## 2026-03-28 - Prompt 4 - Post-Change
+
+Outcome:
+Established the repository's first runnable technical foundation with a pinned Daml-centric toolchain, repo-local bootstrap, a minimal executable Daml package, and a reproducible command surface for setup, build, smoke execution, and verification.
+
+Completed artifacts:
+
+- pinned toolchain files: `daml.yaml`, `.tool-versions`, and `scripts/toolchain.env`
+- repo-local bootstrap and control scripts in `scripts/bootstrap.sh`, `scripts/dev-status.sh`, and `scripts/verify.sh`
+- minimal executable Daml package in `daml/Foundation.daml` and `daml/Bootstrap.daml`
+- reserved repository surfaces for future services, reports, tests, examples, and infrastructure under `app/`, `reports/`, `test/`, `examples/`, and `infra/`
+- setup documentation in `docs/setup/LOCAL_DEV_SETUP.md` and `docs/setup/DEPENDENCY_POLICY.md`
+- ADR 0006 plus mission-control, invariant, evidence, risk, threat, runbook, and README updates aligned to the new runtime phase
+- prompt execution record in `docs/evidence/prompt-04-execution-report.md`
+
+Commands run:
+
+```sh
+make bootstrap
+make status
+make validate-cpl
+make daml-build
+make demo-run
+make verify
+git status --short --branch
+```
+
+Results:
+
+- `make bootstrap` passed and installed the pinned repo-local Daml SDK `2.10.4`, Temurin JDK `17.0.18+8`, and validation tooling
+- `make status` passed and reported the new runtime-foundation phase, pinned toolchain, installed toolchain, and scaffold directories
+- `make validate-cpl` passed and preserved the earlier schema-validation baseline
+- `make daml-build` passed and produced `.daml/dist/canton-collateral-policy-optimization-engine-0.1.0.dar`
+- `make demo-run` passed and executed the `Bootstrap:foundationSmokeTest` Daml script against the IDE ledger
+- `make verify` passed and now covers docs linting, CPL validation, Daml build, and Daml smoke execution in one command
+- the repo now has executable runtime scaffolding without yet adding collateral business logic
+
+Next step:
+Define the first machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts, then expand the Daml package boundary from the runtime-foundation smoke package into obligation, encumbrance, substitution, return, and settlement contracts.

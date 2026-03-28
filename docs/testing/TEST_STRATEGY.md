@@ -26,12 +26,15 @@ Testing in this repository exists to prove invariants, not just to increase cove
 At this phase, the repository supports lightweight documentation and schema checks:
 
 ```sh
+make bootstrap
 make validate-cpl
+make daml-build
+make demo-run
 make docs-lint
 make verify
 ```
 
-`CPL v0.1` schema coverage and the initial negative cases are documented in [CPL_VALIDATION_TEST_PLAN.md](./CPL_VALIDATION_TEST_PLAN.md).
+`CPL v0.1` schema coverage and the initial negative cases are documented in [CPL_VALIDATION_TEST_PLAN.md](./CPL_VALIDATION_TEST_PLAN.md). The Daml runtime foundation adds a minimal smoke scenario that proves the pinned SDK, JDK, package layout, and multi-party script execution path work before collateral semantics are added.
 
 ## Proposal-Aligned Conformance Direction
 
