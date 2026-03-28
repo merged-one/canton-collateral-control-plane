@@ -1,5 +1,5 @@
 sdk-version: 2.10.4
-name: canton-collateral-policy-optimization-engine
+name: canton-collateral-control-plane
 source: daml
 version: 0.1.0
 dependencies:

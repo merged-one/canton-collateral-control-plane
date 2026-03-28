@@ -2,7 +2,7 @@
 
 ## Target Prototype Shape
 
-The prototype is intended to run on a Quickstart-based LocalNet with C-COPE components added through overlays and adjacent services. The control plane should remain deployable without forking upstream Quickstart internals unless an extension point is missing and an ADR explicitly authorizes the fork.
+The prototype is intended to run on a Quickstart-based LocalNet with Control Plane components added through overlays and adjacent services. Quickstart, ledger hosting, and settlement connectivity are treated as data-plane execution surfaces; policy, optimization, workflow, conformance, and reporting services remain control-plane components. The control plane should remain deployable without forking upstream Quickstart internals unless an extension point is missing and an ADR explicitly authorizes the fork.
 
 ## Deployment Units
 
@@ -12,7 +12,7 @@ The prototype is intended to run on a Quickstart-based LocalNet with C-COPE comp
 | participant for pledgor roles | hosts parties that own eligible inventory and initiate posting, substitution, and return requests | LocalNet overlay |
 | participant for secured-party roles | hosts parties that issue calls, approve substitutions, and receive collateral control rights | LocalNet overlay |
 | participant for custodian or control roles | hosts parties that acknowledge control, delivery, release, and return instructions | LocalNet overlay |
-| C-COPE Daml package | defines obligation, encumbrance, approval, and settlement contracts | deployed on LocalNet participants |
+| Control Plane workflow package | defines obligation, encumbrance, approval, and settlement contracts | deployed on LocalNet participants |
 | policy registry service | publishes and serves policy packages outside the ledger | adjacent service |
 | reference data and valuation service | creates immutable valuation snapshots from market and static data | adjacent service |
 | optimization service | ranks feasible candidate lots using policy-constrained inputs | adjacent service |
@@ -60,7 +60,7 @@ The prototype is intended to run on a Quickstart-based LocalNet with C-COPE comp
 
 - keep upstream Quickstart artifacts vendored or referenced as-is where possible
 - express repo-specific topology through overlays, not edits to upstream defaults
-- deploy C-COPE services beside Canton, not inside Canton internals
+- deploy Control Plane services beside Canton, not inside Canton internals
 - treat observability as a runtime concern; it must not become a hidden source of truth
 - isolate demo bootstrap data from production-intended schema or contract design
 

@@ -1,8 +1,8 @@
-# Canton Collateral Policy Optimization Engine (C-COPE)
+# Canton Collateral Control Plane
 
 ## What this prototype is
 
-This repository is a documentation-first prototype for C-COPE, an open-source reference standard and execution engine for collateral policy and optimization on Canton. The target system is a reusable collateral control plane for:
+This repository is a documentation-first prototype for the Canton Collateral Control Plane, a reusable collateral control plane for Canton-native secured-finance workflows. It coordinates shared control logic for:
 
 - collateral eligibility evaluation
 - haircut and lendable-value calculation
@@ -15,8 +15,11 @@ This repository is a documentation-first prototype for C-COPE, an open-source re
 
 The intended runtime shape is a Quickstart-based LocalNet with token-standard-style assets, reference Daml workflows, and auditable reports that can be checked against invariants, evidence, and tests.
 
+Historical alias note:
+The former name "Canton Collateral Policy & Optimization Engine" is retained only as a deprecated historical alias for continuity in older records. `C-COPE` should not be used in new documentation; use "Canton Collateral Control Plane" or "the Control Plane" instead.
+
 Current framing note:
-This repository now reflects the development-fund proposal dated 2026-03-28. If the proposal changes later, repository-level assumptions should be revised through the mission-control process and ADRs.
+This repository now reflects the development-fund proposal dated 2026-03-28. The rename to "Canton Collateral Control Plane" is semantic, not directional: the current policy, optimization, workflow, conformance, and reporting subsystems remain intact and are now described more precisely as parts of one shared control plane. If the proposal changes later, repository-level assumptions should be revised through the mission-control process and ADRs.
 
 ## Why documentation-first
 
@@ -27,11 +30,22 @@ Collateral policy, control, substitution, allocation, and release handling are s
 - changes must leave behind reproducible commands
 - demos must be reproducible and must not contain fake success artifacts
 
-This order of work is deliberate. C-COPE spans policy, optimization, workflow, and reporting layers across multiple future apps, so undocumented assumptions would create defects at the control-plane boundary, not just in one app.
+This order of work is deliberate. The Control Plane spans policy, optimization, workflow, conformance, and reporting layers across multiple future apps, so undocumented assumptions would create defects at the shared control boundary, not just in one app.
 
-## Target High-Level Architecture
+## Control Plane Vs Data Plane
 
-The target architecture follows the five-layer reference stack from the proposal while preserving explicit reporting and evidence boundaries:
+The architecture is intentionally split between the shared collateral control plane and the data-plane surfaces it evaluates, drives, or reports on.
+
+| Plane | Includes |
+| --- | --- |
+| Control plane | `CPL`, eligibility evaluation, haircuting and lendable value, encumbrance and release control, concentration logic, optimization, substitution orchestration, conformance, and reporting |
+| Data plane | token-standard-style assets, Daml Finance-style assets, ledger state and contract instances, settlement and DvP rails, and the Quickstart or LocalNet execution environment |
+
+The workflow library remains a control-plane subsystem, while the resulting ledger state and contract instances it commits are part of the data plane. This distinction keeps authoritative execution state separate from policy authoring, optimization objectives, and evidence generation.
+
+## Control-Plane Subsystems
+
+The target architecture follows the proposal-aligned subsystem stack while preserving explicit reporting and evidence boundaries:
 
 1. Collateral Policy Language (CPL)
    Versioned policy schema for eligibility, haircuting, concentration, control, substitution rights, and settlement conditions.
@@ -43,6 +57,8 @@ The target architecture follows the five-layer reference stack from the proposal
    Reference Daml workflows for margin call, delivery, substitution, return, close-out, and exception handling.
 5. Conformance Suite
    Invariant catalog, scenario runner, and report-validation layer that proves actual behavior and report fidelity.
+6. Reporting and Evidence Layer
+   Machine-readable decision and execution reporting plus mission-control traceability artifacts.
 
 Machine-readable reporting remains a separate concern across the policy, optimization, workflow, and conformance layers. Reports should explain both why a decision was made and what actually executed.
 

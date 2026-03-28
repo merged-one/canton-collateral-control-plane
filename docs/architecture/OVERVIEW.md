@@ -2,7 +2,7 @@
 
 ## Purpose
 
-C-COPE is a Canton-native collateral control plane. It is designed as reusable infrastructure for bilateral margining, tri-party collateral management, CCP-style control, treasury collateral mobility, and related secured-finance workflows.
+The Canton Collateral Control Plane is a Canton-native collateral control plane. It is designed as reusable infrastructure for bilateral margining, tri-party collateral management, CCP-style control, treasury collateral mobility, and related secured-finance workflows.
 
 The repository does not model a venue, a CCP, or a custodian. It models the control-plane capabilities those systems need in common:
 
@@ -22,6 +22,15 @@ The repository does not model a venue, a CCP, or a custodian. It models the cont
 - support later integration with token-standard-style assets and other Canton applications
 - allow the prototype to run on a Quickstart-based LocalNet without a hard fork of upstream components
 
+## Control Plane Vs Data Plane
+
+| Plane | Responsibilities | Representative Surfaces |
+| --- | --- | --- |
+| Control plane | define policy, evaluate eligibility, compute haircuts and lendable value, enforce concentration and release logic, optimize collateral choices, orchestrate substitutions, and emit conformance and reporting outputs | `CPL`, policy engine, optimization engine, workflow library, conformance suite, reporting and evidence layer |
+| Data plane | hold or move collateral facts and committed execution state without becoming the source of policy semantics | token-standard-style assets, Daml Finance-style assets, Canton ledger state and contract instances, settlement and DvP rails, Quickstart or LocalNet runtime environment |
+
+The workflow library is part of the control plane, but the committed ledger state and contract instances it produces belong to the data plane. This split keeps control semantics, execution authority, and runtime hosting concerns explicit.
+
 ## Control-Plane Boundaries
 
 | Boundary | Owns | Primary Inputs | Primary Outputs | Explicitly Does Not Own |
@@ -29,7 +38,7 @@ The repository does not model a venue, a CCP, or a custodian. It models the cont
 | Collateral Policy Language and schedules | versioned eligibility, haircut, concentration, control, substitution-right, and settlement-window rules | policy authoring inputs, profile templates | policy package and effective schedule set | live inventory, workflow state, settlement execution |
 | Policy evaluation engine | deterministic eligibility, lendable value, concentration checks, release checks, and decision traces | policy package, asset facts, valuation snapshot, encumbrance state, obligation context | policy decision report | optimization objectives, workflow approvals, report publishing |
 | Optimization engine | candidate selection, cheapest-to-deliver or best-to-post proposals, substitution recommendations, explanation traces | policy decision report, inventory state, objective settings, operational constraints | optimization proposal | authoritative eligibility rules, ledger state mutation, settlement |
-| Daml workflow contracts and orchestration | obligations, encumbrance transitions, substitution, return, approvals, settlement instructions, exception handling | approved business actions, policy references, optimization proposal references, party approvals | committed Canton workflow state and settlement instructions | policy authoring, optimization tuning, report editing |
+| Workflow library and orchestration | obligations, encumbrance transitions, substitution, return, approvals, settlement instructions, exception handling | approved business actions, policy references, optimization proposal references, party approvals | committed Canton workflow state and settlement instructions | policy authoring, optimization tuning, report editing |
 | Reporting and evidence generation | state-derived execution reports, audit views, traceability records, prompt execution evidence | committed workflow state, policy decision reports, valuation snapshot metadata, command logs | machine-readable execution report, evidence manifest links | authoritative decision making, hidden side effects |
 | Demo and runtime infrastructure | LocalNet topology, package deployment, service wiring, observability, demo bootstrap | pinned Quickstart base, overlay config, package builds, service images | runnable environment | business rules, optimization logic, report semantics |
 
@@ -51,7 +60,7 @@ The repository does not model a venue, a CCP, or a custodian. It models the cont
 2. A valuation or inventory event produces an immutable valuation snapshot and current collateral facts.
 3. The policy evaluation engine determines eligibility, lendable value, concentration headroom, and release constraints.
 4. The optimization engine proposes candidate lots only after policy feasibility has been established.
-5. Daml workflow contracts create and settle call obligations, postings, substitutions, returns, and exceptions atomically.
+5. The workflow library commits call obligations, postings, substitutions, returns, and exceptions atomically into Canton ledger state.
 6. Reporting services derive execution reports and evidence from committed state, not from pre-commit simulations.
 7. Demo and runtime infrastructure host the preceding components without changing their semantics.
 

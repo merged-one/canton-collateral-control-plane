@@ -20,6 +20,7 @@ Before making any change in this repository:
 - Treat collateral policy, control, substitution, and release handling as safety-critical.
 - Separate policy, optimization, workflow execution, and reporting concerns.
 - Document how the system maps to central-bank style collateral frameworks, tri-party substitution workflows, and CCP-style concentration control.
+- Use "Canton Collateral Control Plane" or "the Control Plane" in new documentation. The former name "Canton Collateral Policy & Optimization Engine" and `C-COPE` are deprecated historical aliases only.
 - Every task must leave behind at least one reproducible command.
 
 ## Change Expectations

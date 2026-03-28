@@ -2,18 +2,18 @@
 
 ## Objective
 
-Describe how C-COPE will represent collateral assets so that token-standard-style Canton projects and adjacent asset applications can integrate later without rewriting the control-plane model.
+Describe how the Control Plane will represent collateral assets so that token-standard-style Canton projects and adjacent asset applications can integrate later without rewriting the control-plane model.
 
 ## Alignment Principles
 
-- C-COPE should reference tokenized assets through stable interfaces rather than embedding one specific token implementation
+- the Control Plane should reference tokenized assets through stable interfaces rather than embedding one specific token implementation
 - asset ownership and transfer semantics belong to the asset application or adapter, not to the policy engine
 - encumbrance and collateral-control semantics belong to the control plane and must be representable even when the underlying asset standard models ownership differently
 - the prototype should simplify where necessary, but each simplification must be explicit
 
 ## Canonical Representation
 
-| Concern | C-COPE Representation | Expected Token-Standard-Style Mapping |
+| Concern | Control Plane Representation | Expected Token-Standard-Style Mapping |
 | --- | --- | --- |
 | asset identity | `CollateralAsset` with `asset_id`, issuer, class, currency, and adapter reference | token or instrument identifier exposed by the asset application |
 | holding or position | `CollateralInventoryLot` with owner, custodian, account, quantity, and provenance | token balance, position contract, or custody entitlement mapped into lot form |
@@ -35,7 +35,7 @@ Describe how C-COPE will represent collateral assets so that token-standard-styl
 ## Prototype Assumptions
 
 - the asset application remains the source of truth for issuance and raw ownership
-- C-COPE consumes normalized asset and holding facts through an adapter layer
+- the Control Plane consumes normalized asset and holding facts through an adapter layer
 - one `CollateralAsset` may correspond to many lots with different custody accounts or provenance
 - encumbrance is modeled as a control-plane overlay, not as a mutation of policy schedules
 - asset transfers may initially be represented as instruction emission plus status callback rather than a live external settlement integration

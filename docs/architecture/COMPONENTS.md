@@ -69,7 +69,7 @@
 ### Runtime layer
 
 - packages and deploys the prototype
-- keeps upstream Quickstart separable from C-COPE overlays
+- keeps upstream Quickstart separable from Control Plane overlays
 - remains replaceable without changing domain documents
 
 ## Failure Containment

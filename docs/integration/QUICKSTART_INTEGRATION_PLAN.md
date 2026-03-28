@@ -2,7 +2,7 @@
 
 ## Objective
 
-Use an upstream Quickstart-based LocalNet as the prototype's Canton runtime while keeping C-COPE-specific topology, packages, and services in overlays or adjacent services. The goal is to maximize compatibility with the Quickstart ecosystem and minimize long-lived forks.
+Use an upstream Quickstart-based LocalNet as the prototype's Canton runtime while keeping Control-Plane-specific topology, packages, and services in overlays or adjacent services. Quickstart and LocalNet remain data-plane execution surfaces; the policy, optimization, workflow, and reporting subsystems remain part of the Control Plane. The goal is to maximize compatibility with the Quickstart ecosystem and minimize long-lived forks.
 
 ## Current Pinned Runtime Foundation
 
@@ -17,7 +17,7 @@ These versions support local package compilation and a minimal Daml smoke scenar
 ## Integration Principles
 
 - start from a pinned upstream Quickstart release
-- express C-COPE-specific participants, parties, package deployment, and service wiring through overlays first
+- express Control-Plane-specific participants, parties, package deployment, and service wiring through overlays first
 - run policy, valuation, optimization, reporting, and integration services adjacent to Canton, not inside patched Quickstart internals
 - fork upstream only when an extension point is missing and the gap is documented through an ADR
 - keep the prototype topology reproducible from repo-controlled configuration
@@ -27,7 +27,7 @@ These versions support local package compilation and a minimal Daml smoke scenar
 | Layer | Planned Content |
 | --- | --- |
 | upstream base | domain, sequencer, mediator, baseline participant setup, developer tooling |
-| C-COPE overlay | participant and party additions for pledgor, secured party, and custodian roles; package deployment config; bootstrap data hooks |
+| Control Plane overlay | participant and party additions for pledgor, secured party, and custodian roles; package deployment config; bootstrap data hooks |
 | adjacent services | policy registry, valuation service, optimization service, reporting service, integration gateway |
 | scenario tools | reproducible commands for seed data, workflow execution, and report validation |
 
@@ -43,12 +43,12 @@ These versions support local package compilation and a minimal Daml smoke scenar
 
 - define overlay configuration for extra parties, participants, package deployment, and service endpoints
 - keep base Quickstart files untouched where override or composition mechanisms exist
-- isolate repo-specific topology under a C-COPE-owned overlay directory once implementation begins
+- isolate repo-specific topology under a Control-Plane-owned overlay directory once implementation begins
 
-### Step 3: Deploy C-COPE Daml packages on top
+### Step 3: Deploy Control Plane Daml packages on top
 
-- treat the C-COPE workflow package as an application deployed into the LocalNet, not as a modification to Quickstart core services
-- keep obligation, encumbrance, settlement, and approval templates in the C-COPE package boundary
+- treat the Control Plane workflow package as an application deployed into the LocalNet, not as a modification to Quickstart core services
+- keep obligation, encumbrance, settlement, and approval templates in the Control Plane package boundary
 
 ### Step 4: Attach adjacent services
 
@@ -76,7 +76,7 @@ A Quickstart fork is acceptable only if all of the following are true:
 
 | Concern | Preferred Placement | Reason |
 | --- | --- | --- |
-| multi-party workflow execution | Quickstart LocalNet plus deployed C-COPE Daml package | keeps authoritative workflow state on Canton |
+| multi-party workflow execution | Quickstart LocalNet plus deployed Control Plane workflow package | keeps authoritative workflow state on Canton |
 | policy versioning | adjacent policy registry | avoids coupling policy lifecycle to package deployment |
 | optimization | adjacent service | keeps objective tuning out of workflow contracts |
 | reporting | adjacent service | allows role-specific report profiles and re-generation from state |

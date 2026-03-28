@@ -22,7 +22,7 @@ git status --short --branch
 - `make bootstrap` passed and confirmed the pinned repo-local Daml SDK `2.10.4`, Temurin JDK `17.0.18+8`, and CPL validation tooling were ready.
 - `make status` passed and reported the new phase name, the installed toolchain versions, and the expanded command surface including `make daml-test`.
 - `make validate-cpl` passed and preserved the existing CPL schema and example-policy validation baseline.
-- `make daml-build` passed and produced `.daml/dist/canton-collateral-policy-optimization-engine-0.1.0.dar` after the new `daml/CantonCollateral/` package was added.
+- `make daml-build` passed and produced the repository DAR artifact under `.daml/dist/` after the new `daml/CantonCollateral/` package was added.
 - `make daml-test` passed and executed the Daml lifecycle scripts for margin call creation, posting and substitution, and return handling.
 - `make demo-run` passed and executed `Bootstrap:workflowSmokeTest` against the Daml IDE ledger.
 - `make verify` passed and now exercises docs linting, CPL validation, Daml build, Daml lifecycle tests, and the workflow smoke run in one reproducible loop.

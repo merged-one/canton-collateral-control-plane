@@ -2,7 +2,10 @@
 
 | Term | Meaning In This Repository |
 | --- | --- |
-| C-COPE | Shorthand for Canton Collateral Policy Optimization Engine, used here for the proposal-aligned control-plane framing. |
+| Canton Collateral Control Plane | The current user-facing name for the repository and the umbrella architecture that coordinates policy, optimization, workflow orchestration, conformance, and reporting. |
+| C-COPE (deprecated) | Historical alias for the former repository name "Canton Collateral Policy & Optimization Engine". Retained only for continuity in older records; new docs should use "Canton Collateral Control Plane" or "the Control Plane". |
+| Control plane | The subsystem set that authors policy, evaluates eligibility, computes haircuts and lendable value, manages concentration and release logic, orchestrates workflows, runs conformance checks, and generates reports. |
+| Data plane | The asset, ledger, settlement, and runtime surfaces the control plane evaluates or drives, including token-standard-style assets, Daml Finance-style assets, contract state on Canton, DvP rails, and LocalNet execution. |
 | Canton | The distributed application platform targeted for confidential, atomic multi-party workflow execution. |
 | LocalNet | A local development deployment based on Canton Quickstart or equivalent tooling. |
 | CPL | Collateral Policy Language, the versioned machine-readable schema for collateral-policy rules. |

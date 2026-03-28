@@ -2,6 +2,8 @@
 
 This roadmap currently reflects the 2026-03-28 development-fund proposal. If the proposal changes, update this roadmap through the mission-control process and ADRs.
 
+The roadmap describes the build-out of the Control Plane subsystems plus the adjacent data-plane integrations they depend on. The rename to "Canton Collateral Control Plane" is a clarification of the existing architecture, not a change in business direction.
+
 ## Phase 0: Mission Control Spine
 
 Objective:
@@ -17,7 +19,7 @@ Exit criteria:
 ## Milestone 1 / Phase 1: Collateral Policy Language, Formal Model, And Runtime Foundation
 
 Objective:
-Define the reusable Collateral Policy Language and formal model that future engines and workflows will consume.
+Define the reusable Collateral Policy Language and formal model that future control-plane subsystems and data-plane adapters will consume.
 
 Expected outputs:
 
@@ -37,7 +39,7 @@ Acceptance focus:
 ## Milestone 2 / Phase 2: Policy Engine And Asset Adapters
 
 Objective:
-Build the deterministic policy engine and the first asset adapters against the pinned LocalNet and asset standards.
+Build the deterministic policy engine and the first data-plane asset adapters against the pinned LocalNet and asset standards.
 
 Expected outputs:
 

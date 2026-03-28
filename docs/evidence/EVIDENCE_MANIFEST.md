@@ -19,7 +19,7 @@ This manifest defines the evidence categories required to defend changes in this
 
 | ID | Category | Artifact | Notes |
 | --- | --- | --- | --- |
-| E-0001 | Specs | [README.md](../../README.md) | proposal-aligned repository mission and architecture summary |
+| E-0001 | Specs | [README.md](../../README.md) | current repository mission, historical-alias note, and control-plane versus data-plane summary |
 | E-0002 | ADRs | [docs/adrs/0001-repo-principles.md](../adrs/0001-repo-principles.md) | repository principles and safety posture |
 | E-0003 | ADRs | [docs/adrs/0002-system-boundaries.md](../adrs/0002-system-boundaries.md) | system-boundary definition for the control-plane architecture |
 | E-0004 | Specs | [docs/mission-control/ROADMAP.md](../mission-control/ROADMAP.md) | roadmap aligned to the current proposal milestone structure |
@@ -70,10 +70,13 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0049 | Tests | [docs/testing/POLICY_ENGINE_TEST_PLAN.md](../testing/POLICY_ENGINE_TEST_PLAN.md) | scenario coverage for eligibility, haircuts, concentration, wrong-way risk, control failures, and determinism |
 | E-0050 | Demo artifacts | [reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json](../../reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json) | real generated policy-evaluation artifact from `make policy-eval` |
 | E-0051 | Demo artifacts | [docs/evidence/prompt-06-execution-report.md](./prompt-06-execution-report.md) | reproducible Prompt 6 execution record for the first policy-engine package |
+| E-0052 | ADRs | [docs/adrs/0009-rename-to-canton-collateral-control-plane.md](../adrs/0009-rename-to-canton-collateral-control-plane.md) | repository-identity rename plus control-plane versus data-plane clarification |
+| E-0053 | Demo artifacts | [docs/evidence/rename-to-collateral-control-plane-execution-report.md](./rename-to-collateral-control-plane-execution-report.md) | reproducible execution record for the repository rename and metadata update |
 
 ## Coverage Notes
 
 - The `Code` category now includes the first Daml workflow skeleton package in addition to schema, bootstrap, and toolchain artifacts.
 - The architecture, CPL, policy-engine, and Daml-boundary packages now provide executable evidence, though adapter integration and workflow-coupled reference-data evidence are still pending.
 - The `Demo artifacts` category now includes both a workflow smoke-run record and a real schema-valid policy-evaluation report artifact, but still not a Quickstart-backed end-to-end operator demo.
+- The evidence set now records the rename to "Canton Collateral Control Plane" as a semantic clarification of the same subsystem stack rather than a new product direction.
 - Economic rationale is currently architecture-, control-, and market-practice-oriented rather than calibration-backed.

@@ -34,7 +34,7 @@ The control plane must let multiple parties coordinate collateral workflows with
 ### Contract visibility
 
 - Daml contracts are visible only to their signatories and explicit observers.
-- C-COPE should use narrow observer sets instead of broad shared contracts.
+- The Control Plane should use narrow observer sets instead of broad shared contracts.
 - Separate templates should be used when different roles need different subsets of information.
 
 ### Party and participant boundaries

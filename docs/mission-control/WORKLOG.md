@@ -65,7 +65,7 @@ Use the development-fund proposal as a stronger framing input for repository arc
 Starting state:
 
 - repository has a generic mission-control spine
-- proposal introduces a concrete C-COPE framing, five-layer reference stack, milestone plan, and broader workflow scope
+- proposal introduces a concrete control-plane framing, five-layer reference stack, milestone plan, and broader workflow scope
 
 Planned commands:
 
@@ -85,7 +85,7 @@ Expected artifacts:
 ## 2026-03-28 - Proposal Alignment - Post-Change
 
 Outcome:
-Aligned the repository docs to the 2026-03-28 development-fund proposal and made the C-COPE control-plane framing explicit without adding business logic.
+Aligned the repository docs to the 2026-03-28 development-fund proposal and made the control-plane framing explicit without adding business logic.
 
 Completed artifacts:
 
@@ -384,7 +384,7 @@ Results:
 - `make bootstrap` passed and installed the pinned repo-local Daml SDK `2.10.4`, Temurin JDK `17.0.18+8`, and validation tooling
 - `make status` passed and reported the new runtime-foundation phase, pinned toolchain, installed toolchain, and scaffold directories
 - `make validate-cpl` passed and preserved the earlier schema-validation baseline
-- `make daml-build` passed and produced `.daml/dist/canton-collateral-policy-optimization-engine-0.1.0.dar`
+- `make daml-build` passed and produced the repository DAR artifact under `.daml/dist/`
 - `make demo-run` passed and executed the `Bootstrap:foundationSmokeTest` Daml script against the IDE ledger
 - `make verify` passed and now covers docs linting, CPL validation, Daml build, and Daml smoke execution in one command
 - the repo now has executable runtime scaffolding without yet adding collateral business logic
@@ -476,7 +476,7 @@ Results:
 - `make bootstrap` passed
 - `make status` passed and reported `Current Phase: Milestone 1 / Phase 1 - CPL, Formal Model, Runtime Foundation, And Initial Daml Workflow Skeletons`
 - `make validate-cpl` passed
-- `make daml-build` passed and produced `.daml/dist/canton-collateral-policy-optimization-engine-0.1.0.dar`
+- `make daml-build` passed and produced the repository DAR artifact under `.daml/dist/`
 - `make daml-test` passed and executed the three lifecycle scripts
 - `make demo-run` passed and executed `Bootstrap:workflowSmokeTest`
 - `make verify` passed and exercised docs linting, CPL validation, Daml build, Daml lifecycle tests, and the workflow smoke run
@@ -585,3 +585,117 @@ Results:
 
 Next step:
 Define pinned reference-data contracts for valuation, FX, issuer, and counterparty facts, then add role-scoped `ExecutionReport` disclosure profiles and the first asset-adapter interface on top of the new policy-engine and Daml package surfaces.
+
+## 2026-03-28 - Rename To Canton Collateral Control Plane - Pre-Change
+
+Intent:
+Rename the repository's user-facing identity from "Canton Collateral Policy & Optimization Engine" / "C-COPE" to "Canton Collateral Control Plane" without changing the mission, implementation sequencing, or subsystem boundaries, and make the control-plane versus data-plane architecture explicit across the primary documentation surfaces.
+
+Risks addressed:
+
+- the current project name over-emphasizes two subsystems and obscures that policy, optimization, workflow orchestration, conformance, and reporting already operate as one control plane
+- the old acronym can create market-structure ambiguity and distract from the intended architecture
+- rename churn could accidentally flatten subsystem boundaries, misstate historical evidence, or break future prompts and reproducible commands
+- build metadata and generated-artifact naming could drift from the new identity unless updated consistently and verified
+
+Affected files:
+
+- `README.md`
+- `AGENTS.md`
+- `Makefile`
+- `daml.yaml`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/ROADMAP.md`
+- `docs/mission-control/WORKLOG.md`
+- `docs/mission-control/DECISION_LOG.md`
+- `docs/architecture/OVERVIEW.md`
+- `docs/architecture/COMPONENTS.md`
+- `docs/architecture/DATA_FLOW.md`
+- `docs/architecture/DEPLOYMENT_MODEL.md`
+- `docs/architecture/PRIVACY_MODEL.md`
+- `docs/domain/GLOSSARY.md`
+- `docs/domain/COLLATERAL_DOMAIN_MODEL.md`
+- `docs/integration/INTEGRATION_SURFACES.md`
+- `docs/integration/QUICKSTART_INTEGRATION_PLAN.md`
+- `docs/integration/TOKEN_STANDARD_ALIGNMENT.md`
+- `docs/adrs/README.md`
+- `docs/adrs/0002-system-boundaries.md`
+- `docs/adrs/0009-rename-to-canton-collateral-control-plane.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-04-execution-report.md`
+- `docs/evidence/prompt-05-execution-report.md`
+- `docs/evidence/rename-to-collateral-control-plane-execution-report.md`
+- `docs/risks/RISK_REGISTER.md`
+
+Acceptance criteria:
+
+- the repository presents itself as "Canton Collateral Control Plane" on primary identity surfaces
+- the former name is retained only as a deprecated historical alias where continuity helps
+- README, architecture docs, glossary, and ADRs distinguish control-plane responsibilities from the data plane
+- subsystem names remain intact for `CPL`, policy evaluation, optimization, workflow, conformance, and reporting
+- in-repo metadata and DAR naming are updated where safe without unnecessary directory or module churn
+- mission-control, invariants, evidence, and ADR records reflect the rename
+- relevant checks run successfully and no existing code or tests are broken
+
+Planned commands:
+
+```sh
+make bootstrap
+make docs-lint
+make validate-cpl
+make test-policy-engine
+make daml-build
+make daml-test
+make demo-run
+make verify
+git status --short --branch
+```
+
+## 2026-03-28 - Rename To Canton Collateral Control Plane - Post-Change
+
+Outcome:
+Renamed the repository's primary user-facing identity to "Canton Collateral Control Plane", clarified the control-plane versus data-plane architecture across the core documentation surfaces, preserved the prior name only as a deprecated historical alias, and updated safe in-repo metadata so the Daml build artifact now carries the new control-plane name.
+
+Completed artifacts:
+
+- renamed primary identity surfaces in `README.md`, `AGENTS.md`, `docs/mission-control/`, and the glossary
+- added explicit control-plane versus data-plane architecture guidance in `README.md`, `docs/architecture/OVERVIEW.md`, `docs/integration/QUICKSTART_INTEGRATION_PLAN.md`, and `docs/domain/GLOSSARY.md`
+- updated build metadata in `daml.yaml` so the DAR now builds as `canton-collateral-control-plane-0.1.0.dar`
+- recorded the rename decision in `docs/adrs/0009-rename-to-canton-collateral-control-plane.md` and linked it through the decision log, invariant registry, risk register, and evidence manifest
+- updated continuity and evidence records in `docs/evidence/`, including this rename execution report
+- preserved subsystem names and existing code layout for `CPL`, policy evaluation, optimization, workflow, conformance, and reporting surfaces
+
+Commands run:
+
+```sh
+make bootstrap
+make status
+make validate-cpl
+make test-policy-engine
+make daml-build
+make daml-test
+make demo-run
+make docs-lint
+make verify
+python3 -m compileall app/policy-engine test/policy-engine
+git status --short --branch
+```
+
+Results:
+
+- `make bootstrap` passed
+- `make status` passed and reported the current Milestone 2 / Phase 2 state plus the renamed Daml package metadata
+- `make validate-cpl` passed
+- `make test-policy-engine` passed and preserved the eight deterministic Python scenario tests plus report generation
+- `make daml-build` passed and produced `.daml/dist/canton-collateral-control-plane-0.1.0.dar`
+- `make daml-test` passed and preserved the Daml lifecycle-script baseline
+- `make demo-run` passed and executed `Bootstrap:workflowSmokeTest`
+- `make docs-lint` passed after the rename ADR, execution report, tracker, and architecture updates were added to the required documentation set
+- `make verify` passed and re-executed the repository lint, validation, policy-engine, Daml build, Daml lifecycle, and workflow smoke checks in one command
+- `python3 -m compileall app/policy-engine test/policy-engine` passed as an extra Python syntax sanity check
+- no dedicated formatter or static type-check target is currently configured in the repository; the available executable lint and verification loop passed cleanly
+- `git status --short --branch` showed only the expected rename-related modifications before commit
+
+Next step:
+Continue with the Prompt 6 follow-on work by defining pinned reference-data contracts, role-scoped `ExecutionReport` disclosure profiles, and the first asset-adapter interface on top of the current policy-engine and Daml package surfaces.

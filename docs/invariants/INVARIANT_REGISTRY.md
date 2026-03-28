@@ -31,7 +31,7 @@ This registry defines system properties that future code, reports, and tests mus
 | ID | Theme | Invariant Statement | Planned Evidence |
 | --- | --- | --- | --- |
 | AUTH-001 | Authorization and role control | Only authorized roles may create, approve, amend, or release collateral policy and workflow actions, and every authorization decision must be attributable to an identity and role. | ADR 0007, Daml role and workflow modules, Daml script authorization tests, execution reports |
-| ARCH-001 | Architecture separation | Policy packages, policy decisions, optimization proposals, workflow state, and execution reports must remain versioned artifacts with explicit boundaries; no downstream layer may silently mutate an upstream layer's authoritative record. | architecture docs, ADR 0003, ADR 0007, Daml mapping |
+| ARCH-001 | Architecture separation | Control-plane artifacts such as policy packages, policy decisions, optimization proposals, workflow-library outputs, conformance outputs, and execution reports must remain versioned artifacts with explicit boundaries; data-plane asset state, ledger state, settlement rails, and runtime infrastructure must stay explicit adjacent surfaces rather than hidden extensions of the control plane. | architecture docs, ADR 0003, ADR 0007, ADR 0009, Daml mapping |
 | CPL-001 | Schema-version discipline | Every CPL policy package must declare both `cplVersion` and `policyVersion`, and loaders must reject undeclared fields rather than inferring hidden semantics from unknown data. | CPL spec, schema, ADR 0005, validation command |
 | ELIG-001 | Eligibility determinism | Given the same policy version, asset facts, valuation inputs, and concentration state, eligibility evaluation must produce the same decision and explanation every time. | decision procedure spec, deterministic tests, execution reports |
 | HAIR-001 | Haircut and lendable-value correctness | Lendable value must equal the policy-defined valuation basis adjusted by the policy-defined haircut and rounding rules, with no hidden adjustments. | valuation formulas, test vectors, report fields |
@@ -56,7 +56,7 @@ This registry defines system properties that future code, reports, and tests mus
 
 ## Notes
 
-- The registry now carries 23 named invariants spanning schema discipline, timing, wrong-way risk, policy-report fidelity, architecture, privacy, workflow authority, runtime discipline, and toolchain reproducibility in addition to the original control properties.
+- The registry now carries 23 named invariants spanning schema discipline, timing, wrong-way risk, policy-report fidelity, explicit control-plane versus data-plane architecture, privacy, workflow authority, runtime discipline, and toolchain reproducibility in addition to the original control properties.
 - The first Daml workflow skeleton now adds concrete contract, report, and script hooks for authorization, workflow authority, atomicity, report fidelity, and auditability invariants.
 - The first policy engine now adds executable evidence for deterministic eligibility, haircut, concentration, and failure-attribution invariants through schema-valid reports and scenario tests.
 - Future invariant updates should extend the current Daml-script and policy-engine evidence into replay, expiry, privacy-profile, and workflow-coupled concentration scenarios.

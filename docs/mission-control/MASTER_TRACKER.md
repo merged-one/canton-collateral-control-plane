@@ -5,7 +5,10 @@ Current Phase: Milestone 2 / Phase 2 - Initial Policy Engine, Report Contracts, 
 
 ## Mission
 
-Stand up a documentation-first C-COPE repository: a neutral Canton collateral control-plane prototype that can safely evolve into reusable policy, optimization, workflow, and reporting components for margin, repo, securities-lending, treasury, collateral mobility, and close-out workflows.
+Stand up a documentation-first Canton Collateral Control Plane repository: a neutral Canton collateral control-plane prototype that can safely evolve into reusable policy, optimization, workflow, conformance, and reporting components for margin, repo, securities-lending, treasury, collateral mobility, and close-out workflows.
+
+Repository identity note:
+The repository's active user-facing name is "Canton Collateral Control Plane". The former name "Canton Collateral Policy & Optimization Engine" is retained only as a deprecated historical alias for continuity in older records, and `C-COPE` should not be used in new documentation.
 
 ## Scope
 
@@ -44,10 +47,16 @@ Prompt 1 status:
 
 Proposal alignment status:
 
-- repository framing updated to the C-COPE control-plane model
+- repository framing updated to the current control-plane model
 - roadmap now mirrors the proposal milestone structure
 - invariants expanded toward the proposal's conformance-suite acceptance criteria
 - future proposal changes should be incorporated through ADRs rather than informal drift
+
+Repository identity status:
+
+- rename clarified that policy, optimization, workflow orchestration, conformance, and reporting are subsystems of one shared collateral control plane
+- control-plane responsibilities remain distinct from data-plane assets, ledger state, settlement rails, and LocalNet execution
+- subsystem names remain intact; only user-facing identity and safe in-repo metadata were updated
 
 Prompt 2 status:
 

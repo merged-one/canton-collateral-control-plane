@@ -5,13 +5,13 @@
 
 ## Context
 
-The repository already adopted the C-COPE framing as a neutral collateral control plane on Canton. The next missing step is a precise system-boundary definition. Without that boundary work, policy rules, optimization logic, Daml workflow behavior, reporting, and LocalNet infrastructure could blur together in a way that would make later implementation hard to reason about and hard to defend.
+The repository already adopted a neutral collateral control-plane framing on Canton. The next missing step is a precise system-boundary definition. Without that boundary work, policy rules, optimization logic, Daml workflow behavior, reporting, and LocalNet infrastructure could blur together in a way that would make later implementation hard to reason about and hard to defend.
 
 The architecture must also remain compatible with the intended Quickstart-based LocalNet and future token-standard-style asset integrations without turning the repository into a monolithic application.
 
 ## Decision
 
-The C-COPE architecture is split into six explicit boundaries:
+The control-plane architecture is split into six explicit boundaries:
 
 1. Collateral Policy Language and schedules
 2. Policy evaluation engine

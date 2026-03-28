@@ -79,6 +79,7 @@ REQUIRED_DOCS := \
 	docs/adrs/0006-runtime-foundation.md \
 	docs/adrs/0007-daml-contract-boundaries.md \
 	docs/adrs/0008-policy-evaluation-engine.md \
+	docs/adrs/0009-rename-to-canton-collateral-control-plane.md \
 	docs/setup/LOCAL_DEV_SETUP.md \
 	docs/setup/DEPENDENCY_POLICY.md \
 	docs/invariants/INVARIANT_REGISTRY.md \
@@ -90,6 +91,7 @@ REQUIRED_DOCS := \
 	docs/evidence/prompt-04-execution-report.md \
 	docs/evidence/prompt-05-execution-report.md \
 	docs/evidence/prompt-06-execution-report.md \
+	docs/evidence/rename-to-collateral-control-plane-execution-report.md \
 	docs/runbooks/README.md \
 	docs/integration/INTEGRATION_SURFACES.md \
 	docs/integration/QUICKSTART_INTEGRATION_PLAN.md \

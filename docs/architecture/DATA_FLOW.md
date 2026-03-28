@@ -2,7 +2,7 @@
 
 ## Common Inputs
 
-Every workflow in C-COPE is anchored to the same control inputs:
+Every workflow in the Control Plane is anchored to the same control inputs, while the data plane supplies the relevant holdings, committed contract state, and settlement execution surfaces:
 
 - a versioned `PolicyPackage`
 - an immutable `ValuationSnapshot`

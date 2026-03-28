@@ -1,6 +1,6 @@
 # Integration Surfaces
 
-This document identifies the major system boundaries C-COPE is expected to expose or depend on. All surfaces are planned; none are implemented yet.
+This document identifies the major system boundaries the Canton Collateral Control Plane is expected to expose or depend on. All surfaces are planned; none are implemented yet.
 
 ## Planned Surfaces
 
@@ -13,7 +13,7 @@ This document identifies the major system boundaries C-COPE is expected to expos
 | Reference data inputs | Provide valuation, FX, custodian, jurisdiction, and static reference data. | Must be versioned, attributable, and auditable. |
 | Optimization boundary | Produce best-to-post, cheapest-to-deliver, substitution, and concentration-aware allocation decisions. | Must remain separate from policy authoring and workflow settlement. |
 | Workflow library boundary | Execute margin call, substitution, return, delivery, and close-out flows atomically. | Must preserve confidentiality, authorization, and replay safety. |
-| Consumer application boundary | Allow financing apps, derivatives apps, tokenized-asset platforms, stablecoin rails, and custodial workflows to call into the control plane. | C-COPE should be reusable infrastructure, not a single venue app. |
+| Consumer application boundary | Allow financing apps, derivatives apps, tokenized-asset platforms, stablecoin rails, and custodial workflows to call into the control plane. | The Control Plane should be reusable infrastructure, not a single venue app. |
 | Report and scenario-runner surface | Emit machine-readable decision and execution reports and drive conformance scenarios. | Must satisfy report-fidelity and exception-path invariants. |
 
 ## Mapping To Established Practice
