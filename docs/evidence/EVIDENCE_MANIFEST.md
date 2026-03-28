@@ -63,10 +63,17 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0042 | Code | [daml/CantonCollateral](../../daml/CantonCollateral) | initial Daml workflow modules for roles, inventory, encumbrance, obligations, posting, substitution, return, settlement, and reports |
 | E-0043 | Tests | [docs/testing/DAML_TEST_PLAN.md](../testing/DAML_TEST_PLAN.md) | executable Daml script coverage for the first lifecycle skeletons |
 | E-0044 | Demo artifacts | [docs/evidence/prompt-05-execution-report.md](./prompt-05-execution-report.md) | reproducible Prompt 5 execution record for the first Daml workflow skeleton package |
+| E-0045 | ADRs | [docs/adrs/0008-policy-evaluation-engine.md](../adrs/0008-policy-evaluation-engine.md) | first deterministic off-ledger policy-engine and report-contract decision |
+| E-0046 | Code | [app/policy-engine](../../app/policy-engine) | deterministic `CPL v0.1` policy-engine implementation and CLI |
+| E-0047 | Specs | [docs/specs/POLICY_EVALUATION_REPORT_SPEC.md](../specs/POLICY_EVALUATION_REPORT_SPEC.md) | normative report contract, deterministic rules, and scope notes for `PolicyEvaluationReport` |
+| E-0048 | Code | [reports/schemas/policy-evaluation-report.schema.json](../../reports/schemas/policy-evaluation-report.schema.json) | canonical machine-readable schema for `PolicyEvaluationReport` |
+| E-0049 | Tests | [docs/testing/POLICY_ENGINE_TEST_PLAN.md](../testing/POLICY_ENGINE_TEST_PLAN.md) | scenario coverage for eligibility, haircuts, concentration, wrong-way risk, control failures, and determinism |
+| E-0050 | Demo artifacts | [reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json](../../reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json) | real generated policy-evaluation artifact from `make policy-eval` |
+| E-0051 | Demo artifacts | [docs/evidence/prompt-06-execution-report.md](./prompt-06-execution-report.md) | reproducible Prompt 6 execution record for the first policy-engine package |
 
 ## Coverage Notes
 
 - The `Code` category now includes the first Daml workflow skeleton package in addition to schema, bootstrap, and toolchain artifacts.
-- The architecture, CPL, and Daml-boundary packages now provide executable workflow evidence, though policy-engine and adapter evidence are still pending.
-- The `Demo artifacts` category now includes a workflow smoke-run record, but still not a Quickstart-backed end-to-end operator demo.
+- The architecture, CPL, policy-engine, and Daml-boundary packages now provide executable evidence, though adapter integration and workflow-coupled reference-data evidence are still pending.
+- The `Demo artifacts` category now includes both a workflow smoke-run record and a real schema-valid policy-evaluation report artifact, but still not a Quickstart-backed end-to-end operator demo.
 - Economic rationale is currently architecture-, control-, and market-practice-oriented rather than calibration-backed.

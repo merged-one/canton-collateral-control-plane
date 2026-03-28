@@ -1,6 +1,10 @@
 # Test Surface
 
-This directory is reserved for future deterministic, conformance, and integration tests.
+This directory contains deterministic policy-engine tests and remains the home for future conformance and integration coverage.
+
+Current contents:
+
+- `test/policy-engine/` for the `CPL v0.1` policy engine scenario suite
 
 Expected future contents:
 

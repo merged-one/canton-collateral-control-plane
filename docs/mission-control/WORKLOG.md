@@ -484,3 +484,104 @@ Results:
 
 Next step:
 Define the first machine-readable `PolicyDecisionReport` contract and role-scoped `ExecutionReport` disclosure profiles, then pin the Quickstart overlay and asset-adapter interfaces that will consume the current Daml settlement and encumbrance contracts.
+
+## 2026-03-28 - Prompt 6 - Pre-Change
+
+Intent:
+Implement the repository's first real `CPL v0.1` policy evaluation engine, including deterministic eligibility, haircut, lendable-value, concentration, control, and wrong-way-risk checks backed by the published schema and a machine-readable report contract.
+
+Risks addressed:
+
+- the repository currently has a strict CPL schema but no executable evaluator, so policy semantics still stop at documentation
+- ad hoc evaluation logic could drift from the published `CPL v0.1` schema and market-practice examples
+- report outputs could become non-deterministic or lose explicit machine-readable failure attribution
+- concentration, encumbrance, settlement-currency, and wrong-way-risk controls could remain untested in real inventory scenarios
+
+Affected files:
+
+- `Makefile`
+- `README.md`
+- `app/policy-engine/*`
+- `examples/inventory/*`
+- `reports/schemas/policy-evaluation-report.schema.json`
+- `reports/generated/*`
+- `docs/specs/POLICY_EVALUATION_REPORT_SPEC.md`
+- `docs/testing/POLICY_ENGINE_TEST_PLAN.md`
+- `docs/adrs/0008-policy-evaluation-engine.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/WORKLOG.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-06-execution-report.md`
+- `docs/risks/RISK_REGISTER.md`
+- `docs/testing/TEST_STRATEGY.md`
+- `test/policy-engine/*`
+
+Acceptance criteria:
+
+- the policy engine loads a real `CPL v0.1` policy file and candidate inventory set from disk
+- eligibility, haircut, lendable value, concentration, encumbrance, settlement-currency, and wrong-way-risk outcomes are derived from the published schema fields rather than ad hoc flags
+- failure attribution is explicit, deterministic, and machine-readable at both asset and portfolio levels
+- reproducible commands exist for policy evaluation and policy-engine tests
+- at least one real policy-evaluation report artifact is generated and linked into mission-control evidence
+
+Planned commands:
+
+```sh
+make bootstrap
+make validate-cpl
+make policy-eval POLICY=examples/policies/central-bank-style-policy.json INVENTORY=examples/inventory/central-bank-eligible-inventory.json
+make test-policy-engine
+make verify
+git status --short --branch
+```
+
+## 2026-03-28 - Prompt 6 - Post-Change
+
+Outcome:
+Implemented the repository's first real `CPL v0.1` policy evaluation engine, added the first machine-readable `PolicyEvaluationReport` contract, generated a real report artifact from the command surface, and verified the new engine alongside the existing Daml workflow baseline.
+
+Completed artifacts:
+
+- deterministic policy-engine source under `app/policy-engine/` for policy loading, inventory loading, eligibility checks, haircut and lendable-value calculation, concentration evaluation, wrong-way-risk handling, and report generation
+- normalized example inventory input under `examples/inventory/central-bank-eligible-inventory.json`
+- canonical report schema under `reports/schemas/policy-evaluation-report.schema.json`
+- real generated report artifact under `reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json`
+- report specification in `docs/specs/POLICY_EVALUATION_REPORT_SPEC.md`
+- new design decision in `docs/adrs/0008-policy-evaluation-engine.md`
+- policy-engine test plan in `docs/testing/POLICY_ENGINE_TEST_PLAN.md`
+- deterministic policy-engine scenario tests under `test/policy-engine/`
+- updated command surface in `Makefile`, `scripts/dev-status.sh`, and `scripts/verify.sh`
+- mission-control, invariant, evidence, risk, security, setup, and repository-surface docs updated to reflect the new engine package
+- prompt execution record in `docs/evidence/prompt-06-execution-report.md`
+
+Commands run:
+
+```sh
+make bootstrap
+make status
+make validate-cpl
+make policy-eval POLICY=examples/policies/central-bank-style-policy.json INVENTORY=examples/inventory/central-bank-eligible-inventory.json
+make test-policy-engine
+make daml-test
+make demo-run
+make docs-lint
+make verify
+git status --short --branch
+```
+
+Results:
+
+- `make bootstrap` passed
+- `make status` passed and reported `Current Phase: Milestone 2 / Phase 2 - Initial Policy Engine, Report Contracts, And Daml Workflow Skeletons`
+- `make validate-cpl` passed
+- `make policy-eval ...` passed, generated the schema-valid example policy-evaluation report artifact, and validated it against `reports/schemas/policy-evaluation-report.schema.json`
+- `make test-policy-engine` passed and executed the eight deterministic scenario tests for eligibility, issuer rejection, haircut application, currency mismatch haircuts, concentration breaches, wrong-way-risk exclusions, encumbrance failures, and repeatability
+- `make daml-test` passed and preserved the existing workflow lifecycle-script baseline
+- `make demo-run` passed and executed `Bootstrap:workflowSmokeTest`
+- `make docs-lint` passed after the policy-engine, tracker, ADR, spec, test-plan, and evidence updates
+- `make verify` passed and exercised docs linting, CPL validation, policy-engine tests, Daml build, Daml lifecycle tests, and the workflow smoke run
+- `git status --short --branch` showed only the expected task-related changes before commit
+
+Next step:
+Define pinned reference-data contracts for valuation, FX, issuer, and counterparty facts, then add role-scoped `ExecutionReport` disclosure profiles and the first asset-adapter interface on top of the new policy-engine and Daml package surfaces.

@@ -23,11 +23,13 @@ Testing in this repository exists to prove invariants, not just to increase cove
 
 ## Current Baseline
 
-At this phase, the repository supports lightweight documentation and schema checks:
+At this phase, the repository supports documentation checks, schema validation, deterministic policy-engine tests, and executable Daml workflow checks:
 
 ```sh
 make bootstrap
 make validate-cpl
+make policy-eval POLICY=examples/policies/central-bank-style-policy.json INVENTORY=examples/inventory/central-bank-eligible-inventory.json
+make test-policy-engine
 make daml-build
 make daml-test
 make demo-run
@@ -35,7 +37,7 @@ make docs-lint
 make verify
 ```
 
-`CPL v0.1` schema coverage and the initial negative cases are documented in [CPL_VALIDATION_TEST_PLAN.md](./CPL_VALIDATION_TEST_PLAN.md). The Daml workflow skeleton coverage is documented in [DAML_TEST_PLAN.md](./DAML_TEST_PLAN.md). The current Daml package now proves compile-and-run readiness plus basic lifecycle execution for margin call, posting, substitution, and return skeletons.
+`CPL v0.1` schema coverage and the initial negative cases are documented in [CPL_VALIDATION_TEST_PLAN.md](./CPL_VALIDATION_TEST_PLAN.md). The policy-engine scenario coverage is documented in [POLICY_ENGINE_TEST_PLAN.md](./POLICY_ENGINE_TEST_PLAN.md). The Daml workflow skeleton coverage is documented in [DAML_TEST_PLAN.md](./DAML_TEST_PLAN.md). The current repository now proves deterministic policy evaluation plus basic workflow lifecycle execution.
 
 ## Proposal-Aligned Conformance Direction
 

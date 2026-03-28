@@ -1,6 +1,10 @@
 # App Surface
 
-The `app/` tree is reserved for the prototype's small off-ledger service layer.
+The `app/` tree contains the prototype's small off-ledger service layer.
+
+Current contents:
+
+- `app/policy-engine/` for the deterministic `CPL v0.1` policy evaluation engine and CLI
 
 Allowed scope:
 
@@ -15,4 +19,5 @@ Not allowed:
 - hidden policy semantics
 - fabricated reports or demo-only shortcuts
 
-Until business logic is approved in a later phase, this directory should remain structure and interface oriented.
+Current boundary note:
+The policy engine may evaluate policy and produce reports, but Canton remains the intended authority for workflow state and transitions.

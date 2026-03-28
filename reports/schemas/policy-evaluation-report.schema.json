@@ -1,0 +1,611 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c-cope.dev/reports/policy-evaluation-report.schema.json",
+  "title": "Policy Evaluation Report v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "reportType",
+    "reportVersion",
+    "evaluationId",
+    "overallDecision",
+    "policy",
+    "inventory",
+    "summary",
+    "portfolioReasons",
+    "assetResults",
+    "concentrationResults"
+  ],
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "format": "uri-reference"
+    },
+    "reportType": {
+      "const": "PolicyEvaluationReport"
+    },
+    "reportVersion": {
+      "const": "0.1.0"
+    },
+    "evaluationId": {
+      "type": "string",
+      "pattern": "^per-[0-9a-f]{16}$"
+    },
+    "overallDecision": {
+      "type": "string",
+      "enum": [
+        "ACCEPT",
+        "REJECT",
+        "ESCALATE",
+        "REVIEW"
+      ]
+    },
+    "policy": {
+      "$ref": "#/$defs/policyReference"
+    },
+    "inventory": {
+      "$ref": "#/$defs/inventoryReference"
+    },
+    "summary": {
+      "$ref": "#/$defs/summary"
+    },
+    "portfolioReasons": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/reason"
+      }
+    },
+    "assetResults": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/assetResult"
+      }
+    },
+    "concentrationResults": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/concentrationResult"
+      }
+    }
+  },
+  "$defs": {
+    "identifier": {
+      "type": "string",
+      "pattern": "^[a-z0-9][a-z0-9._-]{2,63}$"
+    },
+    "semver": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+    },
+    "currencyCode": {
+      "type": "string",
+      "pattern": "^[A-Z]{3}$"
+    },
+    "dateTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "rating": {
+      "type": "string",
+      "enum": [
+        "AAA",
+        "AA+",
+        "AA",
+        "AA-",
+        "A+",
+        "A",
+        "A-",
+        "BBB+",
+        "BBB",
+        "BBB-",
+        "BB+",
+        "BB",
+        "BB-",
+        "B+",
+        "B",
+        "B-",
+        "CCC",
+        "CC",
+        "C",
+        "D",
+        "UNRATED"
+      ]
+    },
+    "assetClass": {
+      "type": "string",
+      "enum": [
+        "CASH",
+        "SOVEREIGN_BOND",
+        "AGENCY_BOND",
+        "SUPRANATIONAL_BOND",
+        "COVERED_BOND",
+        "CORPORATE_BOND",
+        "MONEY_MARKET_FUND",
+        "EQUITY",
+        "ABS",
+        "MUNICIPAL_BOND"
+      ]
+    },
+    "issueType": {
+      "type": "string",
+      "enum": [
+        "CASH",
+        "SOVEREIGN",
+        "CENTRAL_BANK",
+        "AGENCY",
+        "SUPRANATIONAL",
+        "COVERED",
+        "SECURED",
+        "SENIOR_UNSECURED",
+        "SUBORDINATED",
+        "EQUITY",
+        "ABS",
+        "MUNICIPAL"
+      ]
+    },
+    "issuerType": {
+      "type": "string",
+      "enum": [
+        "CENTRAL_BANK",
+        "SOVEREIGN",
+        "SUPRANATIONAL",
+        "AGENCY",
+        "MUNICIPAL",
+        "BANK",
+        "CORPORATE"
+      ]
+    },
+    "accountType": {
+      "type": "string",
+      "enum": [
+        "CENTRAL_BANK_ACCOUNT",
+        "TRIPARTY_ACCOUNT",
+        "THIRD_PARTY_CUSTODY",
+        "BILATERAL_CUSTODY",
+        "CCP_CUSTODY_ACCOUNT"
+      ]
+    },
+    "policyReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "policyId",
+        "policyVersion",
+        "cplVersion",
+        "profile"
+      ],
+      "properties": {
+        "policyId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "policyVersion": {
+          "$ref": "#/$defs/semver"
+        },
+        "cplVersion": {
+          "const": "0.1.0"
+        },
+        "profile": {
+          "type": "string",
+          "enum": [
+            "central_bank",
+            "tri_party",
+            "ccp",
+            "bilateral_csa",
+            "custom"
+          ]
+        }
+      }
+    },
+    "inventoryReference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "inventorySetId",
+        "inventoryVersion",
+        "asOf",
+        "settlementCurrency",
+        "valuationCurrency",
+        "candidateLotCount"
+      ],
+      "properties": {
+        "inventorySetId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "inventoryVersion": {
+          "$ref": "#/$defs/semver"
+        },
+        "asOf": {
+          "$ref": "#/$defs/dateTime"
+        },
+        "settlementCurrency": {
+          "$ref": "#/$defs/currencyCode"
+        },
+        "valuationCurrency": {
+          "$ref": "#/$defs/currencyCode"
+        },
+        "candidateLotCount": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "candidateLotCount",
+        "decisionCounts",
+        "totalMarketValue",
+        "totalLendableValue",
+        "concentrationIssueCount"
+      ],
+      "properties": {
+        "candidateLotCount": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "decisionCounts": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "eligible",
+            "ineligible",
+            "escalate",
+            "review"
+          ],
+          "properties": {
+            "eligible": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "ineligible": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "escalate": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "review": {
+              "type": "integer",
+              "minimum": 0
+            }
+          }
+        },
+        "totalMarketValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "totalLendableValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "concentrationIssueCount": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "reason": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "code",
+        "category",
+        "severity",
+        "message",
+        "policyPath"
+      ],
+      "properties": {
+        "code": {
+          "type": "string",
+          "pattern": "^[A-Z0-9_]+$"
+        },
+        "category": {
+          "type": "string",
+          "enum": [
+            "INPUT",
+            "POLICY",
+            "ELIGIBILITY",
+            "HAIRCUT",
+            "SETTLEMENT",
+            "CONTROL",
+            "WRONG_WAY_RISK",
+            "CONCENTRATION"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "REJECT",
+            "ESCALATE",
+            "REVIEW"
+          ]
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policyPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "policyRuleId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "relatedLotIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "bucket": {
+          "type": "string",
+          "minLength": 1
+        },
+        "observedValue": {
+          "type": "number"
+        },
+        "thresholdValue": {
+          "type": "number"
+        },
+        "currency": {
+          "$ref": "#/$defs/currencyCode"
+        }
+      }
+    },
+    "assetResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "lotId",
+        "assetId",
+        "decision",
+        "assetClass",
+        "issueType",
+        "issuerId",
+        "issuerType",
+        "issuerGroupIds",
+        "longTermRating",
+        "collateralCurrency",
+        "issuanceJurisdiction",
+        "riskJurisdiction",
+        "custodianId",
+        "custodyJurisdiction",
+        "accountType",
+        "residualMaturityDays",
+        "marketValue",
+        "valuationBasisValue",
+        "baseHaircutBps",
+        "currencyMismatchHaircutBps",
+        "totalHaircutBps",
+        "matchedHaircutRuleIds",
+        "appliedHaircutRuleIds",
+        "lendableValue",
+        "reasons"
+      ],
+      "properties": {
+        "lotId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "assetId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "ELIGIBLE",
+            "INELIGIBLE",
+            "ESCALATE",
+            "REVIEW"
+          ]
+        },
+        "assetClass": {
+          "$ref": "#/$defs/assetClass"
+        },
+        "issueType": {
+          "$ref": "#/$defs/issueType"
+        },
+        "issuerId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "issuerType": {
+          "$ref": "#/$defs/issuerType"
+        },
+        "issuerGroupIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "longTermRating": {
+          "$ref": "#/$defs/rating"
+        },
+        "collateralCurrency": {
+          "$ref": "#/$defs/currencyCode"
+        },
+        "issuanceJurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "riskJurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "custodianId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "custodyJurisdiction": {
+          "type": "string",
+          "pattern": "^[A-Z]{2}$"
+        },
+        "accountType": {
+          "$ref": "#/$defs/accountType"
+        },
+        "residualMaturityDays": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "marketValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "valuationBasisValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "baseHaircutBps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "currencyMismatchHaircutBps": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "totalHaircutBps": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 10000
+        },
+        "matchedHaircutRuleIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "appliedHaircutRuleIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "lendableValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reason"
+          }
+        }
+      }
+    },
+    "concentrationResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "limitId",
+        "dimension",
+        "scope",
+        "metric",
+        "decision",
+        "thresholdValue",
+        "thresholdCurrency",
+        "bucket",
+        "bucketValue",
+        "denominatorValue",
+        "observedRatio",
+        "relatedLotIds",
+        "reason"
+      ],
+      "properties": {
+        "limitId": {
+          "$ref": "#/$defs/identifier"
+        },
+        "dimension": {
+          "type": "string",
+          "enum": [
+            "ISSUER",
+            "ISSUER_GROUP",
+            "ASSET_CLASS",
+            "ISSUE_TYPE",
+            "CURRENCY",
+            "JURISDICTION",
+            "CUSTODIAN"
+          ]
+        },
+        "scope": {
+          "type": "string",
+          "enum": [
+            "POLICY_PORTFOLIO",
+            "COUNTERPARTY_PORTFOLIO",
+            "SETTLEMENT_DAY",
+            "CUSTODY_LOCATION"
+          ]
+        },
+        "metric": {
+          "type": "string",
+          "enum": [
+            "PERCENT_OF_COLLATERAL_VALUE",
+            "PERCENT_OF_LENDABLE_VALUE",
+            "ABSOLUTE_MARKET_VALUE"
+          ]
+        },
+        "decision": {
+          "type": "string",
+          "enum": [
+            "PASS",
+            "REJECT",
+            "ESCALATE",
+            "REVIEW"
+          ]
+        },
+        "thresholdValue": {
+          "type": "number"
+        },
+        "thresholdCurrency": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "pattern": "^[A-Z]{3}$"
+        },
+        "bucket": {
+          "type": "string",
+          "minLength": 1
+        },
+        "bucketValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "denominatorValue": {
+          "type": "number",
+          "minimum": 0
+        },
+        "observedRatio": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "relatedLotIds": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/identifier"
+          }
+        },
+        "reason": {
+          "oneOf": [
+            {
+              "$ref": "#/$defs/reason"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      }
+    }
+  }
+}

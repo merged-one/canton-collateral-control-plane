@@ -61,6 +61,7 @@ Current scope:
 - mission-control documents and decision tracking
 - proposal-aligned architecture, milestone, invariant, and evidence structure
 - `CPL v0.1` prose specification, JSON Schema, validation plan, and example policy set
+- initial deterministic `CPL v0.1` policy engine and machine-readable policy evaluation report contract
 - pinned runtime foundation for Daml-centric workflow modeling and local verification
 - first Daml domain model and lifecycle skeletons for obligations, posting, substitution, return, settlement intent, and execution reporting
 - executable Daml script checks for margin call, posting, substitution, and return skeletons
@@ -77,7 +78,7 @@ Current non-goals:
 - live integrations with custodians, CCPs, central-bank systems, or external pricing stacks
 - UI development
 - performance tuning
-- full policy evaluation, optimization, and production-grade collateral business logic in this phase
+- optimization, live asset adapters, settlement-window enforcement, and production-grade collateral business logic in this phase
 
 ## Mission Control
 
@@ -101,6 +102,8 @@ Reproducible commands today:
 ```sh
 make bootstrap
 make validate-cpl
+make policy-eval POLICY=examples/policies/central-bank-style-policy.json INVENTORY=examples/inventory/central-bank-eligible-inventory.json
+make test-policy-engine
 make daml-build
 make daml-test
 make demo-run
@@ -109,7 +112,7 @@ make docs-lint
 make verify
 ```
 
-`make demo-run` now exercises a real Daml workflow smoke script over the initial obligation, posting, substitution, and return skeletons. `make daml-test` runs the script-level lifecycle checks individually.
+`make demo-run` now exercises a real Daml workflow smoke script over the initial obligation, posting, substitution, and return skeletons. `make daml-test` runs the script-level lifecycle checks individually. `make policy-eval` validates a real policy input, evaluates normalized inventory, and emits a schema-valid `PolicyEvaluationReport`.
 
 Current CPL artifacts:
 
@@ -119,6 +122,14 @@ Current CPL artifacts:
 - [docs/testing/CPL_VALIDATION_TEST_PLAN.md](./docs/testing/CPL_VALIDATION_TEST_PLAN.md)
 - [docs/setup/LOCAL_DEV_SETUP.md](./docs/setup/LOCAL_DEV_SETUP.md)
 - [docs/setup/DEPENDENCY_POLICY.md](./docs/setup/DEPENDENCY_POLICY.md)
+
+Current policy-engine artifacts:
+
+- [docs/specs/POLICY_EVALUATION_REPORT_SPEC.md](./docs/specs/POLICY_EVALUATION_REPORT_SPEC.md)
+- [reports/schemas/policy-evaluation-report.schema.json](./reports/schemas/policy-evaluation-report.schema.json)
+- [docs/testing/POLICY_ENGINE_TEST_PLAN.md](./docs/testing/POLICY_ENGINE_TEST_PLAN.md)
+- [examples/inventory/central-bank-eligible-inventory.json](./examples/inventory/central-bank-eligible-inventory.json)
+- [reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json](./reports/generated/central-bank-domestic-window-policy-central-bank-eligible-set-policy-evaluation-report.json)
 
 ## Upcoming Phases
 

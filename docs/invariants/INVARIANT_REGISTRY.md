@@ -17,6 +17,7 @@ This registry defines system properties that future code, reports, and tests mus
 - atomic substitution and return
 - atomic settlement across legs
 - privacy-preserving visibility
+- policy-decision-report fidelity
 - report fidelity
 - valuation snapshot lineage
 - replay safety
@@ -42,6 +43,7 @@ This registry defines system properties that future code, reports, and tests mus
 | ATOM-001 | Atomic substitution and return | Collateral substitution and collateral return must complete atomically so that exposure coverage is not broken by intermediate visible states. | ADR 0007, substitution and return workflow templates, Daml lifecycle scripts, future Canton proof artifacts |
 | ATOM-002 | Atomic settlement across legs | For supported multi-leg delivery or close-out flows, settlement must either complete across all required legs or fail without a partially committed exposure-changing state. | multi-leg workflow tests, conformance reports, execution evidence |
 | PRIV-001 | Privacy-preserving visibility | Each role may see only the contracts, fields, and reports required for its responsibility, and cross-party visibility must be explicit rather than implied by shared infrastructure. | privacy model, ADR 0007, Daml mapping, stakeholder and disclosure-profile tests |
+| PDR-001 | Policy decision report fidelity | Every machine-readable policy evaluation report must be derived deterministically from one declared policy version and one declared inventory snapshot, with explicit asset-level and portfolio-level reasons for rejection, escalation, or review. | policy evaluation report schema, ADR 0008, policy-engine tests, generated policy reports |
 | REPT-001 | Report fidelity | Every machine-readable execution report must correspond exactly to committed workflow state and must not invent or omit materially relevant actions. | execution report template, Daml mapping, Daml lifecycle scripts, demo evidence |
 | VAL-001 | Valuation snapshot lineage | Every policy decision and execution report must reference an immutable valuation snapshot or explicitly record why no snapshot was required. | `PolicyContext` in Daml workflows, decision reports, execution reports |
 | WWR-001 | Wrong-way-risk explicitness | Wrong-way-risk exclusions must be machine-readable, attributable to a named rule, and enforced before an asset is accepted into eligible collateral. | CPL schema, example policies, negative-path scenarios |
@@ -54,6 +56,7 @@ This registry defines system properties that future code, reports, and tests mus
 
 ## Notes
 
-- The registry now carries 22 named invariants spanning schema discipline, timing, wrong-way risk, architecture, privacy, workflow authority, runtime discipline, and toolchain reproducibility in addition to the original control properties.
+- The registry now carries 23 named invariants spanning schema discipline, timing, wrong-way risk, policy-report fidelity, architecture, privacy, workflow authority, runtime discipline, and toolchain reproducibility in addition to the original control properties.
 - The first Daml workflow skeleton now adds concrete contract, report, and script hooks for authorization, workflow authority, atomicity, report fidelity, and auditability invariants.
-- Future invariant updates should extend the current Daml-script evidence into replay, expiry, privacy-profile, and concentration-limit scenarios.
+- The first policy engine now adds executable evidence for deterministic eligibility, haircut, concentration, and failure-attribution invariants through schema-valid reports and scenario tests.
+- Future invariant updates should extend the current Daml-script and policy-engine evidence into replay, expiry, privacy-profile, and workflow-coupled concentration scenarios.

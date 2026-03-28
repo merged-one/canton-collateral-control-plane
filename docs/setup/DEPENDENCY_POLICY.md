@@ -12,7 +12,7 @@ Keep the prototype's runtime and verification surface reproducible, easy to audi
 | Canton open-source 2.10.4 | `2.10.4` | [scripts/toolchain.env](../../scripts/toolchain.env) | runtime compatibility baseline aligned with the Daml SDK release |
 | Temurin JDK 17.0.18+8 | `17.0.18+8` | [scripts/toolchain.env](../../scripts/toolchain.env), [`.tool-versions`](../../.tool-versions) | stable LTS Java baseline for Daml and Canton tooling |
 | Python | `3.14.3` | [`.tool-versions`](../../.tool-versions) | recommended local version for repeatable bootstrap and schema validation |
-| `check-jsonschema` | `0.37.1` | [requirements-cpl-validation.txt](../../requirements-cpl-validation.txt) | strict pinned validator for `CPL v0.1` schema checks |
+| `check-jsonschema` | `0.37.1` | [requirements-cpl-validation.txt](../../requirements-cpl-validation.txt) | strict pinned validator for `CPL v0.1` inputs and `PolicyEvaluationReport` schema checks |
 
 ## Installation Policy
 
@@ -45,6 +45,6 @@ Those services must remain small and non-authoritative. Daml remains the intende
 These remain intentionally deferred until later phases:
 
 - Quickstart overlay selection and packaging details
-- report-schema validation tooling beyond `CPL v0.1`
+- additional report-schema validation tooling beyond `check-jsonschema`
 - integration-service frameworks
 - any optimizer-specific solver libraries

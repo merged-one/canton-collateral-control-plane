@@ -4,7 +4,7 @@
 
 The future system will manage confidential collateral policy, inventory, valuation, workflow, and reporting state across multiple parties. This document records the threat posture implied by the architecture package and the design areas that must remain visible as implementation begins.
 
-The current repository state now includes initial Daml workflow templates for obligations, posting, substitution, return, settlement intent, and execution reporting. Those templates make privacy and authority boundaries concrete, but they are still a skeleton layer rather than a full disclosure-profile or replay-hardening implementation.
+The current repository state now includes an initial off-ledger policy evaluation engine plus initial Daml workflow templates for obligations, posting, substitution, return, settlement intent, and execution reporting. Those surfaces make privacy, determinism, and authority boundaries concrete, but they are still a skeleton layer rather than a full disclosure-profile, replay-hardening, or adapter-integrated implementation.
 
 ## Protected Assets
 
@@ -13,6 +13,7 @@ The current repository state now includes initial Daml workflow templates for ob
 - inventory-lot and custody-account facts
 - authorization decisions and role assignments
 - valuation inputs and haircut parameters
+- policy evaluation reports and machine-readable failure reasons
 - encumbrance state
 - settlement instructions and control acknowledgments
 - execution reports and audit evidence
@@ -37,6 +38,7 @@ The current repository state now includes initial Daml workflow templates for ob
 | Optimizer or reporter treated as authority | Off-ledger services could become hidden sources of truth. | Keep workflow state authoritative on Canton and derive reports from committed state only. |
 | Non-atomic substitution or return | Coverage could be lost during workflow transitions. | Treat atomic workflow completion as a blocking invariant. |
 | Report tampering or drift | Operators could rely on incorrect evidence. | State-derived report generation and report-fidelity checks. |
+| Policy-evaluation report over-disclosure | Off-ledger reports could leak more inventory or counterparty detail than a consumer needs. | Keep report schemas explicit, add role-scoped disclosure profiles later, and avoid hidden joins to external reference data. |
 | Schema downgrade or undeclared extension | Consumers could derive different results from materially different policy documents. | Pin `cplVersion`, reject unknown fields, and validate policy documents before load. |
 | Tool-download tampering or drift | A compromised or drifting bootstrap source could change local behavior invisibly. | Pin download URLs and SHA-256 checksums and install runtime tools repo-locally. |
 | Runtime overlay drift | Demo or LocalNet shortcuts could alter behavior relative to the documented architecture. | Separate runtime concerns from business semantics and keep overlay changes explicit. |

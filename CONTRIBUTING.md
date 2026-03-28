@@ -48,6 +48,8 @@ Current baseline verification:
 ```sh
 make bootstrap
 make validate-cpl
+make policy-eval POLICY=examples/policies/central-bank-style-policy.json INVENTORY=examples/inventory/central-bank-eligible-inventory.json
+make test-policy-engine
 make daml-build
 make daml-test
 make demo-run
@@ -55,4 +57,4 @@ make docs-lint
 make verify
 ```
 
-The bootstrap installs the pinned repo-local Daml and Java toolchain under `.runtime/` and keeps CPL validation isolated in `.venv/`.
+The bootstrap installs the pinned repo-local Daml and Java toolchain under `.runtime/` and keeps CPL validation isolated in `.venv/`. The policy engine itself stays stdlib-only and validates its generated report artifact against the committed report schema.

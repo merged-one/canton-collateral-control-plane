@@ -1,7 +1,7 @@
 # Master Tracker
 
 Last Updated: 2026-03-28
-Current Phase: Milestone 1 / Phase 1 - CPL, Formal Model, Runtime Foundation, And Initial Daml Workflow Skeletons
+Current Phase: Milestone 2 / Phase 2 - Initial Policy Engine, Report Contracts, And Daml Workflow Skeletons
 
 ## Mission
 
@@ -17,7 +17,7 @@ Stand up a documentation-first C-COPE repository: a neutral Canton collateral co
 
 ## Non-Goals
 
-- shipping production business logic in this phase
+- shipping production-grade business logic in this phase
 - claiming validated economics or regulatory compliance
 - integrating with live custodians, CCPs, or central-bank platforms
 - becoming a venue, CCP, custodian, price-oracle business, or legal-document system
@@ -34,7 +34,7 @@ Stand up a documentation-first C-COPE repository: a neutral Canton collateral co
 
 ## Current Phase
 
-Milestone 1 / Phase 1 establishes the first formal policy package for the repository. The expected output is a durable `CPL v0.1` contract with machine-readable schema validation, example policy profiles, and enough versioning discipline to support later engine and workflow work without hidden policy semantics.
+Milestone 2 / Phase 2 establishes the first executable policy-decision path for the repository. The expected output is a deterministic off-ledger engine that consumes `CPL v0.1`, evaluates normalized candidate inventory, emits a machine-readable `PolicyEvaluationReport`, and stays separate from authoritative workflow state on Canton.
 
 Prompt 1 status:
 
@@ -78,19 +78,27 @@ Prompt 5 status:
 - `make daml-test` and `Bootstrap:workflowSmokeTest` now provide executable lifecycle checks against the pinned SDK
 - policy evaluation, optimization, report disclosure profiles, and external asset-adapter integrations remain separate future layers
 
+Prompt 6 status:
+
+- first deterministic `CPL v0.1` policy evaluation engine added under `app/policy-engine/`
+- engine now evaluates eligibility, haircut, lendable value, concentration, encumbrance, segregation, settlement-currency mismatch, and wrong-way-risk outcomes against normalized candidate inventory
+- machine-readable `PolicyEvaluationReport` contract published under `reports/schemas/` with spec, ADR, test plan, and generated example artifact
+- `make policy-eval` and `make test-policy-engine` now provide reproducible policy-engine evaluation and test commands
+- optimization, role-scoped `ExecutionReport` disclosure profiles, live asset adapters, and reference-data contracts remain future layers
+
 ## Next 5 Tasks
 
-1. Specify machine-readable `PolicyDecisionReport` contracts and role-scoped `ExecutionReport` disclosure profiles beyond the current workflow-party report baseline.
-2. Pin the target Quickstart release and overlay strategy that will sit on top of the current Daml and Canton baseline.
-3. Define versioned reference-data contracts for valuation, FX, custodian, and issuer facts consumed by CPL evaluation.
-4. Expand the conformance-suite matrix to cover negative, temporal, privacy, replay, and concentration scenarios against the new Daml skeleton package.
+1. Define versioned reference-data contracts for valuation, FX, custodian, issuer, and counterparty facts consumed by policy evaluation.
+2. Specify role-scoped `ExecutionReport` disclosure profiles beyond the current workflow-party report baseline.
+3. Pin the target Quickstart release and overlay strategy that will sit on top of the current Daml and Canton baseline.
+4. Expand the conformance-suite matrix to cover temporal, privacy, replay, substitution, and release scenarios on top of the new policy-engine and Daml package surfaces.
 5. Define the first asset-adapter interface that will consume `SettlementInstruction` and `EncumbranceState` contracts without collapsing workflow authority.
 
 ## Blockers
 
-- No current blocker for continued specification and contract-boundary work.
-- Implementation beyond the current Daml workflow skeletons should not proceed until the target Quickstart overlay and asset interface versions are pinned on top of the current Daml and Canton baseline.
-- Economic calibration is intentionally deferred until reference-data contracts and report contracts are specified.
+- No current blocker for continued policy-engine and report-contract work.
+- Live asset-adapter and workflow-coupled implementation beyond the current engine and Daml skeletons should not proceed until the target Quickstart overlay and asset interface versions are pinned on top of the current Daml and Canton baseline.
+- Economic calibration is intentionally deferred until reference-data contracts and richer report contracts are specified.
 - The current roadmap reflects the 2026-03-28 proposal and may need ADR-backed revision if the proposal changes materially.
 
 ## Dependency List
@@ -116,7 +124,6 @@ Target dependencies to pin in future ADRs:
 - Canton Quickstart or equivalent LocalNet bundle
 - token-standard-style asset libraries or templates
 - Daml Finance-style reference assets or adapters where applicable
-- report schema validation tooling
 - scenario-runner or conformance harness tooling
 - deterministic developer environment bootstrap tooling
 
@@ -138,6 +145,8 @@ Target dependencies to pin in future ADRs:
 - [x] Prompt 3 execution report
 - [x] pinned dependency ADRs
 - [x] initial Daml workflow skeleton package
+- [x] initial policy evaluation report contract
+- [x] initial deterministic policy evaluation engine
 - [x] executable demo artifacts
 - [x] implementation-linked tests
 
@@ -145,7 +154,7 @@ Target dependencies to pin in future ADRs:
 
 - [ ] reproducible LocalNet startup command
 - [ ] reproducible seed-data or bootstrap command
-- [ ] sample policy load command
+- [x] sample policy load command
 - [ ] end-to-end substitution or return demo command
 - [ ] machine-readable execution report generated by real workflow execution
 - [ ] operator-facing demo runbook
