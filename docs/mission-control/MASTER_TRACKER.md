@@ -5,13 +5,14 @@ Current Phase: Phase 0 - Mission Control Spine
 
 ## Mission
 
-Stand up a documentation-first Canton collateral system prototype that can safely evolve into confidential collateral policy, margin call, substitution, and margin return workflows with machine-readable execution reporting and explicit evidence.
+Stand up a documentation-first C-COPE repository: a neutral Canton collateral control-plane prototype that can safely evolve into reusable policy, optimization, workflow, and reporting components for margin, repo, securities-lending, treasury, collateral mobility, and close-out workflows.
 
 ## Scope
 
 - define repository governance, change control, and contribution rules
-- establish architecture, invariant, risk, evidence, and testing scaffolding
-- prepare for a pinned Quickstart-based LocalNet and token-standard-style asset model
+- establish proposal-aligned architecture, invariant, risk, evidence, and testing scaffolding
+- prepare for a pinned Quickstart-based LocalNet, token-standard-style asset model, and Daml workflow baseline
+- shape the repo around a reusable collateral policy language, optimizer, workflow library, and conformance suite
 - provide an auditable control spine for future implementation phases
 
 ## Non-Goals
@@ -19,20 +20,21 @@ Stand up a documentation-first Canton collateral system prototype that can safel
 - shipping production business logic in this phase
 - claiming validated economics or regulatory compliance
 - integrating with live custodians, CCPs, or central-bank platforms
+- becoming a venue, CCP, custodian, price-oracle business, or legal-document system
 - generating demo outputs without executable backing
 
 ## Architectural Pillars
 
-1. Confidential policy and workflow execution on Canton.
-2. Deterministic collateral eligibility, haircuting, and selection logic.
-3. Atomic substitution and release handling across parties.
-4. Machine-readable execution reports with auditable provenance.
-5. Separation of policy, optimization, workflow execution, and reporting.
+1. Neutral collateral control-plane design reusable across multiple Canton apps.
+2. Versioned Collateral Policy Language for eligibility, haircuting, concentration, control, and substitution rights.
+3. Deterministic policy evaluation and optimization with explanation traces.
+4. Atomic multi-party workflow execution and control semantics on Canton.
+5. Conformance, reporting, and auditability as first-class outputs.
 6. Documentation, evidence, and test traceability from the start.
 
 ## Current Phase
 
-Phase 0 establishes the mission-control spine. The expected output is an implementation-ready repository with clear rules, tracked risks, starter invariants, an ADR baseline, and lightweight verification commands.
+Phase 0 establishes the mission-control spine. The expected output is an implementation-ready repository with clear rules, tracked risks, proposal-aligned milestones, a richer invariant baseline, ADR-backed solution framing, and lightweight verification commands.
 
 Prompt 1 status:
 
@@ -40,19 +42,27 @@ Prompt 1 status:
 - baseline verification commands added
 - repository remains intentionally free of business logic pending pinned dependency and interface decisions
 
+Proposal alignment status:
+
+- repository framing updated to the C-COPE control-plane model
+- roadmap now mirrors the proposal milestone structure
+- invariants expanded toward the proposal's conformance-suite acceptance criteria
+- future proposal changes should be incorporated through ADRs rather than informal drift
+
 ## Next 5 Tasks
 
-1. Pin the target Canton Quickstart or LocalNet version and record dependency decisions.
-2. Specify integration contracts for token-standard-style assets and control state.
-3. Define the first machine-readable execution report schema and validation approach.
-4. Expand invariant-to-test traceability for margin call, substitution, and return flows.
-5. Draft Phase 1 ADRs for dependency pinning and interface boundaries.
+1. Draft `CPL v0.1` boundaries for eligibility, haircuts, concentration, encumbrance, substitution rights, and release control.
+2. Define initial policy profiles for bilateral, tri-party, CCP-style, and central-bank-style usage.
+3. Pin the target Canton Quickstart or LocalNet and asset-adapter dependencies.
+4. Specify machine-readable decision and execution report contracts plus scenario-runner expectations.
+5. Define the conformance-suite matrix, including negative-path scenarios and atomicity checks.
 
 ## Blockers
 
 - No current blocker for documentation work.
 - Implementation should not start until the target Quickstart and asset interface versions are pinned.
 - Economic calibration is intentionally deferred until policy data structures are specified.
+- The current roadmap reflects the 2026-03-28 proposal and may need ADR-backed revision if the proposal changes materially.
 
 ## Dependency List
 
@@ -67,7 +77,9 @@ Target dependencies to pin in future ADRs:
 
 - Canton Quickstart or equivalent LocalNet bundle
 - token-standard-style asset libraries or templates
+- Daml Finance-style reference assets or adapters where applicable
 - report schema validation tooling
+- scenario-runner or conformance harness tooling
 - deterministic developer environment bootstrap tooling
 
 ## Evidence Checklist
@@ -75,6 +87,7 @@ Target dependencies to pin in future ADRs:
 - [x] repository operating instructions
 - [x] master tracker and roadmap
 - [x] starter ADR set
+- [x] proposal-alignment ADR
 - [x] invariant registry skeleton
 - [x] risk register skeleton
 - [x] evidence manifest categories
@@ -109,4 +122,5 @@ Target dependencies to pin in future ADRs:
 - support tri-party-style collateral selection, valuation, and substitution workflows
 - encode CCP-style concentration and haircut controls conservatively and transparently
 - preserve confidentiality while enabling multi-party atomic workflows on Canton
+- support reuse across financing apps, derivatives apps, tokenized-asset platforms, stablecoin rails, and custodial workflows
 - emit reports that external review tooling can validate without guessing hidden state

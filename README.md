@@ -1,49 +1,57 @@
-# Canton Collateral Policy Optimization Engine
+# Canton Collateral Policy Optimization Engine (C-COPE)
 
 ## What this prototype is
 
-This repository is a documentation-first prototype for a confidential collateral management system built around Canton-style workflows. The target system will cover:
+This repository is a documentation-first prototype for C-COPE, an open-source reference standard and execution engine for collateral policy and optimization on Canton. The target system is a reusable collateral control plane for:
 
-- confidential collateral policy definition
-- margin call processing
-- collateral substitution
-- margin return and release
-- machine-readable execution reporting
+- collateral eligibility evaluation
+- haircut and lendable-value calculation
+- concentration-limit monitoring
+- encumbrance and release control
+- substitution and allocation
+- pre-positioning and mobilization
+- atomic collateral movement across workflows
+- machine-readable collateral decision and execution reporting
 
-The intended runtime shape is a Quickstart-based LocalNet with token-standard-style assets and auditable reports that can be checked against invariants, evidence, and tests.
+The intended runtime shape is a Quickstart-based LocalNet with token-standard-style assets, reference Daml workflows, and auditable reports that can be checked against invariants, evidence, and tests.
+
+Current framing note:
+This repository now reflects the development-fund proposal dated 2026-03-28. If the proposal changes later, repository-level assumptions should be revised through the mission-control process and ADRs.
 
 ## Why documentation-first
 
-Collateral policy, control, substitution, and release handling are safety-critical. Before business logic exists, this repository establishes the operating rules needed to build the prototype safely:
+Collateral policy, control, substitution, allocation, and release handling are safety-critical. Before business logic exists, this repository establishes the operating rules needed to build the prototype safely:
 
 - requirements must trace to invariants, evidence, and tests
 - significant design choices must be captured as ADRs
 - changes must leave behind reproducible commands
 - demos must be reproducible and must not contain fake success artifacts
 
-This order of work is deliberate. In a mission-critical collateral system, undocumented assumptions are defects.
+This order of work is deliberate. C-COPE spans policy, optimization, workflow, and reporting layers across multiple future apps, so undocumented assumptions would create defects at the control-plane boundary, not just in one app.
 
 ## Target High-Level Architecture
 
-The target architecture separates concerns that are often conflated in ad hoc prototypes:
+The target architecture follows the five-layer reference stack from the proposal while preserving explicit reporting and evidence boundaries:
 
-1. Policy layer
-   Versioned eligibility, haircut, concentration, and control rules.
-2. Optimization layer
-   Deterministic collateral selection and substitution proposals under policy constraints.
-3. Workflow execution layer
-   Confidential, atomic multi-party flows on Canton for pledge, substitution, and release.
-4. Reporting layer
-   Machine-readable execution reports tied to committed workflow outcomes.
-5. Evidence and control layer
-   ADRs, invariants, risk records, runbooks, and reproducible verification commands.
+1. Collateral Policy Language (CPL)
+   Versioned policy schema for eligibility, haircuting, concentration, control, substitution rights, and settlement conditions.
+2. Policy Engine
+   Deterministic evaluation of eligibility, lendable value, policy failures, and release conditions.
+3. Optimization Engine
+   Best-to-post, cheapest-to-deliver, substitution, and concentration-aware allocation with explanation traces.
+4. Workflow Library
+   Reference Daml workflows for margin call, delivery, substitution, return, close-out, and exception handling.
+5. Conformance Suite
+   Invariant catalog, scenario runner, and report-validation layer that proves actual behavior and report fidelity.
+
+Machine-readable reporting remains a separate concern across the policy, optimization, workflow, and conformance layers. Reports should explain both why a decision was made and what actually executed.
 
 This maps to established practice:
 
-- central-bank collateral frameworks separate eligibility, valuation, haircuting, control, and settlement concerns
-- tri-party repo utilities manage selection, valuation, substitution, and operational coordination
-- CCP-style controls apply conservative haircuts and concentration limits
-- Canton provides privacy-preserving, atomic workflows across multiple parties and applications
+- central-bank collateral frameworks separate eligibility, valuation, haircuting, control, pre-positioning, and settlement concerns
+- tri-party collateral utilities manage selection, valuation, substitution, and operational coordination
+- CCP-style controls apply conservative haircuts, concentration limits, and explicit exception handling
+- Canton provides privacy-preserving, party-specific, atomic workflows across multiple parties and applications
 
 ## Scope
 
@@ -51,15 +59,18 @@ Current scope:
 
 - repository governance and operating rules
 - mission-control documents and decision tracking
-- initial architecture, invariant, risk, and evidence structure
-- implementation-ready planning for LocalNet, asset, workflow, and reporting phases
+- proposal-aligned architecture, milestone, invariant, and evidence structure
+- implementation-ready planning for CPL, policy-engine, optimization, workflow, and conformance phases
+- reusable framing for margin, repo, securities-lending, treasury, and collateral-mobility workflows
 
 ## Non-Goals
 
 Current non-goals:
 
+- becoming a CCP, custodian, central-bank facility, price-oracle business, or legal-document platform
+- replacing venue-specific, repo-specific, or derivatives-specific applications
 - production-ready economic calibration
-- live integrations with custodians, CCPs, or central-bank systems
+- live integrations with custodians, CCPs, central-bank systems, or external pricing stacks
 - UI development
 - performance tuning
 - implementation of business logic in this prompt
@@ -92,8 +103,8 @@ make verify
 ## Upcoming Phases
 
 - Phase 0: documentation and mission-control spine
-- Phase 1: pinned LocalNet baseline, interface contracts, and dependency decisions
-- Phase 2: token-standard-style asset model and policy data contracts
-- Phase 3: policy evaluation and optimization specifications with invariant-linked tests
-- Phase 4: Canton workflows for margin call, substitution, and margin return
-- Phase 5: machine-readable execution reports, demo flows, and release evidence
+- Milestone 1 / Phase 1: Collateral Policy Language and formal model
+- Milestone 2 / Phase 2: Policy engine and asset adapters
+- Milestone 3 / Phase 3: Optimization and substitution engine
+- Milestone 4 / Phase 4: Atomic collateral workflows and conformance suite
+- Milestone 5 / Phase 5: Public release, demo environment, and adoption package

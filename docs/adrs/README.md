@@ -11,3 +11,4 @@ Architecture Decision Records capture durable technical and operating choices th
 ## Current ADRs
 
 - [0001-repo-principles.md](./0001-repo-principles.md)
+- [0002-c-cope-solution-shape.md](./0002-c-cope-solution-shape.md)

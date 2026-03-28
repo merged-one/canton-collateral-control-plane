@@ -19,18 +19,21 @@ This manifest defines the evidence categories required to defend changes in this
 
 | ID | Category | Artifact | Notes |
 | --- | --- | --- | --- |
-| E-0001 | Specs | [README.md](../../README.md) | initial repository mission and architecture summary |
+| E-0001 | Specs | [README.md](../../README.md) | proposal-aligned repository mission and architecture summary |
 | E-0002 | ADRs | [docs/adrs/0001-repo-principles.md](../adrs/0001-repo-principles.md) | repository principles and safety posture |
-| E-0003 | Specs | [docs/invariants/INVARIANT_REGISTRY.md](../invariants/INVARIANT_REGISTRY.md) | starter invariant taxonomy and control properties |
-| E-0004 | Specs | [docs/risks/RISK_REGISTER.md](../risks/RISK_REGISTER.md) | initial operational and architectural risk set |
-| E-0005 | Security review | [docs/security/THREAT_MODEL.md](../security/THREAT_MODEL.md) | initial threat model skeleton |
-| E-0006 | Tests | [docs/testing/TEST_STRATEGY.md](../testing/TEST_STRATEGY.md) | verification approach and traceability expectations |
-| E-0007 | Operational runbooks | [docs/runbooks/README.md](../runbooks/README.md) | runbook inventory and expectations |
-| E-0008 | Demo artifacts | [docs/evidence/prompt-01-execution-report.md](./prompt-01-execution-report.md) | reproducible Prompt 1 execution record for the documentation spine |
-| E-0009 | Code | [Makefile](../../Makefile) | baseline reproducible verification commands for the repo spine |
+| E-0003 | ADRs | [docs/adrs/0002-c-cope-solution-shape.md](../adrs/0002-c-cope-solution-shape.md) | proposal-aligned solution framing and milestone basis |
+| E-0004 | Specs | [docs/mission-control/ROADMAP.md](../mission-control/ROADMAP.md) | roadmap aligned to the current proposal milestone structure |
+| E-0005 | Specs | [docs/invariants/INVARIANT_REGISTRY.md](../invariants/INVARIANT_REGISTRY.md) | expanded invariant taxonomy and control properties |
+| E-0006 | Specs | [docs/risks/RISK_REGISTER.md](../risks/RISK_REGISTER.md) | initial operational and architectural risk set |
+| E-0007 | Security review | [docs/security/THREAT_MODEL.md](../security/THREAT_MODEL.md) | initial threat model skeleton |
+| E-0008 | Tests | [docs/testing/TEST_STRATEGY.md](../testing/TEST_STRATEGY.md) | verification approach, conformance direction, and traceability expectations |
+| E-0009 | Operational runbooks | [docs/runbooks/README.md](../runbooks/README.md) | runbook inventory and expectations |
+| E-0010 | Demo artifacts | [docs/evidence/prompt-01-execution-report.md](./prompt-01-execution-report.md) | reproducible Prompt 1 execution record for the documentation spine |
+| E-0011 | Code | [Makefile](../../Makefile) | baseline reproducible verification commands for the repo spine |
+| E-0012 | Economic rationale | [docs/adrs/0002-c-cope-solution-shape.md](../adrs/0002-c-cope-solution-shape.md) | rationale for the neutral collateral control-plane framing on Canton |
 
 ## Coverage Notes
 
 - The `Code` category is intentionally minimal because no business logic exists yet.
 - The `Demo artifacts` category currently contains execution evidence for repository setup only, not workflow demos.
-- Economic rationale references are documented at the architectural level for now and should become more concrete once policy inputs and concentration rules are specified.
+- Economic rationale is currently captured as architectural and ADR evidence rather than implementation-backed calibration evidence.
