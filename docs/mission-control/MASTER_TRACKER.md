@@ -49,13 +49,20 @@ Proposal alignment status:
 - invariants expanded toward the proposal's conformance-suite acceptance criteria
 - future proposal changes should be incorporated through ADRs rather than informal drift
 
+Prompt 2 status:
+
+- architecture boundaries defined for policy, evaluation, optimization, workflow, reporting, and runtime infrastructure
+- collateral domain model, actor model, and lifecycle states documented
+- Quickstart integration and token-standard alignment assumptions documented for future implementation
+- repository remains documentation-only pending pinned dependencies, schema design, and package boundaries
+
 ## Next 5 Tasks
 
-1. Draft `CPL v0.1` boundaries for eligibility, haircuts, concentration, encumbrance, substitution rights, and release control.
-2. Define initial policy profiles for bilateral, tri-party, CCP-style, and central-bank-style usage.
-3. Pin the target Canton Quickstart or LocalNet and asset-adapter dependencies.
-4. Specify machine-readable decision and execution report contracts plus scenario-runner expectations.
-5. Define the conformance-suite matrix, including negative-path scenarios and atomicity checks.
+1. Draft `CPL v0.1` schema and policy-package structure that matches the architecture and domain model.
+2. Pin the target Canton Quickstart release, overlay strategy, and first asset-adapter dependency set.
+3. Specify machine-readable `PolicyDecisionReport` and `ExecutionReport` contracts plus disclosure profiles.
+4. Define the first Daml package boundary for obligations, encumbrance, substitution, return, and settlement instructions.
+5. Define the conformance-suite matrix, including exception, expiry, privacy, and atomicity scenarios.
 
 ## Blockers
 
@@ -87,12 +94,14 @@ Target dependencies to pin in future ADRs:
 - [x] repository operating instructions
 - [x] master tracker and roadmap
 - [x] starter ADR set
-- [x] proposal-alignment ADR
+- [x] architecture-boundary ADR set
 - [x] invariant registry skeleton
 - [x] risk register skeleton
 - [x] evidence manifest categories
 - [x] threat model skeleton
 - [x] Prompt 1 execution report
+- [x] architecture and domain package
+- [x] Quickstart integration and token-alignment guidance
 - [ ] pinned dependency ADRs
 - [ ] executable demo artifacts
 - [ ] implementation-linked tests
@@ -124,3 +133,4 @@ Target dependencies to pin in future ADRs:
 - preserve confidentiality while enabling multi-party atomic workflows on Canton
 - support reuse across financing apps, derivatives apps, tokenized-asset platforms, stablecoin rails, and custodial workflows
 - emit reports that external review tooling can validate without guessing hidden state
+- keep third-party integration possible through stable policy, asset, workflow, and reporting interfaces
