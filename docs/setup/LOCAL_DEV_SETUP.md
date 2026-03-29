@@ -20,7 +20,7 @@ The bootstrap is intentionally repo-local. It installs the Daml SDK and JDK unde
 - `python3`
 - `rg`
 - either `shasum` or `sha256sum`
-- Docker plus Docker Compose for the Quickstart LocalNet foundation commands
+- Docker plus Docker Compose for the Quickstart LocalNet foundation commands and the full `make verify` target; `make verify-portable` does not require Docker
 
 ## Bootstrap
 
@@ -56,6 +56,7 @@ make demo-return
 make demo-substitution
 make test-conformance
 make demo-all
+make verify-portable
 make verify
 ```
 
@@ -77,7 +78,8 @@ What each command does:
 - `make demo-substitution`: run the first positive and negative end-to-end substitution scenarios and emit substitution-report artifacts
 - `make test-conformance`: run the aggregate conformance suite and emit explicit invariant pass/fail output across the three confidential workflow demos
 - `make demo-all`: build the final demo pack from the aggregate conformance output
-- `make verify`: run the full verification loop across docs, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml tests, aggregate conformance, final demo packaging, and smoke execution
+- `make verify-portable`: run the full verification loop across docs, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml tests, aggregate conformance, and final demo packaging without requiring Docker
+- `make verify`: run the full verification loop and then add the Quickstart LocalNet smoke execution on top of `make verify-portable`
 
 ## Runtime Layout
 

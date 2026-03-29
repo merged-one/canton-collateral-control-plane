@@ -70,6 +70,7 @@ def build_final_demo_pack(
             "make demo-return",
             "make test-conformance",
             "make demo-all",
+            "make verify-portable",
             "make verify",
         ],
         "demoFlows": [

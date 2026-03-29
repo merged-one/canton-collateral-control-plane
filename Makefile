@@ -5,6 +5,7 @@ RUNTIME_DIR := .runtime
 RUNTIME_ENV := $(RUNTIME_DIR)/env.sh
 BOOTSTRAP_SCRIPT := scripts/bootstrap.sh
 STATUS_SCRIPT := scripts/dev-status.sh
+VERIFY_PORTABLE_SCRIPT := scripts/verify-portable.sh
 VERIFY_SCRIPT := scripts/verify.sh
 LOCALNET_BOOTSTRAP_SCRIPT := infra/quickstart/bootstrap-localnet.sh
 LOCALNET_SMOKE_SCRIPT := scripts/run-localnet-smoke.sh
@@ -54,6 +55,7 @@ REQUIRED_DOCS := \
 	scripts/toolchain.env \
 	scripts/bootstrap.sh \
 	scripts/dev-status.sh \
+	scripts/verify-portable.sh \
 	scripts/verify.sh \
 	app/README.md \
 	app/policy-engine/cli.py \
@@ -80,8 +82,11 @@ REQUIRED_DOCS := \
 	reports/schemas/substitution-report.schema.json \
 	test/README.md \
 	test/conformance/test_conformance.py \
+	test/conformance/test_conformance_checks.py \
 	test/policy-engine/test_policy_engine.py \
 	test/optimizer/test_optimizer.py \
+	testsupport/__init__.py \
+	testsupport/fixture_builders.py \
 	examples/README.md \
 	examples/inventory/central-bank-eligible-inventory.json \
 	examples/obligations/central-bank-window-call.json \
@@ -233,7 +238,7 @@ REQUIRED_DIRS := \
 	infra \
 	docs/setup
 
-.PHONY: bootstrap localnet-bootstrap localnet-smoke docs-lint status verify validate-cpl policy-eval optimize test-policy-engine test-optimizer test-conformance daml-build daml-test demo-run demo-margin-call demo-return demo-substitution demo-all clean-runtime
+.PHONY: bootstrap localnet-bootstrap localnet-smoke docs-lint status verify-portable verify validate-cpl policy-eval optimize test-policy-engine test-optimizer test-conformance daml-build daml-test demo-run demo-margin-call demo-return demo-substitution demo-all clean-runtime
 
 $(CHECK_JSONSCHEMA): requirements-cpl-validation.txt
 	@$(PYTHON) -m venv $(VENV)
@@ -250,7 +255,7 @@ docs-lint:
 	@for dir in $(REQUIRED_DIRS); do \
 		test -d "$$dir" || { echo "docs-lint: missing directory $$dir"; exit 1; }; \
 	done
-	@for script in $(BOOTSTRAP_SCRIPT) $(STATUS_SCRIPT) $(VERIFY_SCRIPT) $(LOCALNET_BOOTSTRAP_SCRIPT) $(LOCALNET_SMOKE_SCRIPT); do \
+	@for script in $(BOOTSTRAP_SCRIPT) $(STATUS_SCRIPT) $(VERIFY_PORTABLE_SCRIPT) $(VERIFY_SCRIPT) $(LOCALNET_BOOTSTRAP_SCRIPT) $(LOCALNET_SMOKE_SCRIPT); do \
 		test -x "$$script" || { echo "docs-lint: expected executable $$script"; exit 1; }; \
 	done
 	@grep -q "^sdk-version: $(DAML_SDK_VERSION)$$" daml.yaml || { echo "docs-lint: daml.yaml sdk-version mismatch"; exit 1; }
@@ -267,6 +272,7 @@ docs-lint:
 	@grep -q "make demo-substitution" README.md || { echo "docs-lint: README missing demo-substitution command"; exit 1; }
 	@grep -q "make test-conformance" README.md || { echo "docs-lint: README missing test-conformance command"; exit 1; }
 	@grep -q "make demo-all" README.md || { echo "docs-lint: README missing demo-all command"; exit 1; }
+	@grep -q "make verify-portable" README.md || { echo "docs-lint: README missing verify-portable command"; exit 1; }
 	@grep -q "make policy-eval" README.md || { echo "docs-lint: README missing policy-eval command"; exit 1; }
 	@grep -q "make optimize" README.md || { echo "docs-lint: README missing optimize command"; exit 1; }
 	@grep -q "make test-policy-engine" README.md || { echo "docs-lint: README missing test-policy-engine command"; exit 1; }
@@ -279,6 +285,7 @@ docs-lint:
 	@grep -q "make demo-substitution" AGENTS.md || { echo "docs-lint: AGENTS missing demo-substitution command"; exit 1; }
 	@grep -q "make test-conformance" AGENTS.md || { echo "docs-lint: AGENTS missing test-conformance command"; exit 1; }
 	@grep -q "make demo-all" AGENTS.md || { echo "docs-lint: AGENTS missing demo-all command"; exit 1; }
+	@grep -q "make verify-portable" AGENTS.md || { echo "docs-lint: AGENTS missing verify-portable command"; exit 1; }
 	@grep -q "make policy-eval" AGENTS.md || { echo "docs-lint: AGENTS missing policy-eval command"; exit 1; }
 	@grep -q "make optimize" AGENTS.md || { echo "docs-lint: AGENTS missing optimize command"; exit 1; }
 	@grep -q "make test-policy-engine" AGENTS.md || { echo "docs-lint: AGENTS missing test-policy-engine command"; exit 1; }
@@ -291,6 +298,7 @@ docs-lint:
 	@grep -q "make demo-substitution" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-substitution command"; exit 1; }
 	@grep -q "make test-conformance" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing test-conformance command"; exit 1; }
 	@grep -q "make demo-all" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-all command"; exit 1; }
+	@grep -q "make verify-portable" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing verify-portable command"; exit 1; }
 	@grep -q "make optimize" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing optimize command"; exit 1; }
 	@grep -q "make test-optimizer" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing test-optimizer command"; exit 1; }
 	@grep -q "workflowSmokeTest" daml.yaml || { echo "docs-lint: daml.yaml missing workflow smoke init script"; exit 1; }
@@ -304,6 +312,7 @@ docs-lint:
 	@grep -q "make demo-substitution" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-substitution"; exit 1; }
 	@grep -q "make test-conformance" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing test-conformance"; exit 1; }
 	@grep -q "make demo-all" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-all"; exit 1; }
+	@grep -q "make verify-portable" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing verify-portable"; exit 1; }
 	@grep -q "make policy-eval" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing policy-eval"; exit 1; }
 	@grep -q "make optimize" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing optimize"; exit 1; }
 	@grep -q "make test-optimizer" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing test-optimizer"; exit 1; }
@@ -315,6 +324,7 @@ docs-lint:
 	@grep -q "make demo-substitution" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-substitution"; exit 1; }
 	@grep -q "make test-conformance" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing test-conformance"; exit 1; }
 	@grep -q "make demo-all" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-all"; exit 1; }
+	@grep -q "make verify-portable" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing verify-portable"; exit 1; }
 	@grep -q "make test-policy-engine" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing test-policy-engine"; exit 1; }
 	@grep -q "make optimize" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing optimize"; exit 1; }
 	@grep -q "make test-optimizer" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing test-optimizer"; exit 1; }
@@ -418,6 +428,9 @@ test-conformance: daml-build $(CHECK_JSONSCHEMA)
 
 status:
 	@$(STATUS_SCRIPT)
+
+verify-portable:
+	@$(VERIFY_PORTABLE_SCRIPT)
 
 daml-build: bootstrap
 	@set -e; \

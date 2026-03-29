@@ -2,6 +2,159 @@
 
 This log is append-oriented. Every task should record intent before changes and outcomes after changes.
 
+## 2026-03-29 - Test Harness Enhancements - Pre-Change
+
+Intent:
+Implement the highest-value test-structure improvements identified in the prior analysis by extracting shared Python test fixtures, adding isolated conformance-check tests, and separating always-portable verification from Docker-backed LocalNet smoke validation.
+
+Starting state:
+
+- worktree is dirty from the prior successful verification run because `WORKLOG.md` and several generated report artifacts were refreshed with current timestamps
+- the current test surface passes, but conformance helper logic is only lightly isolated, policy-engine and optimizer tests duplicate fixture mutation code, and `make verify` is environment-sensitive because it always includes `make localnet-smoke`
+
+Expected focus areas:
+
+- reduce duplicated scenario setup across `test/policy-engine/` and `test/optimizer/`
+- test conformance helper behavior directly without always depending on a full aggregate rerun
+- preserve the existing full verification path while introducing a portable verification path that does not require Docker
+- update invariants, evidence, and operator-facing documentation to reflect the improved test harness
+
+Planned commands:
+
+```sh
+make test-policy-engine
+make test-optimizer
+make test-conformance
+make docs-lint
+make verify-portable
+make verify
+git diff --check
+git status --short --branch
+```
+
+## 2026-03-29 - Test Harness Enhancements - Post-Change
+
+Outcome:
+Implemented the highest-value test-harness improvements by introducing a shared deterministic Python fixture-builder module, adding isolated conformance-helper unit tests, and separating Docker-free repository verification from the full Quickstart-aware verification path.
+
+Completed changes:
+
+- added `testsupport/fixture_builders.py` and refactored the policy-engine plus optimizer suites to consume shared deterministic fixtures instead of duplicating JSON loading and concentration-relaxation setup
+- added `test/conformance/test_conformance_checks.py` so authorization, no-double-encumbrance, atomic substitution, replay-safety, report-fidelity, and audit-trail helper logic can fail independently of a full aggregate rerun
+- added `scripts/verify-portable.sh` plus `make verify-portable` as the Docker-free baseline verification loop
+- updated `scripts/verify.sh` so `make verify` now composes `make verify-portable` and `make localnet-smoke` instead of duplicating the command sequence
+- aligned README, contributing, local setup, test strategy, conformance, invariant, evidence, tracker, AGENTS, and final-demo-pack command-surface documentation to the new verification tiers and test-harness structure
+
+Architecture and ADR note:
+
+- no ADR was added because the change refines the existing test harness and command surface within the current architecture rather than introducing a new architectural boundary or subsystem contract
+
+Commands run:
+
+```sh
+chmod +x scripts/verify-portable.sh
+make test-policy-engine
+make test-optimizer
+make test-conformance
+make docs-lint
+make verify-portable
+make verify
+git diff --check
+git status --short --branch
+```
+
+Results:
+
+- `make test-policy-engine` passed with 8 tests after the shared fixture refactor
+- `make test-optimizer` passed with 7 tests after the shared fixture refactor
+- `make test-conformance` passed with 11 tests, reflecting the original generated-suite assertions plus the new isolated helper-check unit tests
+- `make docs-lint` passed with the new `make verify-portable` documentation requirements
+- `make verify-portable` passed as the Docker-free baseline verification loop
+- `make verify` passed as the full superset, including the pinned Quickstart compose-config smoke validation
+- `git diff --check` passed with no whitespace or patch-format issues
+- `git status --short --branch` now shows the expected source, documentation, and regenerated artifact updates from the successful verification run
+
+Next step:
+Consider whether the generated report artifacts should move to deterministic timestamps or a check-only comparison mode so successful verification loops stop dirtying the worktree when no semantic behavior changed.
+
+## 2026-03-29 - Test Stabilization And Analysis - Pre-Change
+
+Intent:
+Run the repository's full test and verification surface, iterate on any failures until all checks are green, and then perform a detailed analysis of the current test structure with concrete enhancement recommendations.
+
+Starting state:
+
+- worktree is clean on `main`
+- the repository's documented verification surface includes policy-engine, optimizer, Daml, conformance, demo-pack, documentation, and aggregate verify targets
+
+Expected focus areas:
+
+- diagnose and fix any regressions that block the documented test commands from passing
+- preserve deterministic behavior and existing evidence generation semantics while repairing failures
+- assess layering, duplication, gaps, fixture reuse, and traceability across the current test surface after the suite is green
+
+Planned commands:
+
+```sh
+make test-policy-engine
+make test-optimizer
+make daml-test
+make test-conformance
+make demo-all
+make docs-lint
+make verify
+git diff --check
+git status --short --branch
+```
+
+## 2026-03-29 - Test Stabilization And Analysis - Post-Change
+
+Outcome:
+Executed the repository's documented verification surface end to end, confirmed that the policy-engine, optimizer, Daml workflow, conformance, demo-pack, documentation, and aggregate verification targets all pass, and completed a follow-on analysis of the current test structure and upgrade opportunities.
+
+Observed issue and resolution:
+
+- `make verify` initially failed in the `localnet-smoke` leg because the Docker daemon was not running
+- confirmed the failure with `docker info` and the upstream Quickstart `make check-docker` gate
+- started Docker Desktop locally, re-ran `make localnet-smoke`, and then re-ran `make verify` successfully
+- no repository source-code or business-logic fix was required; the failure was environmental and the repo-side smoke gate behaved correctly
+
+Commands run:
+
+```sh
+make test-policy-engine
+make test-optimizer
+make daml-test
+make test-conformance
+make demo-all
+make docs-lint
+make verify
+make localnet-smoke
+docker info
+git diff --check
+git status --short --branch
+```
+
+Results:
+
+- `make test-policy-engine` passed with 8 unit tests plus report-schema validation
+- `make test-optimizer` passed with 7 unit tests plus report-schema validation
+- `make daml-test` passed and the three lifecycle scripts completed successfully on the IDE ledger
+- `make test-conformance` passed and regenerated the aggregate conformance report plus supporting evidence
+- `make demo-all` passed and regenerated the final demo pack
+- `make docs-lint` passed
+- `make verify` passed after Docker Desktop was started, including the pinned Quickstart compose-config smoke path
+- `git diff --check` passed with no whitespace or patch-format issues
+- `git status --short --branch` shows the worklog update plus refreshed generated report artifacts with current timestamps from the successful verification run
+
+Follow-up analysis focus:
+
+- the current suite is strong on deterministic scenario assertions and evidence-backed demo verification
+- the next highest-value improvements are fixture extraction, more isolated conformance-check tests, portable versus Docker-backed verification tiers, and a strategy for timestamped generated artifacts that currently dirty the worktree on successful reruns
+
+Next step:
+Convert the current evidence-first test surface into a more maintainable harness by extracting shared builders, adding isolated tests for conformance-check helpers and report contracts, and separating always-portable verification from environment-dependent LocalNet smoke validation.
+
 ## 2026-03-28 - Prompt 12 - Pre-Change
 
 Intent:

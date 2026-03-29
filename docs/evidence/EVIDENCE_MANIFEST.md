@@ -118,6 +118,9 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0097 | Demo artifacts | [reports/generated/conformance-suite-report.json](../../reports/generated/conformance-suite-report.json) | real aggregate invariant pass/fail output from `make test-conformance` |
 | E-0098 | Demo artifacts | [reports/generated/final-demo-pack.json](../../reports/generated/final-demo-pack.json) | real final packaged prototype evidence index from `make demo-all` |
 | E-0099 | Demo artifacts | [docs/evidence/prompt-12-execution-report.md](./prompt-12-execution-report.md) | reproducible Prompt 12 execution record for the conformance suite and final demo pack |
+| E-0100 | Tests | [test/conformance/test_conformance_checks.py](../../test/conformance/test_conformance_checks.py) | isolated unit assertions over conformance helper rules so report-level and rule-level regressions can fail independently |
+| E-0101 | Code | [testsupport/fixture_builders.py](../../testsupport/fixture_builders.py) | shared deterministic fixture builders for the Python policy-engine and optimizer suites |
+| E-0102 | Code | [scripts/verify-portable.sh](../../scripts/verify-portable.sh) | Docker-free portable verification loop that preserves the full Quickstart smoke gate as a separate superset |
 
 ## Coverage Notes
 
@@ -127,3 +130,4 @@ This manifest defines the evidence categories required to defend changes in this
 - The evidence set now records the rename to "Canton Collateral Control Plane" as a semantic clarification of the same subsystem stack rather than a new product direction.
 - The evidence set now includes an explicit third-party integration guide and a reviewer-facing demo artifact index so future Canton projects can consume the prototype through declared interfaces instead of reverse-engineering incidental file shapes.
 - Economic rationale is now architecture-, control-, and optimization-objective-oriented rather than calibration-backed.
+- The test evidence set now distinguishes shared deterministic fixture builders, isolated conformance-helper checks, and portable versus Docker-backed verification command surfaces.

@@ -1,6 +1,6 @@
 # Master Tracker
 
-Last Updated: 2026-03-28
+Last Updated: 2026-03-29
 Current Phase: Milestone 5 / Phase 5 - Final Conformance And Demo Package
 
 ## Mission
@@ -76,7 +76,7 @@ Prompt 3 status:
 Prompt 4 status:
 
 - Daml runtime foundation pinned to Daml SDK `2.10.4`, Canton `2.10.4`, and Temurin JDK `17.0.18+8`
-- repo-local bootstrap, status, build, demo, and verify commands published under `Makefile` and `scripts/`
+- repo-local bootstrap, status, build, demo, portable-verify, and full-verify commands published under `Makefile` and `scripts/`
 - minimal executable Daml package added under `daml/` to prove compile-and-run readiness without collateral business logic
 - future service-layer code now has reserved `app/`, `reports/`, `test/`, `examples/`, and `infra/` surfaces
 
@@ -135,6 +135,7 @@ Prompt 12 status:
 - aggregate conformance suite added under `app/orchestration/` and `test/conformance/`
 - `make test-conformance` now re-runs the confidential margin-call, substitution, and return demos, emits a machine-readable `ConformanceSuiteReport`, and proves authorization, determinism, haircut correctness, no double-encumbrance, atomic substitution, replay safety, report fidelity, and audit completeness
 - `make demo-all` now packages the confidential workflow demos, conformance output, artifact index, and third-party integration guidance into one machine-readable final demo pack plus Markdown summary
+- the Python test harness now includes shared deterministic fixture builders, isolated conformance-helper unit tests, and a Docker-free `make verify-portable` path while `make verify` remains the full Quickstart-aware superset
 - the final package still runs on the Daml IDE ledger because the Quickstart deployment bridge remains a separate runtime task
 
 ## Next 5 Tasks

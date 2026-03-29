@@ -5,30 +5,29 @@ from pathlib import Path
 
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
 sys.path.insert(0, str(REPO_ROOT / "app/policy-engine"))
 
-from evaluator import evaluate_policy, load_json  # noqa: E402
+from evaluator import evaluate_policy  # noqa: E402
+from testsupport.fixture_builders import (  # noqa: E402
+    inventory_with_candidate_indexes,
+    load_inventory_fixture,
+    load_policy_fixture,
+    relaxed_policy_fixture,
+)
 
 
 class PolicyEngineTest(unittest.TestCase):
     maxDiff = None
 
     def load_policy(self, name: str) -> dict:
-        return load_json(REPO_ROOT / "examples/policies" / name)
+        return load_policy_fixture(name)
 
     def load_inventory(self) -> dict:
-        return load_json(
-            REPO_ROOT / "examples/inventory/central-bank-eligible-inventory.json"
-        )
+        return load_inventory_fixture()
 
     def relaxed_policy(self, name: str) -> dict:
-        policy = self.load_policy(name)
-        for limit in policy["concentrationLimits"]:
-            if limit["threshold"]["metric"] == "ABSOLUTE_MARKET_VALUE":
-                limit["threshold"]["value"] = 10**12
-            else:
-                limit["threshold"]["value"] = 1
-        return policy
+        return relaxed_policy_fixture(name)
 
     def asset_result(self, report: dict, lot_id: str) -> dict:
         for asset in report["assetResults"]:
@@ -42,8 +41,7 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_eligible_asset(self) -> None:
         policy = self.relaxed_policy("central-bank-style-policy.json")
-        inventory = self.load_inventory()
-        inventory["candidateLots"] = [inventory["candidateLots"][0]]
+        inventory = inventory_with_candidate_indexes(0)
 
         report = evaluate_policy(policy, inventory)
         asset = self.asset_result(report, "cb-lot-001")
@@ -55,8 +53,7 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_ineligible_issuer(self) -> None:
         policy = self.relaxed_policy("central-bank-style-policy.json")
-        inventory = self.load_inventory()
-        inventory["candidateLots"] = [copy.deepcopy(inventory["candidateLots"][0])]
+        inventory = inventory_with_candidate_indexes(0)
         inventory["candidateLots"][0]["issuerId"] = "bad-issuer"
 
         report = evaluate_policy(policy, inventory)
@@ -68,8 +65,7 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_haircut_application(self) -> None:
         policy = self.relaxed_policy("central-bank-style-policy.json")
-        inventory = self.load_inventory()
-        inventory["candidateLots"] = [copy.deepcopy(inventory["candidateLots"][0])]
+        inventory = inventory_with_candidate_indexes(0)
         inventory["candidateLots"][0]["marketValue"] = 400000.0
         inventory["candidateLots"][0]["nominalValue"] = 420000.0
         inventory["candidateLots"][0]["outstandingPrincipal"] = 410000.0
@@ -85,9 +81,8 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_currency_mismatch_haircut(self) -> None:
         policy = self.relaxed_policy("bilateral-csa-style-policy.json")
-        inventory = self.load_inventory()
+        inventory = inventory_with_candidate_indexes(0)
         inventory["evaluationContext"]["settlementCurrency"] = "USD"
-        inventory["candidateLots"] = [copy.deepcopy(inventory["candidateLots"][0])]
         lot = inventory["candidateLots"][0]
         lot["assetClass"] = "CORPORATE_BOND"
         lot["issueType"] = "SENIOR_UNSECURED"
@@ -121,12 +116,7 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_concentration_limit_breach(self) -> None:
         policy = self.load_policy("central-bank-style-policy.json")
-        inventory = self.load_inventory()
-        inventory["candidateLots"] = [
-            copy.deepcopy(inventory["candidateLots"][0]),
-            copy.deepcopy(inventory["candidateLots"][0]),
-            copy.deepcopy(inventory["candidateLots"][1]),
-        ]
+        inventory = inventory_with_candidate_indexes(0, 0, 1)
         inventory["candidateLots"][0]["lotId"] = "breach-lot-001"
         inventory["candidateLots"][0]["marketValue"] = 500000.0
         inventory["candidateLots"][0]["nominalValue"] = 500000.0
@@ -156,8 +146,7 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_wrong_way_risk_exclusion(self) -> None:
         policy = self.relaxed_policy("bilateral-csa-style-policy.json")
-        inventory = self.load_inventory()
-        inventory["candidateLots"] = [copy.deepcopy(inventory["candidateLots"][0])]
+        inventory = inventory_with_candidate_indexes(0)
         lot = inventory["candidateLots"][0]
         lot["assetClass"] = "CORPORATE_BOND"
         lot["issueType"] = "SENIOR_UNSECURED"
@@ -183,8 +172,7 @@ class PolicyEngineTest(unittest.TestCase):
 
     def test_encumbrance_restriction_failure(self) -> None:
         policy = self.relaxed_policy("central-bank-style-policy.json")
-        inventory = self.load_inventory()
-        inventory["candidateLots"] = [copy.deepcopy(inventory["candidateLots"][0])]
+        inventory = inventory_with_candidate_indexes(0)
         inventory["candidateLots"][0]["isEncumbered"] = True
 
         report = evaluate_policy(policy, inventory)
