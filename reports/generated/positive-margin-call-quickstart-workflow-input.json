@@ -1,0 +1,15 @@
+{
+  "scenarioId": "positive-margin-call-quickstart",
+  "obligationId": "quickstart-demo-obligation-101",
+  "postingId": "quickstart-demo-posting-101",
+  "providerParty": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a",
+  "securedParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "custodianParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "selectedLotIds": [
+    "quickstart-demo-lot-101",
+    "quickstart-demo-lot-102",
+    "quickstart-demo-lot-103",
+    "quickstart-demo-lot-104"
+  ],
+  "workflowGate": "PREPARE_FOR_ADAPTER"
+}

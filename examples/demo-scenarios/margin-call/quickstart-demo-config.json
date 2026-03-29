@@ -1,0 +1,89 @@
+{
+  "demoId": "margin-call-quickstart",
+  "demoVersion": "0.1.0",
+  "scenarios": [
+    {
+      "scenarioId": "positive-margin-call-quickstart",
+      "mode": "POSITIVE",
+      "description": "The Control Plane evaluates policy, optimizes the posting set, executes the posting workflow on Quickstart, hands the resulting settlement instruction to the reference token adapter, and produces a final execution report.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "quickstart-positive-inventory.json",
+      "obligation": "quickstart-positive-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "runAdapter": true,
+      "quickstartScenarioManifest": "../../../infra/quickstart/scenarios/confidential-margin-demo-positive-scenario.json",
+      "workflowGate": "PREPARE_FOR_ADAPTER",
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "POST_NEW_SET",
+        "selectedLotIds": [
+          "quickstart-demo-lot-101",
+          "quickstart-demo-lot-102",
+          "quickstart-demo-lot-103",
+          "quickstart-demo-lot-104"
+        ],
+        "workflowMarginCallState": "Closed",
+        "workflowPostingState": "PendingSettlement",
+        "workflowGate": "PREPARE_FOR_ADAPTER",
+        "workflowSettlementInstructionState": "PendingSettlement",
+        "minimumExecutionReportCount": 1,
+        "adapterPostingStateAfterConfirmation": "Closed",
+        "adapterSettledInstructionState": "Settled",
+        "adapterReceiptStatus": "EXECUTED",
+        "adapterMovementCount": 4,
+        "reasonCodes": []
+      }
+    },
+    {
+      "scenarioId": "negative-ineligible-asset-quickstart",
+      "mode": "NEGATIVE",
+      "description": "The policy rejects an ineligible equity lot before Quickstart workflow or adapter execution begins.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "quickstart-negative-ineligible-inventory.json",
+      "obligation": "quickstart-negative-ineligible-obligation.json",
+      "runOptimization": false,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "REJECT",
+        "reasonCodes": [
+          "ASSET_CLASS_NOT_ELIGIBLE"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "mode": "NEGATIVE",
+      "description": "Policy and optimization pass, but the secured party rejects the posting on Quickstart and the adapter does not move any collateral.",
+      "policy": "../../policies/central-bank-style-policy.json",
+      "inventory": "quickstart-negative-workflow-inventory.json",
+      "obligation": "quickstart-negative-workflow-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "runAdapter": false,
+      "quickstartScenarioManifest": "../../../infra/quickstart/scenarios/confidential-margin-demo-rejected-scenario.json",
+      "workflowGate": "REJECT_BY_SECURED_PARTY",
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "POST_NEW_SET",
+        "selectedLotIds": [
+          "quickstart-demo-lot-201",
+          "quickstart-demo-lot-202",
+          "quickstart-demo-lot-203",
+          "quickstart-demo-lot-204"
+        ],
+        "workflowMarginCallState": "Closed",
+        "workflowPostingState": "Rejected",
+        "workflowGate": "REJECT_BY_SECURED_PARTY",
+        "workflowSettlementInstructionState": null,
+        "minimumExecutionReportCount": 2,
+        "adapterBlockedPostingState": "Rejected",
+        "reasonCodes": [
+          "WORKFLOW_REJECTED"
+        ]
+      }
+    }
+  ]
+}

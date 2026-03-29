@@ -1,0 +1,52 @@
+{
+  "executionReports": [{
+    "eventStates": ["Closed"],
+    "outcome": "ExecutionCommitted",
+    "eventIds": ["quickstart-demo-call-101-margin-call-issued"],
+    "summary": "margin call obligation issued without additional approval",
+    "workflowType": "MarginCallWorkflow",
+    "reportId": "quickstart-demo-call-101-report"
+  }],
+  "executionReportCount": 1,
+  "workflowGate": "PREPARE_FOR_ADAPTER",
+  "settlementInstructionState": "PendingSettlement",
+  "obligationId": "quickstart-demo-obligation-101",
+  "scenarioId": "positive-margin-call-quickstart",
+  "steps": [{
+    "actor": "secured-party",
+    "step": 1,
+    "state": "Closed",
+    "phase": "MARGIN_CALL",
+    "detail": "secured party issued the seeded Quickstart margin call without additional approval"
+  }, {
+    "actor": "provider",
+    "step": 2,
+    "state": "UnderEvaluation",
+    "phase": "POSTING",
+    "detail": "provider started posting evaluation on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 3,
+    "state": "PendingApproval",
+    "phase": "POSTING",
+    "detail": "provider recorded a feasible posting path on Quickstart"
+  }, {
+    "actor": "secured-party",
+    "step": 4,
+    "state": "PendingApproval",
+    "phase": "POSTING",
+    "detail": "secured party approved the Quickstart posting path"
+  }, {
+    "actor": "custodian",
+    "step": 5,
+    "state": "PendingSettlement",
+    "phase": "POSTING",
+    "detail": "custodian approved the Quickstart posting path and exposed the settlement instruction"
+  }],
+  "marginCallState": "Closed",
+  "postingId": "quickstart-demo-posting-101",
+  "postingState": "PendingSettlement",
+  "settlementInstructionId": "quickstart-demo-posting-correlation-101-instruction",
+  "encumberedLotIds": [],
+  "selectedLotIds": ["quickstart-demo-lot-101", "quickstart-demo-lot-102", "quickstart-demo-lot-103", "quickstart-demo-lot-104"]
+}

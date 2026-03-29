@@ -6,7 +6,7 @@
 sdk-version: 2.10.4
 name: canton-collateral-control-plane
 source: daml
-version: 0.1.5
+version: 0.1.6
 dependencies:
   - daml-prim
   - daml-stdlib

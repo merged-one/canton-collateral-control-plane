@@ -1,0 +1,98 @@
+{
+  "scenarioId": "quickstart-demo-margin-101",
+  "obligationId": "quickstart-demo-obligation-101",
+  "postingId": "quickstart-demo-posting-101",
+  "obligationCorrelationId": "quickstart-demo-call-101",
+  "postingCorrelationId": "quickstart-demo-posting-correlation-101",
+  "policyVersion": "cpl-v0.1-quickstart-demo",
+  "snapshotId": "quickstart-demo-snapshot-2026-03-29",
+  "decisionReference": "quickstart-demo-decision-trace-101",
+  "requiredCoverage": 560000.0,
+  "uncoveredAmount": 560000.0,
+  "dueAt": "2030-01-15T16:00:00Z",
+  "operator": {
+    "partyHint": "controlplane-operator-quickstart-demo-101",
+    "displayName": "Control Plane Operator Demo 101",
+    "userId": "control-plane-operator-demo-101"
+  },
+  "custodian": {
+    "partyHint": "controlplane-custodian-quickstart-demo-101",
+    "displayName": "Control Plane Custodian Demo 101",
+    "userId": "control-plane-custodian-demo-101",
+    "reuseSecuredPartyHostedIdentity": true
+  },
+  "selectedLots": [
+    {
+      "lotId": "quickstart-demo-lot-101",
+      "assetId": "ust-2027-01",
+      "issuer": "UST",
+      "assetClass": "SovereignDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/us-treasury",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "custody-provider-quickstart-demo-101",
+      "quantity": 30.0,
+      "sourceAccount": "custody-provider-quickstart-demo-101",
+      "destinationAccount": "secured-account-quickstart-demo-101"
+    },
+    {
+      "lotId": "quickstart-demo-lot-102",
+      "assetId": "kfw-2029-01",
+      "issuer": "KFW",
+      "assetClass": "AgencyDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/kfw",
+      "jurisdiction": "DE",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "custody-provider-quickstart-demo-101",
+      "quantity": 30.0,
+      "sourceAccount": "custody-provider-quickstart-demo-101",
+      "destinationAccount": "secured-account-quickstart-demo-101"
+    },
+    {
+      "lotId": "quickstart-demo-lot-103",
+      "assetId": "eib-2030-01",
+      "issuer": "EIB",
+      "assetClass": "SupranationalDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/eib",
+      "jurisdiction": "FR",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "custody-provider-quickstart-demo-101",
+      "quantity": 20.0,
+      "sourceAccount": "custody-provider-quickstart-demo-101",
+      "destinationAccount": "secured-account-quickstart-demo-101"
+    },
+    {
+      "lotId": "quickstart-demo-lot-104",
+      "assetId": "fannie-2028-01",
+      "issuer": "FANNIE_MAE",
+      "assetClass": "AgencyDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/fannie-mae",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "custody-provider-quickstart-demo-101",
+      "quantity": 20.0,
+      "sourceAccount": "custody-provider-quickstart-demo-101",
+      "destinationAccount": "secured-account-quickstart-demo-101"
+    }
+  ]
+}

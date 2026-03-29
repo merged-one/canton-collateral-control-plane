@@ -3,6 +3,7 @@
 ## Overview
 
 - Execution report: `reports/generated/margin-call-demo-execution-report.json`
+- Runtime mode: `IDE_LEDGER`
 - Scenario count: `4`
 - Primary policy evaluation artifact: `reports/generated/positive-margin-call-policy-evaluation-report.json`
 
@@ -25,7 +26,7 @@
 | REPT-001 | PASS | `reports/generated/positive-margin-call-workflow-result.json`, `reports/generated/positive-margin-call-policy-evaluation-report.json`, `reports/generated/positive-margin-call-optimization-report.json` | The execution report references real workflow, policy, and optimization artifacts rather than operator-authored placeholders. |
 | EXCP-001 | PASS | `reports/generated/negative-ineligible-asset-policy-evaluation-report.json`, `reports/generated/negative-insufficient-lendable-value-policy-evaluation-report.json`, `reports/generated/negative-expired-policy-window-policy-evaluation-report.json` | The negative scenarios fail with explicit reason codes for ineligible collateral, insufficient lendable value, and an expired policy window. |
 
-## Positive Workflow Path
+## Positive Path
 
 - Recommended action: `POST_NEW_SET`
 - Selected lots: `mc-lot-001, mc-lot-002, mc-lot-003, mc-lot-004`

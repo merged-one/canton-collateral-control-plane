@@ -95,6 +95,7 @@
       "required": [
         "demoId",
         "demoVersion",
+        "runtimeMode",
         "command",
         "manifestPath",
         "outputDirectory",
@@ -111,8 +112,19 @@
           "type": "string",
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
         },
+        "runtimeMode": {
+          "type": "string",
+          "enum": [
+            "IDE_LEDGER",
+            "QUICKSTART"
+          ]
+        },
         "command": {
-          "const": "make demo-margin-call"
+          "type": "string",
+          "enum": [
+            "make demo-margin-call",
+            "make demo-margin-call-quickstart"
+          ]
         },
         "manifestPath": {
           "$ref": "#/$defs/pathString"
@@ -172,10 +184,16 @@
         "optimizationReportPath",
         "workflowInputPath",
         "workflowResultPath",
+        "quickstartSeedReceiptPath",
+        "adapterExecutionReportPath",
+        "adapterStatusPath",
+        "workflowRuntime",
         "policyDecision",
         "optimizationStatus",
         "recommendedAction",
         "selectedLotIds",
+        "blockedPhase",
+        "adapterOutcome",
         "workflow"
       ],
       "properties": {
@@ -231,6 +249,35 @@
             "null"
           ]
         },
+        "quickstartSeedReceiptPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapterExecutionReportPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapterStatusPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workflowRuntime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "IDE_LEDGER",
+            "QUICKSTART",
+            null
+          ]
+        },
         "policyDecision": {
           "type": "string",
           "enum": [
@@ -266,6 +313,31 @@
         },
         "selectedLotIds": {
           "$ref": "#/$defs/stringArray"
+        },
+        "blockedPhase": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "POLICY_EVALUATION",
+            "OPTIMIZATION",
+            "WORKFLOW",
+            "ADAPTER",
+            null
+          ]
+        },
+        "adapterOutcome": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "EXECUTED",
+            "BLOCKED",
+            "NOT_REQUESTED",
+            null
+          ]
         },
         "workflow": {
           "type": [
@@ -354,35 +426,55 @@
     "workflowResult": {
       "type": "object",
       "additionalProperties": false,
-      "required": [
-        "scenarioId",
-        "obligationId",
-        "marginCallState",
-        "postingState",
+        "required": [
+          "scenarioId",
+          "obligationId",
+          "marginCallState",
+          "postingState",
         "selectedLotIds",
         "encumberedLotIds",
         "executionReportCount",
         "executionReports",
         "steps"
       ],
-      "properties": {
-        "scenarioId": {
-          "$ref": "#/$defs/identifier"
-        },
-        "obligationId": {
-          "$ref": "#/$defs/identifier"
-        },
-        "marginCallState": {
-          "type": "string",
-          "minLength": 1
-        },
-        "postingState": {
-          "type": "string",
-          "minLength": 1
-        },
-        "selectedLotIds": {
-          "$ref": "#/$defs/stringArray"
-        },
+        "properties": {
+          "scenarioId": {
+            "$ref": "#/$defs/identifier"
+          },
+          "obligationId": {
+            "$ref": "#/$defs/identifier"
+          },
+          "postingId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "workflowGate": {
+            "type": "string",
+            "minLength": 1
+          },
+          "marginCallState": {
+            "type": "string",
+            "minLength": 1
+          },
+          "postingState": {
+            "type": "string",
+            "minLength": 1
+          },
+          "settlementInstructionId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "settlementInstructionState": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "selectedLotIds": {
+            "$ref": "#/$defs/stringArray"
+          },
         "encumberedLotIds": {
           "$ref": "#/$defs/stringArray"
         },
@@ -436,13 +528,16 @@
           "enum": [
             "POLICY_EVALUATION",
             "OPTIMIZATION",
-            "WORKFLOW"
+            "QUICKSTART_SEED",
+            "WORKFLOW",
+            "ADAPTER"
           ]
         },
         "status": {
           "type": "string",
           "enum": [
-            "COMPLETED"
+            "COMPLETED",
+            "SKIPPED"
           ]
         },
         "startedAt": {

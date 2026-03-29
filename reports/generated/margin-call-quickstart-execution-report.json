@@ -1,0 +1,447 @@
+{
+  "$schema": "../../reports/schemas/execution-report.schema.json",
+  "reportType": "ExecutionReport",
+  "reportVersion": "0.1.0",
+  "executionId": "exr-9bc26ea5d960c241",
+  "generatedAt": "2026-03-29T23:32:01Z",
+  "overallStatus": "PASS",
+  "demo": {
+    "demoId": "margin-call-quickstart",
+    "demoVersion": "0.1.0",
+    "runtimeMode": "QUICKSTART",
+    "command": "make demo-margin-call-quickstart",
+    "manifestPath": "examples/demo-scenarios/margin-call/quickstart-demo-config.json",
+    "outputDirectory": "reports/generated",
+    "primaryPolicyEvaluationArtifact": "reports/generated/positive-margin-call-quickstart-policy-evaluation-report.json",
+    "scenarioCount": 3,
+    "positiveScenarioCount": 1,
+    "negativeScenarioCount": 2
+  },
+  "artifacts": {
+    "executionReportPath": "reports/generated/margin-call-quickstart-execution-report.json",
+    "markdownSummaryPath": "reports/generated/margin-call-quickstart-summary.md",
+    "timelinePath": "reports/generated/margin-call-quickstart-timeline.md"
+  },
+  "scenarios": [
+    {
+      "scenarioId": "positive-margin-call-quickstart",
+      "mode": "POSITIVE",
+      "description": "The Control Plane evaluates policy, optimizes the posting set, executes the posting workflow on Quickstart, hands the resulting settlement instruction to the reference token adapter, and produces a final execution report.",
+      "result": "SUCCESS",
+      "summary": "Policy accepted the candidate set, the optimizer recommended POST_NEW_SET, the Quickstart workflow issued the call and prepared a settlement instruction, and the reference token adapter settled lots quickstart-demo-lot-101, quickstart-demo-lot-102, quickstart-demo-lot-103, quickstart-demo-lot-104.",
+      "observedReasonCodes": [],
+      "expectedReasonCodes": [],
+      "policyEvaluationReportPath": "reports/generated/positive-margin-call-quickstart-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/positive-margin-call-quickstart-optimization-report.json",
+      "workflowInputPath": "reports/generated/positive-margin-call-quickstart-workflow-input.json",
+      "workflowResultPath": "reports/generated/positive-margin-call-quickstart-workflow-result.json",
+      "quickstartSeedReceiptPath": "reports/generated/positive-margin-call-quickstart/localnet-control-plane-seed-receipt.json",
+      "adapterExecutionReportPath": "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-execution-report.json",
+      "adapterStatusPath": "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-status.json",
+      "workflowRuntime": "QUICKSTART",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "POST_NEW_SET",
+      "selectedLotIds": [
+        "quickstart-demo-lot-101",
+        "quickstart-demo-lot-102",
+        "quickstart-demo-lot-103",
+        "quickstart-demo-lot-104"
+      ],
+      "blockedPhase": null,
+      "adapterOutcome": "EXECUTED",
+      "workflow": {
+        "executionReports": [
+          {
+            "eventStates": [
+              "Closed"
+            ],
+            "outcome": "ExecutionCommitted",
+            "eventIds": [
+              "quickstart-demo-call-101-margin-call-issued"
+            ],
+            "summary": "margin call obligation issued without additional approval",
+            "workflowType": "MarginCallWorkflow",
+            "reportId": "quickstart-demo-call-101-report"
+          }
+        ],
+        "executionReportCount": 1,
+        "workflowGate": "PREPARE_FOR_ADAPTER",
+        "settlementInstructionState": "PendingSettlement",
+        "obligationId": "quickstart-demo-obligation-101",
+        "scenarioId": "positive-margin-call-quickstart",
+        "steps": [
+          {
+            "actor": "secured-party",
+            "step": 1,
+            "state": "Closed",
+            "phase": "MARGIN_CALL",
+            "detail": "secured party issued the seeded Quickstart margin call without additional approval"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "UnderEvaluation",
+            "phase": "POSTING",
+            "detail": "provider started posting evaluation on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "PendingApproval",
+            "phase": "POSTING",
+            "detail": "provider recorded a feasible posting path on Quickstart"
+          },
+          {
+            "actor": "secured-party",
+            "step": 4,
+            "state": "PendingApproval",
+            "phase": "POSTING",
+            "detail": "secured party approved the Quickstart posting path"
+          },
+          {
+            "actor": "custodian",
+            "step": 5,
+            "state": "PendingSettlement",
+            "phase": "POSTING",
+            "detail": "custodian approved the Quickstart posting path and exposed the settlement instruction"
+          }
+        ],
+        "marginCallState": "Closed",
+        "postingId": "quickstart-demo-posting-101",
+        "postingState": "PendingSettlement",
+        "settlementInstructionId": "quickstart-demo-posting-correlation-101-instruction",
+        "encumberedLotIds": [],
+        "selectedLotIds": [
+          "quickstart-demo-lot-101",
+          "quickstart-demo-lot-102",
+          "quickstart-demo-lot-103",
+          "quickstart-demo-lot-104"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-ineligible-asset-quickstart",
+      "mode": "NEGATIVE",
+      "description": "The policy rejects an ineligible equity lot before Quickstart workflow or adapter execution begins.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation blocked the scenario with decision REJECT and reason codes ASSET_CLASS_NOT_ELIGIBLE, HAIRCUT_RULE_NOT_FOUND, ISSUER_NOT_ON_ALLOW_LIST, ISSUER_RATING_BELOW_MINIMUM, ISSUER_TYPE_NOT_ALLOWED, ISSUE_TYPE_NOT_ELIGIBLE.",
+      "observedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE",
+        "HAIRCUT_RULE_NOT_FOUND",
+        "ISSUER_NOT_ON_ALLOW_LIST",
+        "ISSUER_RATING_BELOW_MINIMUM",
+        "ISSUER_TYPE_NOT_ALLOWED",
+        "ISSUE_TYPE_NOT_ELIGIBLE"
+      ],
+      "expectedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-ineligible-asset-quickstart-policy-evaluation-report.json",
+      "optimizationReportPath": null,
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
+      "policyDecision": "REJECT",
+      "optimizationStatus": null,
+      "recommendedAction": null,
+      "selectedLotIds": [],
+      "blockedPhase": "POLICY_EVALUATION",
+      "adapterOutcome": null,
+      "workflow": null
+    },
+    {
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "mode": "NEGATIVE",
+      "description": "Policy and optimization pass, but the secured party rejects the posting on Quickstart and the adapter does not move any collateral.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy and optimization stayed admissible, but the Quickstart workflow blocked the path in posting state Rejected and the adapter surface remained at 0 receipts.",
+      "observedReasonCodes": [
+        "WORKFLOW_REJECTED"
+      ],
+      "expectedReasonCodes": [
+        "WORKFLOW_REJECTED"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-workflow-rejected-quickstart-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/negative-workflow-rejected-quickstart-optimization-report.json",
+      "workflowInputPath": "reports/generated/negative-workflow-rejected-quickstart-workflow-input.json",
+      "workflowResultPath": "reports/generated/negative-workflow-rejected-quickstart-workflow-result.json",
+      "quickstartSeedReceiptPath": "reports/generated/negative-workflow-rejected-quickstart/localnet-control-plane-seed-receipt.json",
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": "reports/generated/negative-workflow-rejected-quickstart/localnet-reference-token-adapter-status.json",
+      "workflowRuntime": "QUICKSTART",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "POST_NEW_SET",
+      "selectedLotIds": [
+        "quickstart-demo-lot-201",
+        "quickstart-demo-lot-202",
+        "quickstart-demo-lot-203",
+        "quickstart-demo-lot-204"
+      ],
+      "blockedPhase": "WORKFLOW",
+      "adapterOutcome": "BLOCKED",
+      "workflow": {
+        "executionReports": [
+          {
+            "eventStates": [
+              "Closed"
+            ],
+            "outcome": "ExecutionCommitted",
+            "eventIds": [
+              "quickstart-demo-call-201-margin-call-issued"
+            ],
+            "summary": "margin call obligation issued without additional approval",
+            "workflowType": "MarginCallWorkflow",
+            "reportId": "quickstart-demo-call-201-report"
+          },
+          {
+            "eventStates": [
+              "Rejected"
+            ],
+            "outcome": "ExecutionRejected",
+            "eventIds": [
+              "quickstart-demo-posting-correlation-201-posting-rejected"
+            ],
+            "summary": "secured party rejected the posting before adapter execution",
+            "workflowType": "PostingWorkflow",
+            "reportId": "quickstart-demo-posting-correlation-201-report"
+          }
+        ],
+        "executionReportCount": 2,
+        "workflowGate": "REJECT_BY_SECURED_PARTY",
+        "settlementInstructionState": null,
+        "obligationId": "quickstart-demo-obligation-201",
+        "scenarioId": "negative-workflow-rejected-quickstart",
+        "steps": [
+          {
+            "actor": "secured-party",
+            "step": 1,
+            "state": "Closed",
+            "phase": "MARGIN_CALL",
+            "detail": "secured party issued the seeded Quickstart margin call without additional approval"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "UnderEvaluation",
+            "phase": "POSTING",
+            "detail": "provider started posting evaluation on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "PendingApproval",
+            "phase": "POSTING",
+            "detail": "provider recorded a feasible posting path on Quickstart"
+          },
+          {
+            "actor": "secured-party",
+            "step": 4,
+            "state": "Rejected",
+            "phase": "POSTING",
+            "detail": "secured party rejected the posting on Quickstart before any adapter action"
+          }
+        ],
+        "marginCallState": "Closed",
+        "postingId": "quickstart-demo-posting-201",
+        "postingState": "Rejected",
+        "settlementInstructionId": null,
+        "encumberedLotIds": [],
+        "selectedLotIds": [
+          "quickstart-demo-lot-201",
+          "quickstart-demo-lot-202",
+          "quickstart-demo-lot-203",
+          "quickstart-demo-lot-204"
+        ]
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "sequence": 1,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call-quickstart",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:18:22Z",
+      "finishedAt": "2026-03-29T23:18:22Z",
+      "artifactPath": "reports/generated/positive-margin-call-quickstart-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for positive scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 2,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call-quickstart",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:18:22Z",
+      "finishedAt": "2026-03-29T23:18:22Z",
+      "artifactPath": "reports/generated/positive-margin-call-quickstart-optimization-report.json",
+      "detail": "Optimized collateral for scenario positive-margin-call-quickstart with recommendation POST_NEW_SET."
+    },
+    {
+      "sequence": 3,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call-quickstart",
+      "phase": "QUICKSTART_SEED",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:18:22Z",
+      "finishedAt": "2026-03-29T23:21:20Z",
+      "artifactPath": "reports/generated/positive-margin-call-quickstart/localnet-control-plane-seed-receipt.json",
+      "detail": "Seeded or reused the declared Quickstart scenario for positive-margin-call-quickstart before workflow execution."
+    },
+    {
+      "sequence": 4,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call-quickstart",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:21:20Z",
+      "finishedAt": "2026-03-29T23:22:41Z",
+      "artifactPath": "reports/generated/positive-margin-call-quickstart-workflow-result.json",
+      "detail": "Advanced the Quickstart margin-call workflow for scenario positive-margin-call-quickstart through gate PREPARE_FOR_ADAPTER."
+    },
+    {
+      "sequence": 5,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-margin-call-quickstart",
+      "phase": "ADAPTER",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:22:41Z",
+      "finishedAt": "2026-03-29T23:25:56Z",
+      "artifactPath": "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-execution-report.json",
+      "detail": "Executed the reference token adapter for scenario positive-margin-call-quickstart and confirmed workflow settlement on Quickstart."
+    },
+    {
+      "sequence": 6,
+      "scenarioSequence": 2,
+      "scenarioId": "negative-ineligible-asset-quickstart",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:25:56Z",
+      "finishedAt": "2026-03-29T23:25:56Z",
+      "artifactPath": "reports/generated/negative-ineligible-asset-quickstart-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
+    },
+    {
+      "sequence": 7,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:25:56Z",
+      "finishedAt": "2026-03-29T23:25:57Z",
+      "artifactPath": "reports/generated/negative-workflow-rejected-quickstart-policy-evaluation-report.json",
+      "detail": "Evaluated candidate inventory for negative scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 8,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:25:57Z",
+      "finishedAt": "2026-03-29T23:25:57Z",
+      "artifactPath": "reports/generated/negative-workflow-rejected-quickstart-optimization-report.json",
+      "detail": "Optimized collateral for scenario negative-workflow-rejected-quickstart with recommendation POST_NEW_SET."
+    },
+    {
+      "sequence": 9,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "phase": "QUICKSTART_SEED",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:25:57Z",
+      "finishedAt": "2026-03-29T23:28:48Z",
+      "artifactPath": "reports/generated/negative-workflow-rejected-quickstart/localnet-control-plane-seed-receipt.json",
+      "detail": "Seeded or reused the declared Quickstart scenario for negative-workflow-rejected-quickstart before workflow execution."
+    },
+    {
+      "sequence": 10,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-29T23:28:48Z",
+      "finishedAt": "2026-03-29T23:30:08Z",
+      "artifactPath": "reports/generated/negative-workflow-rejected-quickstart-workflow-result.json",
+      "detail": "Advanced the Quickstart margin-call workflow for scenario negative-workflow-rejected-quickstart through gate REJECT_BY_SECURED_PARTY."
+    },
+    {
+      "sequence": 11,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-workflow-rejected-quickstart",
+      "phase": "ADAPTER",
+      "status": "SKIPPED",
+      "startedAt": "2026-03-29T23:30:08Z",
+      "finishedAt": "2026-03-29T23:32:01Z",
+      "artifactPath": "reports/generated/negative-workflow-rejected-quickstart/localnet-reference-token-adapter-status.json",
+      "detail": "Did not invoke the adapter for scenario negative-workflow-rejected-quickstart because the workflow ended in posting state Rejected."
+    }
+  ],
+  "invariantChecks": [
+    {
+      "invariantId": "PDR-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-quickstart-policy-evaluation-report.json"
+      ],
+      "note": "The positive Quickstart path policy report was generated from declared policy and inventory inputs."
+    },
+    {
+      "invariantId": "ALLOC-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-quickstart-optimization-report.json"
+      ],
+      "note": "The optimizer produced a deterministic selected-lot recommendation that matched the declared Quickstart seed scenario."
+    },
+    {
+      "invariantId": "WF-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-quickstart/localnet-control-plane-seed-receipt.json",
+        "reports/generated/positive-margin-call-quickstart-workflow-result.json",
+        "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-execution-report.json"
+      ],
+      "note": "The Quickstart-backed workflow issued the call, prepared the settlement instruction, and then closed the posting path only through Canton workflow confirmation."
+    },
+    {
+      "invariantId": "ADAPT-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-quickstart-workflow-result.json",
+        "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-execution-report.json",
+        "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-status.json"
+      ],
+      "note": "The reference token adapter consumed the Quickstart workflow handoff artifact, executed the asset-side move, and emitted auditable receipts without bypassing workflow authority."
+    },
+    {
+      "invariantId": "REPT-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-margin-call-quickstart-policy-evaluation-report.json",
+        "reports/generated/positive-margin-call-quickstart-optimization-report.json",
+        "reports/generated/positive-margin-call-quickstart-workflow-result.json",
+        "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-execution-report.json",
+        "reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-status.json"
+      ],
+      "note": "The Quickstart execution report references real policy, optimization, workflow, and adapter artifacts rather than operator-authored placeholders."
+    },
+    {
+      "invariantId": "EXCP-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/negative-ineligible-asset-quickstart-policy-evaluation-report.json",
+        "reports/generated/negative-workflow-rejected-quickstart-policy-evaluation-report.json",
+        "reports/generated/negative-workflow-rejected-quickstart-workflow-result.json",
+        "reports/generated/negative-workflow-rejected-quickstart/localnet-reference-token-adapter-status.json"
+      ],
+      "note": "The negative Quickstart scenarios blocked either before workflow execution or at workflow gating and did not fabricate downstream adapter success."
+    }
+  ]
+}

@@ -2,6 +2,130 @@
 
 This log is append-oriented. Every task should record intent before changes and outcomes after changes.
 
+## 2026-03-29 - Prompt 16 Quickstart Margin-Call End-To-End - Pre-Change
+
+Intent:
+Upgrade the confidential margin-call demo so the positive path executes end to end through policy evaluation, optimization, Quickstart-backed workflow execution, the reference token adapter, and final execution reporting, while negative paths continue to block cleanly without fabricated downstream success.
+
+Task summary:
+
+- refactor the existing margin-call orchestration into an explicit Quickstart mode that can prepare the LocalNet, run the declared positive path against the deployed Control Plane package, invoke the reference token adapter, and collect subordinate artifact paths into one machine-readable execution report
+- add or update a reproducible `make demo-margin-call-quickstart` command that ensures the LocalNet and package prerequisites are ready, runs the positive end-to-end path, and fails nonzero on genuine workflow or adapter failure
+- expand margin-call artifact generation so the execution report references real policy, optimization, workflow, and adapter artifacts and so at least one negative scenario proves the adapter does not run when policy or workflow gating blocks execution
+- update tracker, invariants, evidence, runbooks, specs, setup, and any required architecture or ADR surfaces so the new Quickstart-backed margin-call posture and remaining substitution and return gaps are explicit
+
+Expected affected files:
+
+- `Makefile`
+- `app/orchestration/margin_call_demo.py`
+- `app/orchestration/cli.py`
+- new or updated Quickstart orchestration helpers under `scripts/`
+- generated margin-call artifacts under `reports/generated/`
+- `reports/schemas/execution-report.schema.json` if the expanded artifact linkage requires contract updates
+- `infra/quickstart/scenarios/confidential-margin-scenario.json` only if the seeded scenario needs additional workflow handoff metadata
+- relevant Daml modules under `daml/CantonCollateral/` only if Quickstart workflow execution or reporting helpers need to expose a real margin-call result surface separate from the standalone adapter path
+- `docs/runbooks/MARGIN_CALL_DEMO_RUNBOOK.md`
+- `docs/integration/LOCALNET_DEMO_PLAN.md`
+- `docs/specs/EXECUTION_REPORT_SPEC.md`
+- `docs/specs/POLICY_EVALUATION_REPORT_SPEC.md`
+- `docs/specs/OPTIMIZATION_REPORT_SPEC.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-16-execution-report.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/WORKLOG.md`
+- additional docs only where needed to keep the new Quickstart margin-call command and artifact surfaces consistent
+
+Risk assessment:
+
+- the orchestration could accidentally claim Quickstart-backed workflow or adapter success by reusing stale seeded or adapter artifacts instead of tying the report to the current run
+- negative-path handling could become misleading if the adapter surface is invoked or reported after a policy, optimization, or workflow gate has already failed
+- Quickstart preparation logic could become too implicit if the new command silently depends on external state without making deployment, seeding, and adapter prerequisites reproducible
+- a widened execution report contract could weaken report fidelity if subordinate artifact references are optional or no longer align with the actual positive and negative path results
+
+Acceptance criteria:
+
+- `make demo-margin-call-quickstart` exists, is documented, and fails nonzero on real Quickstart, workflow, or adapter failure
+- the positive margin-call path now runs through real Quickstart-backed workflow execution and the reference token adapter rather than stopping at the IDE ledger
+- the generated execution report references real policy, optimization, workflow, and adapter artifacts produced by the same run
+- at least one negative scenario proves no adapter movement occurs when policy or workflow gating fails and the report reflects the blocked path accurately
+- relevant checks, docs, invariants, and evidence are updated and captured
+
+## 2026-03-29 - Prompt 16 Quickstart Margin-Call End-To-End - Post-Change
+
+Outcome:
+Upgraded the confidential margin-call demo so the Quickstart-backed path now runs end to end through policy evaluation, optimization, Quickstart workflow preparation, the reference token adapter, and final execution reporting, with negative paths that block cleanly and do not fabricate adapter success.
+
+Completed changes:
+
+- added the Quickstart runtime mode and report-contract expansion in `app/orchestration/margin_call_demo.py`, `app/orchestration/cli.py`, and `reports/schemas/execution-report.schema.json`
+- added the Quickstart workflow-preparation layer with `daml/CantonCollateral/QuickstartMarginCall.daml` and `scripts/localnet-run-margin-call-workflow.sh`
+- added dedicated Quickstart margin-call scenario manifests and declared LocalNet seed manifests for:
+  - one positive Quickstart-backed end-to-end margin-call path
+  - one policy-blocked negative path
+  - one workflow-rejected negative path that proves no adapter movement occurs
+- updated `make demo-margin-call-quickstart` so it starts or reuses the LocalNet, deploys the Control Plane DAR when needed, runs the Quickstart-backed positive and negative margin-call scenarios, validates the generated execution report, and fails nonzero on genuine runtime failure
+- expanded the generated artifact surface so the Quickstart execution report now references real policy, optimization, workflow, seed, adapter, and blocked-path status artifacts
+- added ADR 0019 and aligned tracker, runbooks, specs, setup, testing, invariants, risks, threat model, evidence, README, and command-surface docs with the new Quickstart-backed margin-call chain
+- bumped the shared Daml package version from `0.1.5` to `0.1.6` after the first Quickstart rerun surfaced a real `KNOWN_PACKAGE_VERSION` conflict on the running participant
+
+Commands run:
+
+```sh
+sh -n scripts/localnet-run-margin-call-workflow.sh
+sh -n scripts/localnet-run-token-adapter.sh
+sh -n scripts/localnet-seed-demo.sh
+sh -n scripts/localnet-status-control-plane.sh
+python3 -m py_compile app/orchestration/margin_call_demo.py app/orchestration/cli.py
+make daml-build
+make demo-margin-call
+make demo-margin-call-quickstart
+make docs-lint
+git diff --check
+```
+
+Results:
+
+- the shell syntax checks passed for the new Quickstart workflow-preparation script and the related seed, status, and adapter scripts
+- the Python bytecode check passed for the margin-call orchestration and CLI modules
+- `make daml-build` passed and built the shared Control Plane DAR before the Quickstart package-version bump and again through the Quickstart runtime bridge after the bump
+- the first `make demo-margin-call-quickstart` attempt failed with Quickstart HTTP `400` code `KNOWN_PACKAGE_VERSION`, proving the new command fails nonzero on a real package-deployment conflict instead of fabricating success
+- after bumping the shared Daml package version to `0.1.6`, `make demo-margin-call` passed and regenerated `reports/generated/margin-call-demo-execution-report.json` plus supporting IDE-ledger artifacts
+- after the package-version fix, `make demo-margin-call-quickstart` passed and validated `reports/generated/margin-call-quickstart-execution-report.json` with execution id `exr-9bc26ea5d960c241`
+- the Quickstart deployment receipt now records `.daml/dist-quickstart/canton-collateral-control-plane-0.1.6.dar` with package id `ae41ef524a90248a1d0e48368a15dadda5347f8af32fb4e173cfcaab157380c7`
+- the positive Quickstart scenario produced and linked:
+  - `reports/generated/positive-margin-call-quickstart-policy-evaluation-report.json`
+  - `reports/generated/positive-margin-call-quickstart-optimization-report.json`
+  - `reports/generated/positive-margin-call-quickstart-workflow-input.json`
+  - `reports/generated/positive-margin-call-quickstart-workflow-result.json`
+  - `reports/generated/positive-margin-call-quickstart/localnet-control-plane-seed-receipt.json`
+  - `reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-execution-report.json`
+  - `reports/generated/positive-margin-call-quickstart/localnet-reference-token-adapter-status.json`
+- the positive Quickstart workflow result proved:
+  - margin-call state `Closed`
+  - posting state `PendingSettlement` before adapter confirmation
+  - workflow gate `PREPARE_FOR_ADAPTER`
+  - settlement instruction `quickstart-demo-posting-correlation-101-instruction`
+  - selected lots `quickstart-demo-lot-101`, `quickstart-demo-lot-102`, `quickstart-demo-lot-103`, and `quickstart-demo-lot-104`
+- the positive adapter execution report proved:
+  - receipt `quickstart-demo-margin-101-reference-token-receipt`
+  - receipt status `EXECUTED`
+  - four real lot movements into `secured-account-quickstart-demo-101`
+  - posting state `Closed` after workflow confirmation
+  - settlement instruction state `Settled` after workflow confirmation
+  - four pledged encumbrances after confirmation
+- the negative ineligible Quickstart scenario blocked at `POLICY_EVALUATION` and emitted no workflow or adapter artifacts
+- the negative workflow-rejected Quickstart scenario produced policy, optimization, workflow, seed, and blocked adapter-status artifacts but no adapter execution report, and the blocked adapter-status artifact proved:
+  - posting state `Rejected`
+  - provider-visible adapter receipt count `0`
+  - provider-visible holding count `0`
+  - provider-visible encumbrance count `0`
+- `make docs-lint` passed after the ADR, tracker, runbook, spec, evidence, and command-surface updates
+- `git diff --check` passed with no whitespace or patch-format issues
+
+Next step:
+Extend the same Quickstart-backed workflow-plus-adapter discipline to substitution and return, then narrow the current workflow-party and provider-visible report surfaces into explicit role-scoped disclosure profiles.
+
 ## 2026-03-29 - Prompt 15 Reference Token Adapter Path - Pre-Change
 
 Intent:

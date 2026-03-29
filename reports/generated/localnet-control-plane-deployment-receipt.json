@@ -1,9 +1,9 @@
 {
-  "generatedAtUTC": "2026-03-29T20:50:24Z",
+  "generatedAtUTC": "2026-03-29T23:18:22Z",
   "quickstartCommit": "fe56d460af650b71b8e20098b3e76693397a8bf9",
   "quickstartWorkdir": "/Users/charlesdusek/Code/canton-collateral-control-plane/.runtime/localnet/cn-quickstart",
-  "darFile": "/Users/charlesdusek/Code/canton-collateral-control-plane/.daml/dist-quickstart/canton-collateral-control-plane-0.1.2.dar",
-  "packageId": "0c3c64ce3a3980e3eee18a9f7159403d6f63e021b92e1e12fdf49c990f0449ac",
+  "darFile": "/Users/charlesdusek/Code/canton-collateral-control-plane/.daml/dist-quickstart/canton-collateral-control-plane-0.1.6.dar",
+  "packageId": "ae41ef524a90248a1d0e48368a15dadda5347f8af32fb4e173cfcaab157380c7",
   "onboardingContainer": "control-plane-splice-onboarding",
   "participants": [
     "app-provider",

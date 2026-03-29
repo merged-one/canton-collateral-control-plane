@@ -14,6 +14,7 @@ The report exists to support:
 
 - operator review of best-to-post and substitution decisions
 - workflow-layer consumption of advisory optimization output without collapsing authority boundaries
+- Quickstart-backed margin-call orchestration that must hand an explicit selected-lot set into the workflow-preparation and adapter chain
 - legal, audit, and control review of deterministic explanation traces
 - reproducible negative-path evidence for shortfall and concentration-blocked scenarios
 
@@ -130,4 +131,4 @@ The current optimizer does not yet cover:
 - consent, notice-period, or settlement-window enforcement in the search objective
 - production-scale optimization heuristics beyond the current deterministic exhaustive subset search
 
-Those remain future layers for reference-data contracts, workflow execution, and conformance expansion.
+Those remain future layers for reference-data contracts, workflow execution, and conformance expansion. The current Quickstart-backed margin-call demo therefore consumes `OptimizationReport` as an advisory but explicit handoff artifact rather than as a hidden selection shortcut.

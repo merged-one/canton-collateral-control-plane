@@ -54,9 +54,9 @@ What this command does:
 
 The current default successful deployment proof shows:
 
-- DAR file: `.daml/dist-quickstart/canton-collateral-control-plane-0.1.5.dar`
-- package id: `7fb85f0678a49f3a07f3e4bf7233aeec7bbfbdce53f1bddd58d97d24b86b7ee6`
-- onboarding container: `control-plane-splice-onboarding`
+- a generated DAR under `.daml/dist-quickstart/`
+- the package id recorded in `reports/generated/localnet-control-plane-deployment-receipt.json`
+- onboarding container `control-plane-splice-onboarding`
 
 ## Seed
 

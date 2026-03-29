@@ -1,0 +1,69 @@
+{
+  "inventorySetId": "margin-call-quickstart-negative-ineligible-inventory",
+  "inventoryVersion": "1.0.0",
+  "evaluationContext": {
+    "asOf": "2026-04-15T14:00:00Z",
+    "settlementCurrency": "USD",
+    "valuationCurrency": "USD",
+    "providerIssuerIds": [
+      "dealer-a"
+    ],
+    "exposureCounterparties": [
+      {
+        "role": "PLEDGOR",
+        "partyId": "dealer-a",
+        "issuerIds": [
+          "dealer-a"
+        ],
+        "groupIds": [
+          "dealer-group"
+        ],
+        "country": "US"
+      },
+      {
+        "role": "SECURED_PARTY",
+        "partyId": "quickstart-secured-party",
+        "issuerIds": [
+          "quickstart-secured-party"
+        ],
+        "groupIds": [
+          "quickstart-secured-group"
+        ],
+        "country": "US"
+      }
+    ]
+  },
+  "candidateLots": [
+    {
+      "lotId": "quickstart-demo-ineligible-lot-301",
+      "assetId": "quickstart-equity-301",
+      "assetClass": "EQUITY",
+      "issueType": "EQUITY",
+      "issuerId": "dealer-a-equity",
+      "issuerType": "CORPORATE",
+      "issuerGroupIds": [
+        "dealer-group"
+      ],
+      "longTermRating": "BBB",
+      "currency": "USD",
+      "issuanceJurisdiction": "US",
+      "riskJurisdiction": "US",
+      "custodianId": "new-york-fed",
+      "custodyJurisdiction": "US",
+      "accountType": "CENTRAL_BANK_ACCOUNT",
+      "isSegregated": true,
+      "hasControlAgreement": true,
+      "isInternalCustody": false,
+      "isEncumbered": false,
+      "isReuseOfReceivedCollateral": false,
+      "freeAllocationPercent": 1.0,
+      "segregationType": "CENTRAL_BANK_RESTRICTED",
+      "accountDesignation": "pledge-window-account",
+      "thirdPartyAcknowledgementReceived": true,
+      "marketValue": 1000000.0,
+      "nominalValue": 1000000.0,
+      "outstandingPrincipal": 1000000.0,
+      "residualMaturityDays": 30
+    }
+  ]
+}

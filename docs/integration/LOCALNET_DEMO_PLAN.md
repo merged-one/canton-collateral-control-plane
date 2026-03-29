@@ -6,7 +6,7 @@ Turn the current repository into a real confidential-collateral demo on top of a
 
 ## Current Implemented Layer
 
-The repository now implements Stage 0, Stage 1, Stage 2, and the seeded-state portion of Stage 3:
+The repository now implements Stage 0, Stage 1, Stage 2, Stage 3, and the posting-focused portion of Stage 4:
 
 - pinned upstream CN Quickstart checkout at commit `fe56d460af650b71b8e20098b3e76693397a8bf9`
 - repo-owned `.env.local` overlay profiles under `infra/quickstart/overlay/`
@@ -17,12 +17,16 @@ The repository now implements Stage 0, Stage 1, Stage 2, and the seeded-state po
 - reproducible isolated overlay start through `make localnet-start-control-plane`
 - reproducible scenario seeding through `make localnet-seed-demo`
 - reproducible Quickstart status evidence through `make localnet-status-control-plane`
+- reproducible Quickstart margin-call workflow handoff through `make localnet-run-margin-call-workflow`
+- reproducible Quickstart-backed reference token adapter execution through `make localnet-run-token-adapter`
+- reproducible Quickstart-backed end-to-end margin-call orchestration through `make demo-margin-call-quickstart`
 - documented operator path that can still stay with upstream `make check-docker`, `make build`, `make start`, and `make status` when direct upstream debugging is needed
 
 This prompt does not yet:
 
-- move assets through a token-standard-style application
-- execute a full Quickstart-backed workflow that emits an `ExecutionReport`
+- execute substitution or return through the same Quickstart-backed chain
+- expose role-scoped report profiles on top of the current workflow-party and provider-visible baseline
+- provide broader custodian or issuer adapters beyond the reference token posting path
 
 ## Staged Delivery
 
@@ -53,16 +57,17 @@ Status: implemented
 
 ### Stage 3: Confidential Collateral Seed Scenario
 
-Status: seeded-state implementation complete, workflow execution still deferred
+Status: implemented through seeded state plus posting-focused workflow execution
 
 - seed a minimal but real scenario covering collateral provider, secured party, custodian, and optional operator roles
 - load one obligation, provider inventory provenance, and one posting intent without bypassing workflow authority
 - capture ledger-returned contract identifiers and provider-visible status from committed Canton state
-- still defer the first Quickstart-backed `ExecutionReport` and settlement-intent trace
+- emit the first Quickstart-backed `ExecutionReport` and settlement-intent trace for the margin-call posting path
+- prove a blocked workflow gate that does not trigger adapter movement
 
 ### Stage 4: Cross-App Demo Extensions
 
-Status: deferred
+Status: reference posting-path implementation complete; broader extensions deferred
 
 - attach one token-standard-style issuer or wallet path
 - attach one custodian or control adapter path
@@ -78,7 +83,7 @@ Status: deferred
 | LocalNet start | real repo-owned wrapper over the upstream compose stack | keeps upstream runtime ownership explicit while giving the repository a reproducible startup command |
 | Control Plane package load | real | the repo now builds and uploads a Quickstart-compatible DAR through the documented bridge |
 | Confidential seed state | real | the repo now allocates scenario roles, seeds real contracts, and captures provider-visible status on Quickstart |
-| Asset movement | mocked as future adapter work | avoids fake settlement or fake token movement in the main execution path |
+| Asset movement | real for the reference token posting path, deferred for broader flows | the repository now proves one narrow adapter path without claiming a complete custodian or issuer integration surface |
 
 ## Integration Hooks For Other Canton Projects
 
@@ -102,6 +107,10 @@ make localnet-deploy-dar
 make localnet-start-control-plane
 make localnet-seed-demo
 make localnet-status-control-plane
+make localnet-run-margin-call-workflow
+make localnet-run-token-adapter
+make localnet-adapter-status
+make demo-margin-call-quickstart
 ```
 
 From the staged upstream checkout after bootstrap:
@@ -121,4 +130,5 @@ make status
 - at least one confidential collateral scenario is seeded and inspectable on Quickstart
 - at least one token-standard-style asset path can be loaded through a real adapter
 - at least one collateral posting or substitution scenario emits a real machine-readable `ExecutionReport`
+- at least one negative path proves the adapter does not move collateral when policy or workflow gates fail
 - all assumptions, mocks, and deferred surfaces remain explicit in operator documentation

@@ -9,6 +9,7 @@ Current contents:
 - `test/optimizer/` for deterministic best-to-post, substitution, concentration, and no-solution scenarios
 - `testsupport/` for shared deterministic Python fixture builders used across the policy-engine and optimizer suites
 - `make demo-margin-call` as the current executable conformance path for end-to-end positive and negative margin-call scenarios
+- `make demo-margin-call-quickstart` as the Quickstart-backed executable conformance path for end-to-end positive and negative margin-call scenarios plus adapter-boundary checks
 - `make demo-substitution` as the executable conformance path for end-to-end positive and negative substitution scenarios
 - `make test-conformance` as the aggregate invariant-verification path across margin call, substitution, and return
 

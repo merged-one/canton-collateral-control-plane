@@ -1,0 +1,53 @@
+{
+  "executionReports": [{
+    "eventStates": ["Closed"],
+    "outcome": "ExecutionCommitted",
+    "eventIds": ["quickstart-demo-call-201-margin-call-issued"],
+    "summary": "margin call obligation issued without additional approval",
+    "workflowType": "MarginCallWorkflow",
+    "reportId": "quickstart-demo-call-201-report"
+  }, {
+    "eventStates": ["Rejected"],
+    "outcome": "ExecutionRejected",
+    "eventIds": ["quickstart-demo-posting-correlation-201-posting-rejected"],
+    "summary": "secured party rejected the posting before adapter execution",
+    "workflowType": "PostingWorkflow",
+    "reportId": "quickstart-demo-posting-correlation-201-report"
+  }],
+  "executionReportCount": 2,
+  "workflowGate": "REJECT_BY_SECURED_PARTY",
+  "settlementInstructionState": null,
+  "obligationId": "quickstart-demo-obligation-201",
+  "scenarioId": "negative-workflow-rejected-quickstart",
+  "steps": [{
+    "actor": "secured-party",
+    "step": 1,
+    "state": "Closed",
+    "phase": "MARGIN_CALL",
+    "detail": "secured party issued the seeded Quickstart margin call without additional approval"
+  }, {
+    "actor": "provider",
+    "step": 2,
+    "state": "UnderEvaluation",
+    "phase": "POSTING",
+    "detail": "provider started posting evaluation on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 3,
+    "state": "PendingApproval",
+    "phase": "POSTING",
+    "detail": "provider recorded a feasible posting path on Quickstart"
+  }, {
+    "actor": "secured-party",
+    "step": 4,
+    "state": "Rejected",
+    "phase": "POSTING",
+    "detail": "secured party rejected the posting on Quickstart before any adapter action"
+  }],
+  "marginCallState": "Closed",
+  "postingId": "quickstart-demo-posting-201",
+  "postingState": "Rejected",
+  "settlementInstructionId": null,
+  "encumberedLotIds": [],
+  "selectedLotIds": ["quickstart-demo-lot-201", "quickstart-demo-lot-202", "quickstart-demo-lot-203", "quickstart-demo-lot-204"]
+}

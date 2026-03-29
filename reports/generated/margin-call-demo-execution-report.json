@@ -2,12 +2,13 @@
   "$schema": "../../reports/schemas/execution-report.schema.json",
   "reportType": "ExecutionReport",
   "reportVersion": "0.1.0",
-  "executionId": "exr-763400d6e09fb191",
-  "generatedAt": "2026-03-29T17:07:02Z",
+  "executionId": "exr-435672b468867fb5",
+  "generatedAt": "2026-03-29T23:15:31Z",
   "overallStatus": "PASS",
   "demo": {
     "demoId": "margin-call-prototype",
     "demoVersion": "0.1.0",
+    "runtimeMode": "IDE_LEDGER",
     "command": "make demo-margin-call",
     "manifestPath": "examples/demo-scenarios/margin-call/demo-config.json",
     "outputDirectory": "reports/generated",
@@ -34,6 +35,10 @@
       "optimizationReportPath": "reports/generated/positive-margin-call-optimization-report.json",
       "workflowInputPath": "reports/generated/positive-margin-call-workflow-input.json",
       "workflowResultPath": "reports/generated/positive-margin-call-workflow-result.json",
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": "IDE_LEDGER",
       "policyDecision": "ACCEPT",
       "optimizationStatus": "OPTIMAL",
       "recommendedAction": "POST_NEW_SET",
@@ -43,6 +48,8 @@
         "mc-lot-003",
         "mc-lot-004"
       ],
+      "blockedPhase": null,
+      "adapterOutcome": "BLOCKED",
       "workflow": {
         "executionReports": [
           {
@@ -189,10 +196,16 @@
       "optimizationReportPath": null,
       "workflowInputPath": null,
       "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
       "policyDecision": "REJECT",
       "optimizationStatus": null,
       "recommendedAction": null,
       "selectedLotIds": [],
+      "blockedPhase": "POLICY_EVALUATION",
+      "adapterOutcome": null,
       "workflow": null
     },
     {
@@ -212,10 +225,16 @@
       "optimizationReportPath": "reports/generated/negative-insufficient-lendable-value-optimization-report.json",
       "workflowInputPath": null,
       "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
       "policyDecision": "ACCEPT",
       "optimizationStatus": "NO_SOLUTION",
       "recommendedAction": "NO_SOLUTION",
       "selectedLotIds": [],
+      "blockedPhase": "OPTIMIZATION",
+      "adapterOutcome": null,
       "workflow": null
     },
     {
@@ -234,10 +253,16 @@
       "optimizationReportPath": null,
       "workflowInputPath": null,
       "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
       "policyDecision": "REJECT",
       "optimizationStatus": null,
       "recommendedAction": null,
       "selectedLotIds": [],
+      "blockedPhase": "POLICY_EVALUATION",
+      "adapterOutcome": null,
       "workflow": null
     }
   ],
@@ -248,8 +273,8 @@
       "scenarioId": "positive-margin-call",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:00Z",
-      "finishedAt": "2026-03-29T17:07:00Z",
+      "startedAt": "2026-03-29T23:15:27Z",
+      "finishedAt": "2026-03-29T23:15:28Z",
       "artifactPath": "reports/generated/positive-margin-call-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for positive scenario with overall decision ACCEPT."
     },
@@ -259,8 +284,8 @@
       "scenarioId": "positive-margin-call",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:00Z",
-      "finishedAt": "2026-03-29T17:07:00Z",
+      "startedAt": "2026-03-29T23:15:28Z",
+      "finishedAt": "2026-03-29T23:15:28Z",
       "artifactPath": "reports/generated/positive-margin-call-optimization-report.json",
       "detail": "Optimized collateral for scenario positive-margin-call with recommendation POST_NEW_SET."
     },
@@ -270,8 +295,8 @@
       "scenarioId": "positive-margin-call",
       "phase": "WORKFLOW",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:00Z",
-      "finishedAt": "2026-03-29T17:07:02Z",
+      "startedAt": "2026-03-29T23:15:28Z",
+      "finishedAt": "2026-03-29T23:15:30Z",
       "artifactPath": "reports/generated/positive-margin-call-workflow-result.json",
       "detail": "Recorded the Daml margin-call and posting path for scenario positive-margin-call."
     },
@@ -281,8 +306,8 @@
       "scenarioId": "negative-ineligible-asset",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:02Z",
-      "finishedAt": "2026-03-29T17:07:02Z",
+      "startedAt": "2026-03-29T23:15:30Z",
+      "finishedAt": "2026-03-29T23:15:30Z",
       "artifactPath": "reports/generated/negative-ineligible-asset-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
     },
@@ -292,8 +317,8 @@
       "scenarioId": "negative-insufficient-lendable-value",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:02Z",
-      "finishedAt": "2026-03-29T17:07:02Z",
+      "startedAt": "2026-03-29T23:15:30Z",
+      "finishedAt": "2026-03-29T23:15:30Z",
       "artifactPath": "reports/generated/negative-insufficient-lendable-value-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for negative scenario with overall decision ACCEPT."
     },
@@ -303,8 +328,8 @@
       "scenarioId": "negative-insufficient-lendable-value",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:02Z",
-      "finishedAt": "2026-03-29T17:07:02Z",
+      "startedAt": "2026-03-29T23:15:30Z",
+      "finishedAt": "2026-03-29T23:15:30Z",
       "artifactPath": "reports/generated/negative-insufficient-lendable-value-optimization-report.json",
       "detail": "Optimized collateral for scenario negative-insufficient-lendable-value with recommendation NO_SOLUTION."
     },
@@ -314,8 +339,8 @@
       "scenarioId": "negative-expired-policy-window",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:02Z",
-      "finishedAt": "2026-03-29T17:07:02Z",
+      "startedAt": "2026-03-29T23:15:30Z",
+      "finishedAt": "2026-03-29T23:15:31Z",
       "artifactPath": "reports/generated/negative-expired-policy-window-policy-evaluation-report.json",
       "detail": "Evaluated candidate inventory for negative scenario with overall decision REJECT."
     }

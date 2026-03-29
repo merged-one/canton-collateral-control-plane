@@ -1,0 +1,52 @@
+{
+  "postingIntentContractId": "00f28091b37be43a4476e228812cd4371995e0210c4d5f743fefbdf676e6db11a6ca1212202d8443bd462174c7005bd8cb2d5b6056e08545d6bf37df71adbd25bbd718e133",
+  "custodianUserId": "c87743ab-80e0-4b83-935a-4c0582226691",
+  "custodianParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "obligationContractId": "00ff5c7278e1ad8561f0d5973309dc1412894341b5c97974dc67154adba51f9018ca1212200c0d1a7b03ab06c11595010f7db9bae30f96c232e803ace438dadb4c1a571e85",
+  "roleRegistrations": [
+    {
+      "role": "CollateralProviderRole",
+      "label": "provider",
+      "participant": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a",
+      "contractId": "009b3acc9dce65cd1a6775006c00e8686bac4a36e0fc3a3719f6564b34f6cd6830ca121220cb17dede7cc8d41bbc3a475543cf2bde1cd0ab4701ec8a47c7dbebf231b8f613"
+    },
+    {
+      "role": "SecuredPartyRole",
+      "label": "secured-party",
+      "participant": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+      "contractId": "00ec78a7940511ccfe9bbbc629b54828bd0afe9faefa379f0fbb83c3d5a2270301ca121220bb6224dc8f81b8038738e2d603bf80c3ba4de81e23b02be0f890081e87f0136a"
+    },
+    {
+      "role": "CustodianRole",
+      "label": "custodian",
+      "participant": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+      "contractId": "00dfe4aa0bfadb2263d4ae665ffdfee94c231dcd1d1c0d99add9ffb726ecef06bfca12122092b21ba949e300e95982325a3e6b024b2c34e0e70eefbc37d4905ea8b52b10f4"
+    }
+  ],
+  "referenceTokenHoldings": [],
+  "providerParty": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a",
+  "operatorUserId": "control-plane-operator-demo-101",
+  "inventoryLots": [
+    {
+      "lotId": "quickstart-demo-lot-101",
+      "contractId": "00300d9a0ba255acfa42f44f41b43de75f4148d6dbb82f25b1fbdf17d0e607d341ca121220ccd0cb4812c53daabd6ed4f58c913e0c4ab992e2969766f388ae84fecb520219"
+    },
+    {
+      "lotId": "quickstart-demo-lot-102",
+      "contractId": "001b0f22db4bb4ff50d8802b042f5ef1fbf96947413fd0fecba6161722156e240eca1212205e74d422d5446c7979e92972cbe3cc36e7ba200e2c46097e8fd3bdab760b0df4"
+    },
+    {
+      "lotId": "quickstart-demo-lot-103",
+      "contractId": "005416b581bc13b24adec4479d5ce4cb6439977b0182cf7bccf0d22f1cf38b4b1dca121220d20e52b8b718632489a151be1f60594bc52efa9aafbda2f59a05ff0be726b1bf"
+    },
+    {
+      "lotId": "quickstart-demo-lot-104",
+      "contractId": "002eab6a5de0a571e9e96b4fc0c7772ae67aca97f5cb6b0f389d0c522513f2f6dcca12122078b9f82f5a0bf1841c15a314b3d8c3cb1c45c59c9ca58631052022a9e196902c"
+    }
+  ],
+  "operatorParty": "controlplane-operator-quickstart-demo-101::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "scenarioId": "quickstart-demo-margin-101",
+  "securedParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "obligationId": "quickstart-demo-obligation-101",
+  "postingId": "quickstart-demo-posting-101"
+}

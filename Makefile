@@ -14,6 +14,7 @@ LOCALNET_DEPLOY_DAR_SCRIPT := scripts/localnet-deploy-dar.sh
 LOCALNET_START_CONTROL_PLANE_SCRIPT := scripts/localnet-start-control-plane.sh
 LOCALNET_SEED_DEMO_SCRIPT := scripts/localnet-seed-demo.sh
 LOCALNET_STATUS_CONTROL_PLANE_SCRIPT := scripts/localnet-status-control-plane.sh
+LOCALNET_RUN_MARGIN_CALL_WORKFLOW_SCRIPT := scripts/localnet-run-margin-call-workflow.sh
 LOCALNET_RUN_TOKEN_ADAPTER_SCRIPT := scripts/localnet-run-token-adapter.sh
 LOCALNET_ADAPTER_STATUS_SCRIPT := scripts/localnet-adapter-status.sh
 LOCALNET_DAML_SCRIPT_RUNNER := scripts/run-quickstart-daml-script.sh
@@ -34,6 +35,7 @@ INVENTORY ?= examples/inventory/central-bank-eligible-inventory.json
 OBLIGATION ?= examples/obligations/central-bank-window-call.json
 REPORT ?=
 MARGIN_CALL_DEMO_MANIFEST ?= examples/demo-scenarios/margin-call/demo-config.json
+MARGIN_CALL_QUICKSTART_DEMO_MANIFEST ?= examples/demo-scenarios/margin-call/quickstart-demo-config.json
 MARGIN_CALL_DEMO_OUTPUT_DIR ?= reports/generated
 SUBSTITUTION_DEMO_MANIFEST ?= examples/demo-scenarios/substitution/demo-config.json
 SUBSTITUTION_DEMO_OUTPUT_DIR ?= reports/generated
@@ -73,6 +75,7 @@ REQUIRED_DOCS := \
 	scripts/localnet-start-control-plane.sh \
 	scripts/localnet-seed-demo.sh \
 	scripts/localnet-status-control-plane.sh \
+	scripts/localnet-run-margin-call-workflow.sh \
 	scripts/localnet-run-token-adapter.sh \
 	scripts/localnet-adapter-status.sh \
 	scripts/verify-portable.sh \
@@ -114,14 +117,21 @@ REQUIRED_DOCS := \
 	examples/obligations/central-bank-window-remediation.json \
 	examples/demo-scenarios/margin-call/README.md \
 	examples/demo-scenarios/margin-call/demo-config.json \
+	examples/demo-scenarios/margin-call/quickstart-demo-config.json \
 	examples/demo-scenarios/margin-call/positive-inventory.json \
 	examples/demo-scenarios/margin-call/positive-obligation.json \
+	examples/demo-scenarios/margin-call/quickstart-positive-inventory.json \
+	examples/demo-scenarios/margin-call/quickstart-positive-obligation.json \
 	examples/demo-scenarios/margin-call/negative-ineligible-inventory.json \
 	examples/demo-scenarios/margin-call/negative-ineligible-obligation.json \
+	examples/demo-scenarios/margin-call/quickstart-negative-ineligible-inventory.json \
+	examples/demo-scenarios/margin-call/quickstart-negative-ineligible-obligation.json \
 	examples/demo-scenarios/margin-call/negative-insufficient-inventory.json \
 	examples/demo-scenarios/margin-call/negative-insufficient-obligation.json \
 	examples/demo-scenarios/margin-call/negative-expired-policy-window-inventory.json \
 	examples/demo-scenarios/margin-call/negative-expired-policy-window-obligation.json \
+	examples/demo-scenarios/margin-call/quickstart-negative-workflow-inventory.json \
+	examples/demo-scenarios/margin-call/quickstart-negative-workflow-obligation.json \
 	examples/demo-scenarios/substitution/README.md \
 	examples/demo-scenarios/substitution/demo-config.json \
 	examples/demo-scenarios/substitution/substitution-policy.json \
@@ -158,6 +168,7 @@ REQUIRED_DOCS := \
 	daml/CantonCollateral/Demo.daml \
 	daml/CantonCollateral/Test.daml \
 	daml/CantonCollateral/QuickstartSeed.daml \
+	daml/CantonCollateral/QuickstartMarginCall.daml \
 	daml/CantonCollateral/ReferenceToken.daml \
 	daml/CantonCollateral/QuickstartAdapter.daml \
 	docs/mission-control/MASTER_TRACKER.md \
@@ -188,6 +199,7 @@ REQUIRED_DOCS := \
 	docs/adrs/0016-quickstart-runtime-bridge.md \
 	docs/adrs/0017-quickstart-confidential-seed.md \
 	docs/adrs/0018-reference-token-adapter-path.md \
+	docs/adrs/0019-quickstart-margin-call-demo-orchestration.md \
 		docs/setup/LOCAL_DEV_SETUP.md \
 	docs/setup/DEPENDENCY_POLICY.md \
 	docs/invariants/INVARIANT_REGISTRY.md \
@@ -209,6 +221,7 @@ REQUIRED_DOCS := \
 		docs/evidence/prompt-13-execution-report.md \
 		docs/evidence/prompt-14-execution-report.md \
 		docs/evidence/prompt-15-execution-report.md \
+		docs/evidence/prompt-16-execution-report.md \
 		docs/evidence/rename-to-collateral-control-plane-execution-report.md \
 	docs/runbooks/README.md \
 	docs/runbooks/FINAL_DEMO_RUNBOOK.md \
@@ -251,6 +264,8 @@ REQUIRED_DOCS := \
 	infra/quickstart/overlay/profiles/faithful.env.local \
 	infra/quickstart/overlay/profiles/lean.env.local \
 	infra/quickstart/scenarios/confidential-margin-scenario.json \
+	infra/quickstart/scenarios/confidential-margin-demo-positive-scenario.json \
+	infra/quickstart/scenarios/confidential-margin-demo-rejected-scenario.json \
 	scripts/run-localnet-smoke.sh \
 	$(CPL_SCHEMA) \
 	$(POLICY_EVAL_REPORT_SCHEMA) \
@@ -272,7 +287,7 @@ REQUIRED_DIRS := \
 	infra \
 	docs/setup
 
-.PHONY: bootstrap localnet-bootstrap localnet-smoke localnet-build-dar localnet-deploy-dar localnet-start-control-plane localnet-seed-demo localnet-status-control-plane localnet-run-token-adapter localnet-adapter-status docs-lint status verify-portable verify validate-cpl policy-eval optimize test-policy-engine test-optimizer test-conformance daml-build daml-test demo-run demo-margin-call demo-return demo-substitution demo-all clean-runtime
+.PHONY: bootstrap localnet-bootstrap localnet-smoke localnet-build-dar localnet-deploy-dar localnet-start-control-plane localnet-seed-demo localnet-status-control-plane localnet-run-margin-call-workflow localnet-run-token-adapter localnet-adapter-status docs-lint status verify-portable verify validate-cpl policy-eval optimize test-policy-engine test-optimizer test-conformance daml-build daml-test demo-run demo-margin-call demo-margin-call-quickstart demo-return demo-substitution demo-all clean-runtime
 
 $(CHECK_JSONSCHEMA): requirements-cpl-validation.txt
 	@$(PYTHON) -m venv $(VENV)
@@ -289,7 +304,7 @@ docs-lint:
 	@for dir in $(REQUIRED_DIRS); do \
 		test -d "$$dir" || { echo "docs-lint: missing directory $$dir"; exit 1; }; \
 	done
-	@for script in $(BOOTSTRAP_SCRIPT) $(STATUS_SCRIPT) $(LOCALNET_BUILD_DAR_SCRIPT) $(LOCALNET_DEPLOY_DAR_SCRIPT) $(LOCALNET_START_CONTROL_PLANE_SCRIPT) $(LOCALNET_SEED_DEMO_SCRIPT) $(LOCALNET_STATUS_CONTROL_PLANE_SCRIPT) $(LOCALNET_RUN_TOKEN_ADAPTER_SCRIPT) $(LOCALNET_ADAPTER_STATUS_SCRIPT) $(LOCALNET_DAML_SCRIPT_RUNNER) $(VERIFY_PORTABLE_SCRIPT) $(VERIFY_SCRIPT) $(LOCALNET_BOOTSTRAP_SCRIPT) $(LOCALNET_SMOKE_SCRIPT); do \
+	@for script in $(BOOTSTRAP_SCRIPT) $(STATUS_SCRIPT) $(LOCALNET_BUILD_DAR_SCRIPT) $(LOCALNET_DEPLOY_DAR_SCRIPT) $(LOCALNET_START_CONTROL_PLANE_SCRIPT) $(LOCALNET_SEED_DEMO_SCRIPT) $(LOCALNET_STATUS_CONTROL_PLANE_SCRIPT) $(LOCALNET_RUN_MARGIN_CALL_WORKFLOW_SCRIPT) $(LOCALNET_RUN_TOKEN_ADAPTER_SCRIPT) $(LOCALNET_ADAPTER_STATUS_SCRIPT) $(LOCALNET_DAML_SCRIPT_RUNNER) $(VERIFY_PORTABLE_SCRIPT) $(VERIFY_SCRIPT) $(LOCALNET_BOOTSTRAP_SCRIPT) $(LOCALNET_SMOKE_SCRIPT); do \
 		test -x "$$script" || { echo "docs-lint: expected executable $$script"; exit 1; }; \
 	done
 	@grep -q "^sdk-version: $(DAML_SDK_VERSION)$$" daml.yaml || { echo "docs-lint: daml.yaml sdk-version mismatch"; exit 1; }
@@ -307,6 +322,7 @@ docs-lint:
 	@grep -q "make daml-test" README.md || { echo "docs-lint: README missing daml-test command"; exit 1; }
 	@grep -q "make demo-run" README.md || { echo "docs-lint: README missing demo-run command"; exit 1; }
 	@grep -q "make demo-margin-call" README.md || { echo "docs-lint: README missing demo-margin-call command"; exit 1; }
+	@grep -q "make demo-margin-call-quickstart" README.md || { echo "docs-lint: README missing demo-margin-call-quickstart command"; exit 1; }
 	@grep -q "make demo-return" README.md || { echo "docs-lint: README missing demo-return command"; exit 1; }
 	@grep -q "make demo-substitution" README.md || { echo "docs-lint: README missing demo-substitution command"; exit 1; }
 	@grep -q "make test-conformance" README.md || { echo "docs-lint: README missing test-conformance command"; exit 1; }
@@ -325,6 +341,7 @@ docs-lint:
 	@grep -q "make localnet-adapter-status" AGENTS.md || { echo "docs-lint: AGENTS missing localnet-adapter-status command"; exit 1; }
 	@grep -q "make daml-test" AGENTS.md || { echo "docs-lint: AGENTS missing daml-test command"; exit 1; }
 	@grep -q "make demo-margin-call" AGENTS.md || { echo "docs-lint: AGENTS missing demo-margin-call command"; exit 1; }
+	@grep -q "make demo-margin-call-quickstart" AGENTS.md || { echo "docs-lint: AGENTS missing demo-margin-call-quickstart command"; exit 1; }
 	@grep -q "make demo-return" AGENTS.md || { echo "docs-lint: AGENTS missing demo-return command"; exit 1; }
 	@grep -q "make demo-substitution" AGENTS.md || { echo "docs-lint: AGENTS missing demo-substitution command"; exit 1; }
 	@grep -q "make test-conformance" AGENTS.md || { echo "docs-lint: AGENTS missing test-conformance command"; exit 1; }
@@ -343,6 +360,7 @@ docs-lint:
 	@grep -q "make localnet-adapter-status" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing localnet-adapter-status command"; exit 1; }
 	@grep -q "make daml-test" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing daml-test command"; exit 1; }
 	@grep -q "make demo-margin-call" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-margin-call command"; exit 1; }
+	@grep -q "make demo-margin-call-quickstart" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-margin-call-quickstart command"; exit 1; }
 	@grep -q "make demo-return" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-return command"; exit 1; }
 	@grep -q "make demo-substitution" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-substitution command"; exit 1; }
 	@grep -q "make test-conformance" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing test-conformance command"; exit 1; }
@@ -362,6 +380,7 @@ docs-lint:
 	@grep -q "make localnet-adapter-status" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing localnet-adapter-status"; exit 1; }
 	@grep -q "make daml-test" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing daml-test"; exit 1; }
 	@grep -q "make demo-margin-call" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-margin-call"; exit 1; }
+	@grep -q "make demo-margin-call-quickstart" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-margin-call-quickstart"; exit 1; }
 	@grep -q "make demo-return" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-return"; exit 1; }
 	@grep -q "make demo-substitution" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-substitution"; exit 1; }
 	@grep -q "make test-conformance" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing test-conformance"; exit 1; }
@@ -379,6 +398,7 @@ docs-lint:
 	@grep -q "make demo-run" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-run"; exit 1; }
 	@grep -q "make daml-test" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing daml-test"; exit 1; }
 	@grep -q "make demo-margin-call" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-margin-call"; exit 1; }
+	@grep -q "make demo-margin-call-quickstart" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-margin-call-quickstart"; exit 1; }
 	@grep -q "make demo-return" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-return"; exit 1; }
 	@grep -q "make demo-substitution" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing demo-substitution"; exit 1; }
 	@grep -q "make test-conformance" docs/testing/TEST_STRATEGY.md || { echo "docs-lint: test strategy missing test-conformance"; exit 1; }
@@ -397,6 +417,7 @@ docs-lint:
 	@grep -q "ADR 0016" docs/adrs/0016-quickstart-runtime-bridge.md || { echo "docs-lint: ADR 0016 missing title"; exit 1; }
 	@grep -q "ADR 0017" docs/adrs/0017-quickstart-confidential-seed.md || { echo "docs-lint: ADR 0017 missing title"; exit 1; }
 	@grep -q "ADR 0018" docs/adrs/0018-reference-token-adapter-path.md || { echo "docs-lint: ADR 0018 missing title"; exit 1; }
+	@grep -q "ADR 0019" docs/adrs/0019-quickstart-margin-call-demo-orchestration.md || { echo "docs-lint: ADR 0019 missing title"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-04-execution-report.md || { echo "docs-lint: prompt 4 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-05-execution-report.md || { echo "docs-lint: prompt 5 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-06-execution-report.md || { echo "docs-lint: prompt 6 execution report incomplete"; exit 1; }
@@ -409,6 +430,7 @@ docs-lint:
 	@grep -q "^## Results" docs/evidence/prompt-13-execution-report.md || { echo "docs-lint: prompt 13 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-14-execution-report.md || { echo "docs-lint: prompt 14 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-15-execution-report.md || { echo "docs-lint: prompt 15 execution report incomplete"; exit 1; }
+	@grep -q "^## Results" docs/evidence/prompt-16-execution-report.md || { echo "docs-lint: prompt 16 execution report incomplete"; exit 1; }
 	@grep -q "Prompt 5 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 5 status"; exit 1; }
 	@grep -q "Prompt 6 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 6 status"; exit 1; }
 	@grep -q "Prompt 7 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 7 status"; exit 1; }
@@ -420,6 +442,7 @@ docs-lint:
 	@grep -q "Prompt 13 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 13 status"; exit 1; }
 	@grep -q "Prompt 14 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 14 status"; exit 1; }
 	@grep -q "Prompt 15 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 15 status"; exit 1; }
+	@grep -q "Prompt 16 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 16 status"; exit 1; }
 	@echo "docs-lint: policy engine, optimizer, Quickstart seeded scenario, runtime bridge, return demo, substitution demo, runtime foundation, Daml workflow skeleton, and command surface documentation are present"
 
 localnet-bootstrap:
@@ -464,6 +487,9 @@ localnet-status-control-plane: bootstrap localnet-bootstrap
 	LOCALNET_PARTY_HINT="$(LOCALNET_PARTY_HINT)" \
 	LOCALNET_SCENARIO_MANIFEST="$(LOCALNET_SCENARIO_MANIFEST)" \
 	$(LOCALNET_STATUS_CONTROL_PLANE_SCRIPT)
+
+localnet-run-margin-call-workflow: bootstrap localnet-bootstrap
+	@echo "localnet-run-margin-call-workflow: use scripts/localnet-run-margin-call-workflow.sh with explicit --input-file and --output-file paths"
 
 localnet-run-token-adapter: bootstrap localnet-bootstrap localnet-seed-demo $(CHECK_JSONSCHEMA)
 	@LOCALNET_WORKDIR="$(LOCALNET_WORKDIR)" \
@@ -584,6 +610,21 @@ demo-margin-call: daml-build $(CHECK_JSONSCHEMA)
 		test -f "$(MARGIN_CALL_DEMO_OUTPUT_DIR)/margin-call-demo-summary.md" || { echo "demo-margin-call: missing markdown summary"; exit 1; }; \
 		test -f "$(MARGIN_CALL_DEMO_OUTPUT_DIR)/margin-call-demo-timeline.md" || { echo "demo-margin-call: missing timeline markdown"; exit 1; }; \
 		echo "demo-margin-call: generated $$output_path"
+
+demo-margin-call-quickstart: localnet-start-control-plane $(CHECK_JSONSCHEMA)
+	@set -e; \
+		. "$(RUNTIME_ENV)"; \
+		output_path=$$($(PYTHON) app/orchestration/cli.py \
+			--manifest "$(MARGIN_CALL_QUICKSTART_DEMO_MANIFEST)" \
+			--output-dir "$(MARGIN_CALL_DEMO_OUTPUT_DIR)" \
+			--repo-root "$(REPO_ROOT)" \
+			--runtime QUICKSTART \
+			--report-basename margin-call-quickstart \
+			--command-name "make demo-margin-call-quickstart"); \
+		$(CHECK_JSONSCHEMA) --schemafile $(EXECUTION_REPORT_SCHEMA) "$$output_path"; \
+		test -f "$(MARGIN_CALL_DEMO_OUTPUT_DIR)/margin-call-quickstart-summary.md" || { echo "demo-margin-call-quickstart: missing markdown summary"; exit 1; }; \
+		test -f "$(MARGIN_CALL_DEMO_OUTPUT_DIR)/margin-call-quickstart-timeline.md" || { echo "demo-margin-call-quickstart: missing timeline markdown"; exit 1; }; \
+		echo "demo-margin-call-quickstart: generated $$output_path"
 
 demo-return: daml-build $(CHECK_JSONSCHEMA)
 	@set -e; \

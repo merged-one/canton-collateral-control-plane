@@ -1,0 +1,267 @@
+module CantonCollateral.QuickstartMarginCall where
+
+import Daml.Script
+
+import CantonCollateral.Encumbrance
+import CantonCollateral.Obligation
+import CantonCollateral.Posting
+import CantonCollateral.Report
+import CantonCollateral.Settlement
+import CantonCollateral.Types
+
+data QuickstartMarginCallWorkflowInput = QuickstartMarginCallWorkflowInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    postingId : Text
+    providerParty : Party
+    securedParty : Party
+    custodianParty : Party
+    selectedLotIds : [Text]
+    workflowGate : Text
+  deriving (Eq, Show)
+
+data QuickstartMarginCallWorkflowStep = QuickstartMarginCallWorkflowStep
+  with
+    step : Int
+    phase : Text
+    actor : Text
+    state : Text
+    detail : Text
+  deriving (Eq, Show)
+
+data QuickstartMarginCallExecutionReport = QuickstartMarginCallExecutionReport
+  with
+    reportId : Text
+    workflowType : Text
+    outcome : Text
+    summary : Text
+    eventIds : [Text]
+    eventStates : [Text]
+  deriving (Eq, Show)
+
+data QuickstartMarginCallWorkflowResult = QuickstartMarginCallWorkflowResult
+  with
+    scenarioId : Text
+    obligationId : Text
+    postingId : Text
+    workflowGate : Text
+    marginCallState : Text
+    postingState : Text
+    settlementInstructionId : Optional Text
+    settlementInstructionState : Optional Text
+    selectedLotIds : [Text]
+    encumberedLotIds : [Text]
+    executionReportCount : Int
+    executionReports : [QuickstartMarginCallExecutionReport]
+    steps : [QuickstartMarginCallWorkflowStep]
+  deriving (Eq, Show)
+
+expectContractFromQuery : [(ContractId t, t)] -> ContractId t -> Text -> Script t
+expectContractFromQuery contracts cid missingMessage =
+  case [activeContract | (activeCid, activeContract) <- contracts, activeCid == cid] of
+    activeContract :: _ -> pure activeContract
+    [] -> error missingMessage
+
+expectSingleMatch : Text -> [(ContractId t, t)] -> Script (ContractId t, t)
+expectSingleMatch missingMessage contracts =
+  case contracts of
+    contract :: [] -> pure contract
+    [] -> error missingMessage
+    _ -> error ("multiple active contracts matched: " <> missingMessage)
+
+expectActiveCallObligation : Party -> ContractId CallObligation -> Text -> Script CallObligation
+expectActiveCallObligation party cid missingMessage = do
+  obligations <- query @CallObligation party
+  expectContractFromQuery obligations cid missingMessage
+
+expectActivePostingIntent : Party -> ContractId CollateralPostingIntent -> Text -> Script CollateralPostingIntent
+expectActivePostingIntent party cid missingMessage = do
+  postings <- query @CollateralPostingIntent party
+  expectContractFromQuery postings cid missingMessage
+
+expectActiveInstruction : Party -> ContractId SettlementInstruction -> Text -> Script SettlementInstruction
+expectActiveInstruction party cid missingMessage = do
+  instructions <- query @SettlementInstruction party
+  expectContractFromQuery instructions cid missingMessage
+
+findCallById : Party -> Text -> Script (ContractId CallObligation, CallObligation)
+findCallById party obligationId = do
+  obligations <- queryFilter @CallObligation party (\obligation -> obligation.obligationId == obligationId)
+  expectSingleMatch ("missing call obligation " <> obligationId) obligations
+
+findPostingById : Party -> Text -> Script (ContractId CollateralPostingIntent, CollateralPostingIntent)
+findPostingById party postingId = do
+  postings <- queryFilter @CollateralPostingIntent party (\posting -> posting.postingId == postingId)
+  expectSingleMatch ("missing posting intent " <> postingId) postings
+
+queryExecutionReportsForObligation : Party -> Text -> Script [QuickstartMarginCallExecutionReport]
+queryExecutionReportsForObligation party obligationId = do
+  reports <- queryFilter @ExecutionReportRecord party (\report -> report.obligationId == obligationId)
+  pure $
+    map
+      (\(_, report) ->
+        QuickstartMarginCallExecutionReport with
+          reportId = report.reportId
+          workflowType = show report.workflowType
+          outcome = show report.outcome
+          summary = report.summary
+          eventIds = map (\event -> event.eventId) report.events
+          eventStates = map (\event -> show event.eventState) report.events
+      )
+      reports
+
+queryPledgedLotIds : Party -> Text -> Script [Text]
+queryPledgedLotIds party obligationId = do
+  encumbrances <- queryFilter @EncumbranceState party (\encumbrance -> encumbrance.obligationId == obligationId)
+  pure $
+    map
+      (\(_, encumbrance) -> encumbrance.lotId)
+      (filter (\(_, encumbrance) -> encumbrance.status == EncumbrancePledged) encumbrances)
+
+workflowStep : Int -> Text -> Text -> Text -> Text -> QuickstartMarginCallWorkflowStep
+workflowStep step phase actor state detail =
+  QuickstartMarginCallWorkflowStep with
+    step
+    phase
+    actor
+    state
+    detail
+
+closeMarginCallIfNeeded :
+  QuickstartMarginCallWorkflowInput ->
+  ContractId CallObligation ->
+  CallObligation ->
+  Int ->
+  Script (ContractId CallObligation, CallObligation, [QuickstartMarginCallWorkflowStep], Int)
+closeMarginCallIfNeeded input obligationCid obligation nextStep =
+  case obligation.state of
+    Closed -> pure (obligationCid, obligation, [], nextStep)
+    Submitted ->
+      if obligation.requiresCallApproval then do
+        routedCid <- submit input.securedParty do
+          exerciseCmd obligationCid RouteForApproval
+        routed <- expectActiveCallObligation input.securedParty routedCid "call obligation should remain visible after approval routing"
+        let stepEntry = workflowStep nextStep "MARGIN_CALL" "secured-party" (show routed.state) "secured party routed the margin call for approval on Quickstart"
+        (closedCid, closedObligation, restSteps, finalStep) <- closeMarginCallIfNeeded input routedCid routed (nextStep + 1)
+        pure (closedCid, closedObligation, stepEntry :: restSteps, finalStep)
+      else do
+        closedCid <- submit input.securedParty do
+          exerciseCmd obligationCid IssueCallWithoutApproval
+        closed <- expectActiveCallObligation input.securedParty closedCid "call obligation should remain visible after issuance"
+        let stepEntry = workflowStep nextStep "MARGIN_CALL" "secured-party" (show closed.state) "secured party issued the seeded Quickstart margin call without additional approval"
+        pure (closedCid, closed, [stepEntry], nextStep + 1)
+    PendingApproval -> do
+      closedCid <- submit obligation.callApprover do
+        exerciseCmd obligationCid ApproveCallIssuance
+      closed <- expectActiveCallObligation input.securedParty closedCid "call obligation should remain visible after approval"
+      let stepEntry = workflowStep nextStep "MARGIN_CALL" "call-approver" (show closed.state) "required approver committed the seeded Quickstart margin call"
+      pure (closedCid, closed, [stepEntry], nextStep + 1)
+    Draft -> error "Quickstart margin-call workflow requires a submitted obligation rather than a draft call"
+    UnderEvaluation -> error "Quickstart margin-call workflow requires a submitted obligation rather than an under-evaluation call"
+    Rejected -> error "Quickstart margin-call workflow cannot proceed because the obligation is already rejected"
+    PendingSettlement -> error "Quickstart margin-call workflow does not support a pending-settlement obligation state"
+    Settled -> error "Quickstart margin-call workflow does not support a settled obligation state"
+    Approved -> error "Quickstart margin-call workflow does not support an approved obligation state"
+    ExceptionOpen -> error "Quickstart margin-call workflow cannot proceed because the obligation is in exception"
+    Expired -> error "Quickstart margin-call workflow cannot proceed because the obligation expired"
+
+advancePostingWorkflow :
+  QuickstartMarginCallWorkflowInput ->
+  ContractId CollateralPostingIntent ->
+  CollateralPostingIntent ->
+  Int ->
+  Script (ContractId CollateralPostingIntent, CollateralPostingIntent, [QuickstartMarginCallWorkflowStep], Int)
+advancePostingWorkflow input postingCid posting nextStep =
+  case posting.state of
+    Submitted -> do
+      evaluationCid <- submit input.providerParty do
+        exerciseCmd postingCid StartPostingEvaluation
+      evaluationPosting <- expectActivePostingIntent input.providerParty evaluationCid "posting should remain visible after evaluation start"
+      let stepEntry = workflowStep nextStep "POSTING" "provider" (show evaluationPosting.state) "provider started posting evaluation on Quickstart"
+      (finalCid, finalPosting, restSteps, finalStep) <- advancePostingWorkflow input evaluationCid evaluationPosting (nextStep + 1)
+      pure (finalCid, finalPosting, stepEntry :: restSteps, finalStep)
+    UnderEvaluation -> do
+      nextCid <- submit input.providerParty do
+        exerciseCmd postingCid (RecordFeasiblePosting with nextDecisionSummary = "Quickstart margin-call workflow used the optimizer-selected lots and generated a settlement path")
+      nextPosting <- expectActivePostingIntent input.providerParty nextCid "posting should remain visible after feasibility recording"
+      let stepEntry = workflowStep nextStep "POSTING" "provider" (show nextPosting.state) "provider recorded a feasible posting path on Quickstart"
+      (finalCid, finalPosting, restSteps, finalStep) <- advancePostingWorkflow input nextCid nextPosting (nextStep + 1)
+      pure (finalCid, finalPosting, stepEntry :: restSteps, finalStep)
+    PendingApproval ->
+      if input.workflowGate == "REJECT_BY_SECURED_PARTY" then
+        if posting.securedPartyApproval == ApprovalPending then do
+          rejectedCid <- submit input.securedParty do
+            exerciseCmd postingCid (RejectPostingBySecuredParty with reason = "secured party rejected the posting before adapter execution")
+          rejectedPosting <- expectActivePostingIntent input.providerParty rejectedCid "posting should remain visible after secured-party rejection"
+          let stepEntry = workflowStep nextStep "POSTING" "secured-party" (show rejectedPosting.state) "secured party rejected the posting on Quickstart before any adapter action"
+          pure (rejectedCid, rejectedPosting, [stepEntry], nextStep + 1)
+        else error "secured-party rejection requires a pending secured-party approval"
+      else if input.workflowGate == "PREPARE_FOR_ADAPTER" then
+        if posting.securedPartyApproval == ApprovalPending then do
+          approvedCid <- submit input.securedParty do
+            exerciseCmd postingCid ApprovePostingBySecuredParty
+          approvedPosting <- expectActivePostingIntent input.providerParty approvedCid "posting should remain visible after secured-party approval"
+          let stepEntry = workflowStep nextStep "POSTING" "secured-party" (show approvedPosting.state) "secured party approved the Quickstart posting path"
+          (finalCid, finalPosting, restSteps, finalStep) <- advancePostingWorkflow input approvedCid approvedPosting (nextStep + 1)
+          pure (finalCid, finalPosting, stepEntry :: restSteps, finalStep)
+        else if posting.custodianApproval == ApprovalPending then do
+          approvedCid <- submit input.custodianParty do
+            exerciseCmd postingCid ApprovePostingByCustodian
+          approvedPosting <- expectActivePostingIntent input.providerParty approvedCid "posting should remain visible after custodian approval"
+          let stepEntry = workflowStep nextStep "POSTING" "custodian" (show approvedPosting.state) "custodian approved the Quickstart posting path and exposed the settlement instruction"
+          (finalCid, finalPosting, restSteps, finalStep) <- advancePostingWorkflow input approvedCid approvedPosting (nextStep + 1)
+          pure (finalCid, finalPosting, stepEntry :: restSteps, finalStep)
+        else error "posting is pending approval but no approval remains outstanding"
+      else error ("unsupported workflow gate " <> input.workflowGate)
+    PendingSettlement -> pure (postingCid, posting, [], nextStep)
+    Rejected -> pure (postingCid, posting, [], nextStep)
+    Closed -> error "posting is already closed; reset or reseed the Quickstart scenario before rerunning the positive margin-call path"
+    Draft -> error "Quickstart margin-call workflow requires a submitted posting intent rather than a draft"
+    Approved -> error "Quickstart margin-call workflow does not support an approved posting state"
+    Settled -> error "Quickstart margin-call workflow does not support a settled posting state"
+    ExceptionOpen -> error "Quickstart margin-call workflow cannot proceed because the posting is in exception"
+    Expired -> error "Quickstart margin-call workflow cannot proceed because the posting expired"
+
+runMarginCallWorkflow : QuickstartMarginCallWorkflowInput -> Script QuickstartMarginCallWorkflowResult
+runMarginCallWorkflow input = script do
+  assertMsg "Quickstart margin-call workflow requires selected lots" (not (null input.selectedLotIds))
+  assertMsg "unsupported workflow gate" (input.workflowGate == "PREPARE_FOR_ADAPTER" || input.workflowGate == "REJECT_BY_SECURED_PARTY")
+
+  (obligationCid, obligation) <- findCallById input.securedParty input.obligationId
+  (closedObligationCid, closedObligation, callSteps, nextStep) <- closeMarginCallIfNeeded input obligationCid obligation 1
+  (postingCid, posting) <- findPostingById input.providerParty input.postingId
+  let _ = closedObligationCid
+  (finalPostingCid, finalPosting, postingSteps, _) <- advancePostingWorkflow input postingCid posting nextStep
+  let _ = finalPostingCid
+
+  maybeInstruction <-
+    case finalPosting.settlementInstructionCid of
+      Some instructionCid -> do
+        instruction <- expectActiveInstruction input.providerParty instructionCid "settlement instruction should remain visible after workflow preparation"
+        pure (Some instruction)
+      None -> pure None
+
+  executionReports <- queryExecutionReportsForObligation input.providerParty input.obligationId
+  encumberedLotIds <- queryPledgedLotIds input.providerParty input.obligationId
+
+  pure QuickstartMarginCallWorkflowResult with
+    scenarioId = input.scenarioId
+    obligationId = input.obligationId
+    postingId = input.postingId
+    workflowGate = input.workflowGate
+    marginCallState = show closedObligation.state
+    postingState = show finalPosting.state
+    settlementInstructionId =
+      case maybeInstruction of
+        Some instruction -> Some instruction.instructionId
+        None -> None
+    settlementInstructionState =
+      case maybeInstruction of
+        Some instruction -> Some (show instruction.state)
+        None -> None
+    selectedLotIds = input.selectedLotIds
+    encumberedLotIds
+    executionReportCount = length executionReports
+    executionReports
+    steps = callSteps <> postingSteps

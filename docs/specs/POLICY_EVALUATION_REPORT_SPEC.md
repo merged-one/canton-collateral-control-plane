@@ -14,6 +14,7 @@ The report exists to support:
 
 - operator review of candidate collateral sets
 - downstream optimization and workflow orchestration
+- Quickstart-backed margin-call orchestration that must carry one declared policy decision artifact into workflow and adapter reporting
 - schema-valid evidence for deterministic negative and positive paths
 - invariant traceability for eligibility, haircut, concentration, and failure attribution
 
@@ -121,4 +122,4 @@ The current engine does not yet evaluate:
 - release-path logic tied to live encumbrance state
 - FX conversion beyond normalized valuation inputs
 
-Those remain separate concerns for later workflow, reference-data, and conformance phases.
+Those remain separate concerns for later workflow, reference-data, and conformance phases. The current Quickstart-backed margin-call demo therefore treats `PolicyEvaluationReport` as a declared subordinate artifact rather than as a source of hidden runtime authority.

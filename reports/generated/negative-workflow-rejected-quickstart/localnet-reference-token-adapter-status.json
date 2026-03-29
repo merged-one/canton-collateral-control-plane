@@ -1,0 +1,9 @@
+{
+  "postingState": "Rejected",
+  "settlementInstructionState": null,
+  "providerVisibleAdapterReceipts": [],
+  "scenarioId": "quickstart-demo-margin-201",
+  "providerVisibleReferenceTokenHoldings": [],
+  "providerVisibleEncumbranceCount": 0,
+  "providerVisibleExecutionReportCount": 2
+}
