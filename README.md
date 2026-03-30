@@ -15,12 +15,6 @@ This repository is a documentation-first prototype for the Canton Collateral Con
 
 The intended runtime shape is a Quickstart-based LocalNet with token-standard-style assets, reference Daml workflows, and auditable reports that can be checked against invariants, evidence, and tests.
 
-Historical alias note:
-The former name "Canton Collateral Policy & Optimization Engine" is retained only as a deprecated historical alias for continuity in older records. `C-COPE` should not be used in new documentation; use "Canton Collateral Control Plane" or "the Control Plane" instead.
-
-Current framing note:
-This repository now reflects the development-fund proposal dated 2026-03-28. The rename to "Canton Collateral Control Plane" is semantic, not directional: the current policy, optimization, workflow, conformance, and reporting subsystems remain intact and are now described more precisely as parts of one shared control plane. If the proposal changes later, repository-level assumptions should be revised through the mission-control process and ADRs.
-
 ## Reviewer Start
 
 If you are reviewing the proposal package rather than contributing code, start here:

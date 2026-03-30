@@ -2,6 +2,62 @@
 
 This log is append-oriented. Every task should record intent before changes and outcomes after changes.
 
+## 2026-03-30 - README Framing Cleanup - Pre-Change
+
+Intent:
+Remove the top-level README rename or proposal-framing notes that now distract from the actual prototype description and reviewer entry path, while preserving the underlying naming and mission-control guidance in the more appropriate tracker and ADR surfaces.
+
+Task summary:
+
+- remove the historical-alias note and current-framing note from the README introduction
+- keep the README focused on what the prototype is, how to review it, and how to navigate the repo
+- smooth any surrounding README wording so the introduction reads cleanly after those notes are removed
+
+Expected affected files:
+
+- `README.md`
+- `docs/mission-control/WORKLOG.md`
+
+Risk assessment:
+
+- removing the notes could make the README feel abrupt if the opening paragraphs are not tightened at the same time
+- the rename context must remain available elsewhere, so the cleanup should not delete the corresponding tracker or ADR records
+
+Acceptance criteria:
+
+- the README no longer contains the historical-alias note or current-framing note blocks
+- the opening section still reads clearly and points reviewers to the right entry path
+- the cleanup is validated with a documentation check
+
+## 2026-03-30 - README Framing Cleanup - Post-Change
+
+Outcome:
+Removed the two top-level README framing notes so the repository introduction now moves directly from the prototype description into the reviewer entry path without repeating rename or proposal-governance context that is already tracked elsewhere.
+
+Completed changes:
+
+- removed the historical-alias note block from `README.md`
+- removed the current-framing note block from `README.md`
+- kept the surrounding introduction intact so the README still flows from prototype description to `Reviewer Start`
+- preserved the underlying rename and framing history in `docs/mission-control/MASTER_TRACKER.md` and ADR records instead of duplicating it in the repo front page
+
+Commands run:
+
+```sh
+make docs-lint
+git diff --check
+rg -n "Historical alias note|Current framing note|development-fund proposal dated 2026-03-28" README.md
+```
+
+Results:
+
+- `make docs-lint` passed
+- `git diff --check` passed
+- the README no longer contains the removed note blocks or the dated proposal-framing sentence
+
+Next step:
+Keep proposal-history or rename-continuity context in mission-control or ADR surfaces rather than reintroducing it into the top-level README unless it becomes operationally necessary for contributors or reviewers.
+
 ## 2026-03-30 - Proposal Baseline Freeze And Cleanliness Scope - Pre-Change
 
 Intent:
