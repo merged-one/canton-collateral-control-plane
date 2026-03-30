@@ -2,6 +2,175 @@
 
 This log is append-oriented. Every task should record intent before changes and outcomes after changes.
 
+## 2026-03-30 - Remove Proposal Video Submission Surface - Pre-Change
+
+Intent:
+Remove the recorded-video submission requirement from the proposal package so the reviewer-facing submission surface remains documentation- and artifact-based only, without any external recording dependency.
+
+Task summary:
+
+- remove the proposal walkthrough-manifest file and any generator logic that requires recording-delivery metadata or external video URLs
+- keep the walkthrough script only as a repo-tracked reviewer or live-demo guide rather than a recording-capture artifact
+- update the proposal submission manifest, summary, README, runbooks, tracker, evidence, invariants, and worklog surfaces so no reviewer-facing package claim depends on an external recording
+- regenerate the proposal package after the recording-related fields and docs are removed
+
+Expected affected files:
+
+- `Makefile`
+- `app/orchestration/proposal_submission_pack.py`
+- `test/conformance/test_proposal_submission_package.py`
+- `README.md`
+- `docs/evidence/REVIEWER_START_HERE.md`
+- `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`
+- `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md`
+- delete `docs/evidence/PROPOSAL_WALKTHROUGH_MANIFEST.json`
+- `docs/adrs/0023-proposal-submission-wrapper.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/ROADMAP.md`
+- `docs/mission-control/WORKLOG.md`
+- generated proposal-package artifacts under `reports/generated/`
+
+Risk assessment:
+
+- removing the walkthrough manifest could break `make proposal-package` if the proposal-package generator or tests still treat recording metadata as required input
+- reviewer docs could drift if some surfaces still describe a recorded walkthrough or pending external capture while others move to a doc-only walkthrough posture
+- evidence or invariant records could continue overclaiming an external asset requirement if the mission-control surfaces are not updated together
+
+Acceptance criteria:
+
+- `make proposal-package` no longer requires any recording-delivery metadata or external walkthrough asset
+- no repo-tracked proposal submission surface refers to pending video capture, external recording URL, duration, or checksum fields
+- the walkthrough script remains available as a repo-tracked reviewer guide
+- relevant docs, evidence, invariants, generated artifacts, and worklog entries are updated and validated
+
+## 2026-03-30 - Remove Proposal Video Submission Surface - Post-Change
+
+Outcome:
+Removed the out-of-repo walkthrough-capture requirement from the proposal submission path so the reviewer-facing package is now fully documentation- and artifact-based, with one repo-tracked walkthrough script and no separate media-delivery contract.
+
+Completed changes:
+
+- removed the walkthrough-manifest dependency from `app/orchestration/proposal_submission_pack.py` and from `test/conformance/test_proposal_submission_package.py` so the generated `ProposalSubmissionManifest` now carries only the walkthrough script path, commands shown, and artifact order
+- deleted `docs/evidence/PROPOSAL_WALKTHROUGH_MANIFEST.json` and aligned the proposal-package docs, ADR, tracker, roadmap, runbook, evidence manifest, and readiness surfaces to the doc-only reviewer posture
+- updated the Prompt 20 execution report and mission-control narrative so the repo no longer asks reviewers to supply or inspect any separate recorded walkthrough asset
+- regenerated `reports/generated/proposal-submission-manifest.json` and `reports/generated/proposal-submission-summary.md` from `make proposal-package`
+
+Commands run:
+
+```sh
+python3 -m py_compile app/orchestration/proposal_submission_pack.py app/orchestration/proposal_submission_cli.py test/conformance/test_proposal_submission_package.py
+PYTHONPATH=app/orchestration python3 -m unittest discover -s test/conformance -p 'test_proposal_submission_package.py'
+make proposal-package
+make docs-lint
+git diff --check
+```
+
+Results:
+
+- `python3 -m py_compile ...` passed
+- the isolated proposal-package unit test run passed
+- `make proposal-package` passed and regenerated submission id `psp-9ebe336b9cb042fa` while preserving conformance suite id `csr-d7e4b4c29646d5d4`, final demo pack id `fdp-ad4246d5144c77eb`, Quickstart commit `fe56d460af650b71b8e20098b3e76693397a8bf9`, and deployed package id `2535dc1e6f8ab629482bc6c186334df1c79ab0fe5c59302d7bcb20f5a7c139fb`
+- the regenerated proposal manifest no longer contains `walkthroughManifestPath`, `recordingDelivery`, `externalRecordingUrl`, `durationSeconds`, or `PENDING_EXTERNAL_CAPTURE`
+- `make docs-lint` and `git diff --check` both passed
+
+Next step:
+Rehearse the reviewer path from a clean clone using only `make proposal-package`, `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`, and `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md`.
+
+## 2026-03-30 - Proposal Submission Preparation Package - Pre-Change
+
+Intent:
+Prepare the Canton Collateral Control Plane for proposal submission by adding a deterministic proposal-package wrapper around the existing Quickstart-backed final demo pack, plus reviewer-facing memo and walkthrough materials that stay pinned to real generated evidence.
+
+Task summary:
+
+- add a reproducible `make proposal-package` command that wraps `make demo-all`, collects the reviewer-facing documents and canonical generated artifacts, and writes a machine-readable proposal-submission manifest plus Markdown summary
+- keep `make demo-all`, the Quickstart-backed workflow reports, the adapter proof artifacts, and the conformance report stable while adding a separate reviewer-consumption layer on top
+- add a concise reviewer memo and a repo-tracked walkthrough script so reviewers can replay or present the proof surface without any external recording dependency
+- add a clear public "reviewer start here" path so a technical reviewer can move from the repo root into the submission package without reverse-engineering the repo
+- record the packaging decision through a narrow ADR and update tracker, decision-log, invariant, evidence, README, runbook, and worklog surfaces so the submission story is explicit and reproducible
+
+Expected affected files:
+
+- `Makefile`
+- `app/orchestration/final_demo_pack.py` only if shared helper reuse is needed without changing the `FinalDemoPack` contract
+- new proposal-package generator and CLI under `app/orchestration/`
+- new or updated tests under `test/conformance/`
+- `README.md`
+- `CONTRIBUTING.md`
+- `AGENTS.md`
+- `docs/runbooks/FINAL_DEMO_RUNBOOK.md`
+- new reviewer-facing docs under `docs/evidence/`
+- new ADR under `docs/adrs/`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/DECISION_LOG.md`
+- `docs/mission-control/WORKLOG.md`
+- generated proposal-package artifacts under `reports/generated/`
+
+Risk assessment:
+
+- the new proposal wrapper could drift from `make demo-all` and introduce conflicting claims if it duplicates runtime facts instead of reading the generated final demo pack and conformance outputs
+- reviewer-facing memo or walkthrough materials could overstate production readiness if the staged prototype boundary is not repeated consistently alongside the runtime-backed proof set
+- the walkthrough script and review-order surface could drift from the canonical generated artifacts if they cite ad hoc files rather than the proposal-package output
+- docs-lint could regress if the new command surface is added to some top-level docs but not the required command inventories
+
+Acceptance criteria:
+
+- `make proposal-package` exists, is documented, and fails nonzero on missing or failing underlying evidence
+- the proposal-submission manifest and Markdown summary are generated under `reports/generated/` and point only to real repo-tracked docs and generated proof artifacts
+- the reviewer memo and walkthrough script stay aligned to the same Quickstart-backed proof surface and explicitly state what remains prototype-only
+- the tracker, ADR, decision log, invariant registry, evidence manifest, and worklog reflect the new reviewer-consumption layer
+- relevant checks pass and the generated submission artifacts are regenerated from the canonical command surface
+
+## 2026-03-30 - Proposal Submission Preparation Package - Post-Change
+
+Outcome:
+Added a separate proposal-submission wrapper around the existing Quickstart-backed final demo pack so the repository now exposes one reproducible reviewer-facing package path, a concise reviewer memo, and committed walkthrough materials without changing the underlying runtime proof contracts.
+
+Completed changes:
+
+- added `app/orchestration/proposal_submission_pack.py`, `app/orchestration/proposal_submission_cli.py`, `make proposal-package`, and `test/conformance/test_proposal_submission_package.py` so the repo now generates `reports/generated/proposal-submission-manifest.json` plus `reports/generated/proposal-submission-summary.md` from the current final demo pack and conformance output
+- kept the runtime-backed proof contracts stable while wrapping them with reviewer-facing docs under `docs/evidence/REVIEWER_START_HERE.md`, `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`, and `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md`
+- added ADR 0023 and aligned `MASTER_TRACKER.md`, `ROADMAP.md`, `DECISION_LOG.md`, `INVARIANT_REGISTRY.md`, and `EVIDENCE_MANIFEST.md` to the new proposal-submission wrapper posture, including the new `SUBM-001` submission-claim-traceability invariant
+- updated `README.md`, `CONTRIBUTING.md`, `AGENTS.md`, `docs/setup/LOCAL_DEV_SETUP.md`, `docs/runbooks/README.md`, `docs/runbooks/FINAL_DEMO_RUNBOOK.md`, `docs/evidence/DEMO_ARTIFACT_INDEX.md`, `docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md`, and `reports/README.md` so the new reviewer path and command surface are documented consistently
+- updated `scripts/verify-portable.sh` and `scripts/verify.sh` so the standard repo verification loop now exercises the proposal package rather than stopping at `make demo-all`
+- added `docs/evidence/prompt-20-execution-report.md` and regenerated the proposal-submission artifacts from the live Quickstart-backed proof set
+
+Commands run:
+
+```sh
+python3 -m py_compile app/orchestration/proposal_submission_pack.py app/orchestration/proposal_submission_cli.py test/conformance/test_proposal_submission_package.py
+PYTHONPATH=app/orchestration python3 -m unittest discover -s test/conformance -p 'test_proposal_submission_package.py'
+make test-conformance
+make demo-all
+make proposal-package
+make docs-lint
+make verify
+PYTHONPATH=app/orchestration python3 -m unittest discover -s test/conformance -p 'test_*.py'
+git diff --check
+```
+
+Results:
+
+- the new proposal-submission package code compiled and the isolated proposal-package unit tests passed
+- `make test-conformance` passed and preserved conformance suite id `csr-d7e4b4c29646d5d4` with Quickstart runtime mode `QUICKSTART`
+- `make demo-all` passed and preserved final demo pack id `fdp-ad4246d5144c77eb`
+- `make proposal-package` passed and generated:
+  - submission id `psp-4bcc74b5b1f72eca`
+  - Quickstart commit `fe56d460af650b71b8e20098b3e76693397a8bf9`
+  - deployed package id `2535dc1e6f8ab629482bc6c186334df1c79ab0fe5c59302d7bcb20f5a7c139fb`
+  - margin-call report id `exr-9bc26ea5d960c241`
+  - substitution report id `srr-a8a9d213c0f6408a`
+  - return report id `rrr-163cdd5d84a09b71`
+- the walkthrough surface is fully repo-tracked and does not depend on any external recording asset
+- `make docs-lint`, the full conformance unit discovery run, `make verify`, and `git diff --check` all passed
+
+Next step:
+Rehearse the reviewer path from a clean clone using only `make proposal-package`, the reviewer memo, and the repo-tracked walkthrough script.
+
 ## 2026-03-30 - Prompt 19 Rebuild Conformance And Demo Pack Around Quickstart Adapter Path - Pre-Change
 
 Intent:

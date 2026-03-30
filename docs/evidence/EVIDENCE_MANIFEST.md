@@ -177,6 +177,13 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0156 | ADRs | [docs/adrs/0022-quickstart-conformance-and-demo-package.md](../adrs/0022-quickstart-conformance-and-demo-package.md) | decision to center conformance and final demo packaging on Quickstart deployment, reference-adapter proof, and runtime-backed demo evidence |
 | E-0157 | Specs | [docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md](./PROPOSAL_READINESS_ASSESSMENT.md) | explicit reviewer-facing assessment of what is real on Quickstart, what machine-readable artifacts prove, and what remains staged |
 | E-0158 | Demo artifacts | [docs/evidence/prompt-19-execution-report.md](./prompt-19-execution-report.md) | reproducible Prompt 19 execution record for the Quickstart-centered conformance and final demo package rebuild |
+| E-0159 | ADRs | [docs/adrs/0023-proposal-submission-wrapper.md](../adrs/0023-proposal-submission-wrapper.md) | decision to add a reviewer-facing proposal-submission wrapper around the runtime-backed final demo pack |
+| E-0160 | Code | [app/orchestration/proposal_submission_pack.py](../../app/orchestration/proposal_submission_pack.py) | proposal-submission manifest generator that derives reviewer-facing packaging from the generated final demo pack |
+| E-0161 | Specs | [docs/evidence/REVIEWER_START_HERE.md](./REVIEWER_START_HERE.md) | shortest reviewer path from repo entrypoint to generated proposal evidence |
+| E-0162 | Specs | [docs/evidence/PROPOSAL_SUBMISSION_MEMO.md](./PROPOSAL_SUBMISSION_MEMO.md) | concise reviewer memo stating what is real, what proves it, and what remains staged |
+| E-0163 | Demo artifacts | [docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md](./PROPOSAL_WALKTHROUGH_SCRIPT.md) | repo-tracked walkthrough script for reviewer replay or live presentation |
+| E-0165 | Demo artifacts | [reports/generated/proposal-submission-manifest.json](../../reports/generated/proposal-submission-manifest.json) | machine-readable reviewer-facing wrapper over the Quickstart-backed proposal proof set |
+| E-0166 | Demo artifacts | [docs/evidence/prompt-20-execution-report.md](./prompt-20-execution-report.md) | reproducible Prompt 20 execution record for the proposal-submission package and reviewer kit |
 
 ## Coverage Notes
 
@@ -184,7 +191,8 @@ This manifest defines the evidence categories required to defend changes in this
 - The `Code` category now also includes the Quickstart seed or status Daml Script layer plus the overlay-specific startup, auth, and status scripts that turn package deployment into a seeded LocalNet scenario.
 - The architecture, CPL, policy-engine, optimizer, Daml-boundary, Quickstart-foundation, Quickstart workflow-orchestration layers, reference-adapter path, and Quickstart-centered conformance or packaging surfaces now provide executable evidence, though broader adapter coverage and workflow-coupled reference-data evidence are still pending.
 - The `Demo artifacts` category now includes the end-to-end margin-call, return, and substitution reports plus their supporting policy, optimization, workflow, conformance, final demo-pack, readiness-assessment, and prompt evidence artifacts, the Quickstart-backed package deployment proof, one concrete reference token adapter proof path, the first Quickstart-backed end-to-end margin-call chain evidence, the first Quickstart-backed atomic substitution evidence chain, and the first Quickstart-backed replay-safe return evidence chain.
+- The `Demo artifacts` category now also includes a reviewer-facing proposal-submission manifest plus a repo-tracked walkthrough script that stay pinned to the generated Quickstart proof set.
 - The evidence set now records the rename to "Canton Collateral Control Plane" as a semantic clarification of the same subsystem stack rather than a new product direction.
-- The evidence set now includes an explicit third-party integration guide and a reviewer-facing demo artifact index so future Canton projects can consume the prototype through declared interfaces instead of reverse-engineering incidental file shapes.
+- The evidence set now includes an explicit third-party integration guide, a reviewer-facing demo artifact index, and a reviewer start or memo surface so future Canton projects and proposal reviewers can consume the prototype through declared interfaces instead of reverse-engineering incidental file shapes.
 - Economic rationale is now architecture-, control-, and optimization-objective-oriented rather than calibration-backed.
 - The test evidence set now distinguishes shared deterministic fixture builders, isolated conformance-helper checks, and portable versus Docker-backed verification command surfaces.

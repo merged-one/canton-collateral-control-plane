@@ -1,7 +1,7 @@
 # Master Tracker
 
 Last Updated: 2026-03-30
-Current Phase: Milestone 5 / Phase 5 - Final Conformance And Demo Package
+Current Phase: Milestone 5 / Phase 5 - Proposal Submission Package
 
 ## Mission
 
@@ -37,7 +37,7 @@ The repository's active user-facing name is "Canton Collateral Control Plane". T
 
 ## Current Phase
 
-Milestone 5 / Phase 5 now packages the existing policy, optimization, workflow, reporting, and first data-plane reference-adapter layers into one reproducible proposal-ready surface. The expected output is a reproducible conformance suite and final demo pack that center the pinned Quickstart deployment, one concrete reference token adapter path, and the Quickstart-backed margin-call, substitution, and return flows while still documenting what remains staged prototype scope.
+Milestone 5 / Phase 5 now packages the existing policy, optimization, workflow, reporting, and first data-plane reference-adapter layers into one reproducible proposal-ready surface. The expected output is a reproducible conformance suite, final demo pack, and proposal-submission wrapper that center the pinned Quickstart deployment, one concrete reference token adapter path, and the Quickstart-backed margin-call, substitution, and return flows while still documenting what remains staged prototype scope.
 
 Prompt 1 status:
 
@@ -193,13 +193,20 @@ Prompt 19 status:
 - the third-party integration guide now states exactly where future adopters plug into the Control Plane, what the reference token adapter consumes and proves, what remains prototype scope, and how to replace the adapter without collapsing workflow authority
 - the repository now has an explicit proposal-readiness assessment that distinguishes what is real on Quickstart, what is machine-proven by generated artifacts, what remains prototype-only, and what changed versus the earlier IDE-ledger-only prototype
 
+Prompt 20 status:
+
+- ADR 0023 now chooses a separate proposal-submission wrapper that keeps `make demo-all` as the runtime package and adds reviewer-facing memo, walkthrough-script, and artifact-order surfaces on top
+- `make proposal-package` now reruns or reuses the Quickstart-backed final demo pack, writes a machine-readable `ProposalSubmissionManifest` plus Markdown summary, and freezes the current Quickstart commit, package id, conformance suite id, final demo-pack id, and demo report ids for reviewer use
+- the repository now exposes `docs/evidence/REVIEWER_START_HERE.md`, `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`, and `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md` so a development-fund reviewer can inspect the proof surface without reconstructing repo context manually
+- the proposal-submission wrapper keeps the Quickstart-backed runtime proof and the explicit prototype boundary aligned without requiring any out-of-repo media asset
+
 ## Next 5 Tasks
 
 1. Specify role-scoped `ExecutionReport`, `ReturnReport`, `SubstitutionReport`, and adapter-receipt disclosure profiles beyond the current workflow-party and provider-visible baseline.
 2. Define versioned reference-data contracts for valuation, FX, custodian, issuer, and counterparty facts consumed by policy evaluation.
 3. Define the first workflow-coupled optimizer reservation and consent interface, including substitution-scope and return-release carriage, without collapsing Canton authority.
 4. Define replay, retry, failure-recovery, and settlement-window semantics for future production-grade asset adapters without weakening the current control-plane boundary.
-5. Decide how role-scoped external disclosure and reviewer-facing evidence packs should evolve once non-reference adapters exist.
+5. Rehearse the reviewer path from a clean clone using only `make proposal-package`, the reviewer memo, and the repo-tracked walkthrough script.
 
 ## Blockers
 

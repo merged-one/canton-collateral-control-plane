@@ -54,6 +54,8 @@ RETURN_DEMO_OUTPUT_DIR ?= reports/generated
 CONFORMANCE_OUTPUT_DIR ?= reports/generated
 CONFORMANCE_REPORT ?= $(CONFORMANCE_OUTPUT_DIR)/conformance-suite-report.json
 FINAL_DEMO_OUTPUT_DIR ?= reports/generated
+PROPOSAL_PACKAGE_OUTPUT_DIR ?= reports/generated
+PROPOSAL_PACKAGE_FINAL_DEMO_PACK ?= $(FINAL_DEMO_OUTPUT_DIR)/final-demo-pack.json
 LOCALNET_PROFILE ?= lean
 LOCALNET_WORKDIR ?= $(REPO_ROOT)/.runtime/localnet/cn-quickstart
 LOCALNET_PARTY_HINT ?= canton-collateral-1
@@ -106,11 +108,13 @@ REQUIRED_DOCS := \
 	app/optimizer/optimizer.py \
 	app/optimizer/optimizer_constants.py \
 	app/orchestration/cli.py \
-	app/orchestration/conformance_cli.py \
-	app/orchestration/conformance_suite.py \
-	app/orchestration/final_demo_cli.py \
-	app/orchestration/final_demo_pack.py \
-	app/orchestration/margin_call_demo.py \
+app/orchestration/conformance_cli.py \
+app/orchestration/conformance_suite.py \
+app/orchestration/final_demo_cli.py \
+app/orchestration/final_demo_pack.py \
+app/orchestration/proposal_submission_cli.py \
+app/orchestration/proposal_submission_pack.py \
+app/orchestration/margin_call_demo.py \
 	app/orchestration/return_cli.py \
 	app/orchestration/return_demo.py \
 	app/orchestration/substitution_cli.py \
@@ -123,8 +127,9 @@ REQUIRED_DOCS := \
 	reports/schemas/substitution-report.schema.json \
 	reports/schemas/adapter-execution-report.schema.json \
 	test/README.md \
-	test/conformance/test_conformance.py \
-	test/conformance/test_conformance_checks.py \
+test/conformance/test_conformance.py \
+test/conformance/test_conformance_checks.py \
+test/conformance/test_proposal_submission_package.py \
 	test/policy-engine/test_policy_engine.py \
 	test/optimizer/test_optimizer.py \
 	testsupport/__init__.py \
@@ -234,8 +239,10 @@ REQUIRED_DOCS := \
 	docs/adrs/0017-quickstart-confidential-seed.md \
 	docs/adrs/0018-reference-token-adapter-path.md \
 	docs/adrs/0019-quickstart-margin-call-demo-orchestration.md \
-	docs/adrs/0020-quickstart-substitution-demo-orchestration.md \
-	docs/adrs/0021-quickstart-return-demo-orchestration.md \
+docs/adrs/0020-quickstart-substitution-demo-orchestration.md \
+docs/adrs/0021-quickstart-return-demo-orchestration.md \
+docs/adrs/0022-quickstart-conformance-and-demo-package.md \
+docs/adrs/0023-proposal-submission-wrapper.md \
 		docs/setup/LOCAL_DEV_SETUP.md \
 	docs/setup/DEPENDENCY_POLICY.md \
 	docs/invariants/INVARIANT_REGISTRY.md \
@@ -260,7 +267,13 @@ REQUIRED_DOCS := \
 		docs/evidence/prompt-16-execution-report.md \
 		docs/evidence/prompt-17-execution-report.md \
 		docs/evidence/prompt-18-execution-report.md \
+		docs/evidence/prompt-19-execution-report.md \
+		docs/evidence/prompt-20-execution-report.md \
 		docs/evidence/rename-to-collateral-control-plane-execution-report.md \
+	docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md \
+	docs/evidence/REVIEWER_START_HERE.md \
+	docs/evidence/PROPOSAL_SUBMISSION_MEMO.md \
+	docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md \
 	docs/runbooks/README.md \
 	docs/runbooks/FINAL_DEMO_RUNBOOK.md \
 	docs/runbooks/LOCALNET_CONTROL_PLANE_RUNBOOK.md \
@@ -325,7 +338,7 @@ REQUIRED_DIRS := \
 	infra \
 	docs/setup
 
-.PHONY: bootstrap localnet-bootstrap localnet-smoke localnet-build-dar localnet-deploy-dar localnet-start-control-plane localnet-seed-demo localnet-status-control-plane localnet-run-margin-call-workflow localnet-run-token-adapter localnet-adapter-status docs-lint status verify-portable verify validate-cpl policy-eval optimize test-policy-engine test-optimizer test-conformance daml-build daml-test demo-run demo-margin-call demo-margin-call-quickstart demo-return demo-return-quickstart demo-substitution demo-substitution-quickstart demo-all clean-runtime
+.PHONY: bootstrap localnet-bootstrap localnet-smoke localnet-build-dar localnet-deploy-dar localnet-start-control-plane localnet-seed-demo localnet-status-control-plane localnet-run-margin-call-workflow localnet-run-token-adapter localnet-adapter-status docs-lint status verify-portable verify validate-cpl policy-eval optimize test-policy-engine test-optimizer test-conformance daml-build daml-test demo-run demo-margin-call demo-margin-call-quickstart demo-return demo-return-quickstart demo-substitution demo-substitution-quickstart demo-all proposal-package clean-runtime
 
 $(CHECK_JSONSCHEMA): requirements-cpl-validation.txt
 	@$(PYTHON) -m venv $(VENV)
@@ -367,6 +380,7 @@ docs-lint:
 	@grep -q "make demo-substitution-quickstart" README.md || { echo "docs-lint: README missing demo-substitution-quickstart command"; exit 1; }
 	@grep -q "make test-conformance" README.md || { echo "docs-lint: README missing test-conformance command"; exit 1; }
 	@grep -q "make demo-all" README.md || { echo "docs-lint: README missing demo-all command"; exit 1; }
+	@grep -q "make proposal-package" README.md || { echo "docs-lint: README missing proposal-package command"; exit 1; }
 	@grep -q "make verify-portable" README.md || { echo "docs-lint: README missing verify-portable command"; exit 1; }
 	@grep -q "make policy-eval" README.md || { echo "docs-lint: README missing policy-eval command"; exit 1; }
 	@grep -q "make optimize" README.md || { echo "docs-lint: README missing optimize command"; exit 1; }
@@ -388,6 +402,7 @@ docs-lint:
 	@grep -q "make demo-substitution-quickstart" AGENTS.md || { echo "docs-lint: AGENTS missing demo-substitution-quickstart command"; exit 1; }
 	@grep -q "make test-conformance" AGENTS.md || { echo "docs-lint: AGENTS missing test-conformance command"; exit 1; }
 	@grep -q "make demo-all" AGENTS.md || { echo "docs-lint: AGENTS missing demo-all command"; exit 1; }
+	@grep -q "make proposal-package" AGENTS.md || { echo "docs-lint: AGENTS missing proposal-package command"; exit 1; }
 	@grep -q "make verify-portable" AGENTS.md || { echo "docs-lint: AGENTS missing verify-portable command"; exit 1; }
 	@grep -q "make policy-eval" AGENTS.md || { echo "docs-lint: AGENTS missing policy-eval command"; exit 1; }
 	@grep -q "make optimize" AGENTS.md || { echo "docs-lint: AGENTS missing optimize command"; exit 1; }
@@ -409,6 +424,7 @@ docs-lint:
 	@grep -q "make demo-substitution-quickstart" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-substitution-quickstart command"; exit 1; }
 	@grep -q "make test-conformance" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing test-conformance command"; exit 1; }
 	@grep -q "make demo-all" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing demo-all command"; exit 1; }
+	@grep -q "make proposal-package" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing proposal-package command"; exit 1; }
 	@grep -q "make verify-portable" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing verify-portable command"; exit 1; }
 	@grep -q "make optimize" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing optimize command"; exit 1; }
 	@grep -q "make test-optimizer" CONTRIBUTING.md || { echo "docs-lint: CONTRIBUTING missing test-optimizer command"; exit 1; }
@@ -431,6 +447,7 @@ docs-lint:
 	@grep -q "make demo-substitution-quickstart" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-substitution-quickstart"; exit 1; }
 	@grep -q "make test-conformance" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing test-conformance"; exit 1; }
 	@grep -q "make demo-all" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing demo-all"; exit 1; }
+	@grep -q "make proposal-package" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing proposal-package"; exit 1; }
 	@grep -q "make verify-portable" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing verify-portable"; exit 1; }
 	@grep -q "make policy-eval" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing policy-eval"; exit 1; }
 	@grep -q "make optimize" docs/setup/LOCAL_DEV_SETUP.md || { echo "docs-lint: local setup missing optimize"; exit 1; }
@@ -469,6 +486,7 @@ docs-lint:
 	@grep -q "ADR 0020" docs/adrs/0020-quickstart-substitution-demo-orchestration.md || { echo "docs-lint: ADR 0020 missing title"; exit 1; }
 	@grep -q "ADR 0021" docs/adrs/0021-quickstart-return-demo-orchestration.md || { echo "docs-lint: ADR 0021 missing title"; exit 1; }
 	@grep -q "ADR 0022" docs/adrs/0022-quickstart-conformance-and-demo-package.md || { echo "docs-lint: ADR 0022 missing title"; exit 1; }
+	@grep -q "ADR 0023" docs/adrs/0023-proposal-submission-wrapper.md || { echo "docs-lint: ADR 0023 missing title"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-04-execution-report.md || { echo "docs-lint: prompt 4 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-05-execution-report.md || { echo "docs-lint: prompt 5 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-06-execution-report.md || { echo "docs-lint: prompt 6 execution report incomplete"; exit 1; }
@@ -485,6 +503,7 @@ docs-lint:
 	@grep -q "^## Results" docs/evidence/prompt-17-execution-report.md || { echo "docs-lint: prompt 17 execution report incomplete"; exit 1; }
 	@grep -q "^## Outcomes" docs/evidence/prompt-18-execution-report.md || { echo "docs-lint: prompt 18 execution report incomplete"; exit 1; }
 	@grep -q "^## Results" docs/evidence/prompt-19-execution-report.md || { echo "docs-lint: prompt 19 execution report incomplete"; exit 1; }
+	@grep -q "^## Results" docs/evidence/prompt-20-execution-report.md || { echo "docs-lint: prompt 20 execution report incomplete"; exit 1; }
 	@grep -q "Prompt 5 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 5 status"; exit 1; }
 	@grep -q "Prompt 6 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 6 status"; exit 1; }
 	@grep -q "Prompt 7 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 7 status"; exit 1; }
@@ -500,6 +519,7 @@ docs-lint:
 	@grep -q "Prompt 17 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 17 status"; exit 1; }
 	@grep -q "Prompt 18 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 18 status"; exit 1; }
 	@grep -q "Prompt 19 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 19 status"; exit 1; }
+	@grep -q "Prompt 20 status" docs/mission-control/MASTER_TRACKER.md || { echo "docs-lint: tracker missing prompt 20 status"; exit 1; }
 	@echo "docs-lint: policy engine, optimizer, Quickstart seeded scenario, runtime bridge, return demo, substitution demo, runtime foundation, Daml workflow skeleton, and command surface documentation are present"
 
 localnet-bootstrap:
@@ -737,6 +757,12 @@ demo-all: test-conformance
 		test -f "$$output_path" || { echo "demo-all: missing final demo-pack report"; exit 1; }; \
 		test -f "$(FINAL_DEMO_OUTPUT_DIR)/final-demo-pack-summary.md" || { echo "demo-all: missing markdown summary"; exit 1; }; \
 		echo "demo-all: generated $$output_path"
+
+proposal-package: demo-all
+	@output_path=$$($(PYTHON) app/orchestration/proposal_submission_cli.py --final-demo-pack "$(PROPOSAL_PACKAGE_FINAL_DEMO_PACK)" --output-dir "$(PROPOSAL_PACKAGE_OUTPUT_DIR)" --repo-root "$(REPO_ROOT)"); \
+		test -f "$$output_path" || { echo "proposal-package: missing proposal-submission manifest"; exit 1; }; \
+		test -f "$(PROPOSAL_PACKAGE_OUTPUT_DIR)/proposal-submission-summary.md" || { echo "proposal-package: missing markdown summary"; exit 1; }; \
+		echo "proposal-package: generated $$output_path"
 
 verify:
 	@$(VERIFY_SCRIPT)

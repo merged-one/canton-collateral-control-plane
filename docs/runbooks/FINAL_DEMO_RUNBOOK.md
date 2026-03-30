@@ -12,6 +12,8 @@ Run the proposal-ready prototype package for the Canton Collateral Control Plane
 - aggregate invariant pass or fail output across those real runtime paths
 - machine-readable artifact indexing plus explicit real-versus-staged readiness notes
 
+If you need the reviewer-facing submission wrapper on top of this runtime package, run `make proposal-package` after `make demo-all` or just run `make proposal-package` directly.
+
 ## Preconditions
 
 - run from the repository root
@@ -36,6 +38,17 @@ This command:
 6. writes `reports/generated/final-demo-pack.json`
 7. writes `reports/generated/final-demo-pack-summary.md`
 
+The reviewer-facing wrapper command is:
+
+```sh
+make proposal-package
+```
+
+That command reruns `make demo-all` as needed and then writes:
+
+- `reports/generated/proposal-submission-manifest.json`
+- `reports/generated/proposal-submission-summary.md`
+
 ## Expected Artifacts
 
 After a successful run, confirm that these files exist:
@@ -54,6 +67,9 @@ After a successful run, confirm that these files exist:
 The operator package also depends on these repository documents:
 
 - `docs/evidence/DEMO_ARTIFACT_INDEX.md`
+- `docs/evidence/REVIEWER_START_HERE.md`
+- `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`
+- `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md`
 - `docs/integration/THIRD_PARTY_INTEGRATION_GUIDE.md`
 - `docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md`
 - `docs/testing/CONFORMANCE_SUITE.md`
@@ -82,6 +98,12 @@ Check the human-readable package summary:
 
 ```sh
 sed -n '1,260p' reports/generated/final-demo-pack-summary.md
+```
+
+Check the reviewer-facing wrapper summary:
+
+```sh
+sed -n '1,260p' reports/generated/proposal-submission-summary.md
 ```
 
 ## Failure Handling
@@ -125,4 +147,5 @@ make localnet-status-control-plane
 
 - `make demo-all` is idempotent with respect to the generated files under `reports/generated/`
 - the package now centers the real Quickstart deployment plus reference-adapter-backed execution story; the IDE-ledger demo commands remain comparison surfaces only
-- the final demo pack is the operator-facing proposal artifact bundle; `make verify` remains the full repository validation loop
+- the final demo pack remains the runtime evidence bundle, while `make proposal-package` is the reviewer-facing submission wrapper
+- `make verify` remains the full repository validation loop

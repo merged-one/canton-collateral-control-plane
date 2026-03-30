@@ -2,7 +2,7 @@
   "reportType": "ConformanceSuiteReport",
   "reportVersion": "0.1.0",
   "suiteId": "csr-d7e4b4c29646d5d4",
-  "generatedAt": "2026-03-30T05:08:33Z",
+  "generatedAt": "2026-03-30T05:54:32Z",
   "overallStatus": "PASS",
   "command": "make test-conformance",
   "runtimeEvidence": {

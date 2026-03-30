@@ -1,0 +1,242 @@
+{
+  "reportType": "ProposalSubmissionManifest",
+  "reportVersion": "0.1.0",
+  "submissionId": "psp-9ebe336b9cb042fa",
+  "generatedAt": "2026-03-30T05:54:32Z",
+  "overallStatus": "PASS",
+  "command": "make proposal-package",
+  "artifacts": {
+    "proposalSubmissionManifestPath": "reports/generated/proposal-submission-manifest.json",
+    "markdownSummaryPath": "reports/generated/proposal-submission-summary.md",
+    "finalDemoPackPath": "reports/generated/final-demo-pack.json",
+    "finalDemoPackSummaryPath": "reports/generated/final-demo-pack-summary.md",
+    "conformanceReportPath": "reports/generated/conformance-suite-report.json",
+    "conformanceSummaryPath": "reports/generated/conformance-suite-summary.md",
+    "reviewerStartPath": "docs/evidence/REVIEWER_START_HERE.md",
+    "reviewerMemoPath": "docs/evidence/PROPOSAL_SUBMISSION_MEMO.md",
+    "walkthroughScriptPath": "docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md",
+    "proposalReadinessPath": "docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md",
+    "demoArtifactIndexPath": "docs/evidence/DEMO_ARTIFACT_INDEX.md",
+    "integrationGuidePath": "docs/integration/THIRD_PARTY_INTEGRATION_GUIDE.md",
+    "runbookPath": "docs/runbooks/FINAL_DEMO_RUNBOOK.md"
+  },
+  "submissionBaseline": {
+    "sourceCommit": "f62f22e7b86cd2a730a29a2c924c9b25080ba42b",
+    "sourceCommitShort": "f62f22e",
+    "worktreeStatus": "DIRTY",
+    "dirtyPaths": [
+      " M AGENTS.md",
+      " M CONTRIBUTING.md",
+      " M Makefile",
+      " M README.md",
+      " M docs/evidence/DEMO_ARTIFACT_INDEX.md",
+      " M docs/evidence/EVIDENCE_MANIFEST.md",
+      " M docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md",
+      " M docs/invariants/INVARIANT_REGISTRY.md",
+      " M docs/mission-control/DECISION_LOG.md",
+      " M docs/mission-control/MASTER_TRACKER.md",
+      " M docs/mission-control/ROADMAP.md",
+      " M docs/mission-control/WORKLOG.md",
+      " M docs/runbooks/FINAL_DEMO_RUNBOOK.md",
+      " M docs/runbooks/README.md",
+      " M docs/setup/LOCAL_DEV_SETUP.md",
+      " M reports/README.md",
+      " M reports/generated/conformance-suite-report.json",
+      " M reports/generated/final-demo-pack.json",
+      " M reports/generated/localnet-control-plane-deployment-receipt.json",
+      " M scripts/verify-portable.sh",
+      " M scripts/verify.sh",
+      "?? app/orchestration/proposal_submission_cli.py",
+      "?? app/orchestration/proposal_submission_pack.py",
+      "?? docs/adrs/0023-proposal-submission-wrapper.md",
+      "?? docs/evidence/PROPOSAL_SUBMISSION_MEMO.md",
+      "?? docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md",
+      "?? docs/evidence/REVIEWER_START_HERE.md",
+      "?? docs/evidence/prompt-20-execution-report.md",
+      "?? reports/generated/proposal-submission-manifest.json",
+      "?? reports/generated/proposal-submission-summary.md",
+      "?? test/conformance/test_proposal_submission_package.py"
+    ],
+    "finalDemoPackId": "fdp-ad4246d5144c77eb",
+    "conformanceSuiteId": "csr-d7e4b4c29646d5d4",
+    "passStates": {
+      "conformanceSuite": "PASS",
+      "finalDemoPack": "PASS",
+      "proposalSubmissionPackage": "PASS"
+    },
+    "runtimeMode": "QUICKSTART",
+    "quickstartCommit": "fe56d460af650b71b8e20098b3e76693397a8bf9",
+    "deployedDarFile": ".daml/dist-quickstart/canton-collateral-control-plane-0.1.10.dar",
+    "deployedPackageId": "2535dc1e6f8ab629482bc6c186334df1c79ab0fe5c59302d7bcb20f5a7c139fb",
+    "participants": [
+      "app-provider",
+      "app-user"
+    ],
+    "referenceAdapterPath": {
+      "adapterName": "quickstart-reference-token-adapter",
+      "settlementAction": "PostCollateral",
+      "workflowType": "PostingWorkflow",
+      "receiptStatus": "EXECUTED",
+      "movementLotIds": [
+        "quickstart-reference-token-lot-007",
+        "quickstart-reference-token-lot-008"
+      ],
+      "providerVisibleAdapterReceiptCount": 1,
+      "providerVisibleEncumbranceCount": 2
+    },
+    "demoReports": [
+      {
+        "demoType": "CONFIDENTIAL_MARGIN_CALL",
+        "reportType": "ExecutionReport",
+        "reportId": "exr-9bc26ea5d960c241",
+        "overallStatus": "PASS",
+        "command": "make demo-margin-call-quickstart",
+        "reportPath": "reports/generated/margin-call-quickstart-execution-report.json",
+        "positiveScenarioIds": [
+          "positive-margin-call-quickstart"
+        ],
+        "negativeScenarioIds": [
+          "negative-ineligible-asset-quickstart",
+          "negative-workflow-rejected-quickstart"
+        ]
+      },
+      {
+        "demoType": "CONFIDENTIAL_COLLATERAL_SUBSTITUTION",
+        "reportType": "SubstitutionReport",
+        "reportId": "srr-a8a9d213c0f6408a",
+        "overallStatus": "PASS",
+        "command": "make demo-substitution-quickstart",
+        "reportPath": "reports/generated/substitution-quickstart-report.json",
+        "positiveScenarioIds": [
+          "positive-substitution-quickstart"
+        ],
+        "negativeScenarioIds": [
+          "negative-replacement-becomes-ineligible-quickstart",
+          "negative-partial-substitution-quickstart"
+        ]
+      },
+      {
+        "demoType": "CONFIDENTIAL_MARGIN_RETURN",
+        "reportType": "ReturnReport",
+        "reportId": "rrr-163cdd5d84a09b71",
+        "overallStatus": "PASS",
+        "command": "make demo-return-quickstart",
+        "reportPath": "reports/generated/return-quickstart-report.json",
+        "positiveScenarioIds": [
+          "positive-return-quickstart"
+        ],
+        "negativeScenarioIds": [
+          "negative-unauthorized-return-quickstart",
+          "negative-replayed-return-instruction-quickstart",
+          "negative-obligation-state-mismatch-quickstart"
+        ]
+      }
+    ]
+  },
+  "reviewerJourney": {
+    "primaryCommand": "make proposal-package",
+    "timebox": "10-15 minutes",
+    "reviewOrder": [
+      {
+        "step": 1,
+        "label": "Reviewer start",
+        "path": "docs/evidence/REVIEWER_START_HERE.md",
+        "purpose": "Start with the shortest orientation path and the exact command surface."
+      },
+      {
+        "step": 2,
+        "label": "Reviewer memo",
+        "path": "docs/evidence/PROPOSAL_SUBMISSION_MEMO.md",
+        "purpose": "Read the runtime-backed claims, staged scope, and technical delta in one place."
+      },
+      {
+        "step": 3,
+        "label": "Quickstart deployment",
+        "path": "reports/generated/localnet-control-plane-deployment-receipt.json",
+        "purpose": "Confirm the pinned Quickstart commit, deployed DAR, and package identity."
+      },
+      {
+        "step": 4,
+        "label": "Reference adapter",
+        "path": "reports/generated/localnet-reference-token-adapter-execution-report.json",
+        "purpose": "Verify the concrete settlement-instruction-to-adapter proof path."
+      },
+      {
+        "step": 5,
+        "label": "Adapter status",
+        "path": "reports/generated/localnet-reference-token-adapter-status.json",
+        "purpose": "Confirm the provider-visible post-execution state after the adapter path ran."
+      },
+      {
+        "step": 6,
+        "label": "Quickstart demos",
+        "path": "reports/generated/final-demo-pack.json",
+        "purpose": "Use the final demo pack to inspect the margin-call, substitution, and return runtime paths."
+      },
+      {
+        "step": 7,
+        "label": "Conformance",
+        "path": "reports/generated/conformance-suite-report.json",
+        "purpose": "Confirm the aggregate invariant pass or fail output for the Quickstart-backed proof set."
+      },
+      {
+        "step": 8,
+        "label": "Walkthrough",
+        "path": "docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md",
+        "purpose": "Use the repo-tracked walkthrough script for reviewer replay or live presentation."
+      }
+    ]
+  },
+  "claimBoundaries": {
+    "realOnQuickstart": [
+      "Pinned Quickstart deployment and DAR installation into app-provider and app-user participants.",
+      "One concrete reference token adapter posting path with machine-readable execution and status evidence.",
+      "Quickstart-backed confidential margin call, substitution, and return demo flows with real workflow-to-adapter handoff evidence.",
+      "Aggregate invariant evidence across those runtime-backed demo paths through make test-conformance and make demo-all."
+    ],
+    "machineReadableProof": [
+      "reports/generated/localnet-control-plane-deployment-receipt.json",
+      "reports/generated/localnet-reference-token-adapter-execution-report.json",
+      "reports/generated/localnet-reference-token-adapter-status.json",
+      "reports/generated/margin-call-quickstart-execution-report.json",
+      "reports/generated/substitution-quickstart-report.json",
+      "reports/generated/return-quickstart-report.json",
+      "reports/generated/conformance-suite-report.json",
+      "reports/generated/final-demo-pack.json"
+    ],
+    "prototypeOnly": [
+      "Production-grade custodian or issuer adapters beyond the narrow reference token path.",
+      "Role-scoped disclosure profiles beyond the current workflow-party and provider-visible baseline.",
+      "Workflow-coupled optimizer reservation and consent interfaces.",
+      "Settlement-window enforcement and broader collateral business logic hardening."
+    ],
+    "technicalDeltaFromEarlierPrototype": [
+      "The primary demo package no longer centers IDE-ledger-only workflow runs; it now centers Quickstart deployment plus adapter-backed runtime evidence.",
+      "The conformance suite now validates real Quickstart workflow, adapter, and provider-visible status artifacts rather than only the pre-Quickstart report chain.",
+      "The final demo pack now distinguishes real runtime-backed proof from staged roadmap scope explicitly instead of implying parity across all integrations."
+    ],
+    "doNotInfer": [
+      "The reference token adapter path is not a generalized production custodian, issuer, or settlement-network integration surface.",
+      "The current workflow-party and provider-visible evidence surfaces do not yet prove broader role-scoped disclosure profiles.",
+      "Workflow-coupled optimizer reservation, settlement-window enforcement, retry and recovery semantics, and reference-data contracts remain staged roadmap scope."
+    ]
+  },
+  "walkthroughPackage": {
+    "walkthroughScriptPath": "docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md",
+    "commandsShown": [
+      "make proposal-package"
+    ],
+    "artifactOrder": [
+      "reports/generated/proposal-submission-summary.md",
+      "reports/generated/proposal-submission-manifest.json",
+      "reports/generated/localnet-control-plane-deployment-receipt.json",
+      "reports/generated/localnet-reference-token-adapter-execution-report.json",
+      "reports/generated/localnet-reference-token-adapter-status.json",
+      "reports/generated/margin-call-quickstart-execution-report.json",
+      "reports/generated/substitution-quickstart-report.json",
+      "reports/generated/return-quickstart-report.json",
+      "reports/generated/conformance-suite-report.json",
+      "reports/generated/final-demo-pack.json"
+    ]
+  }
+}

@@ -9,6 +9,7 @@ This index identifies the real artifact bundle produced by the proposal-ready de
 ```sh
 make test-conformance
 make demo-all
+make proposal-package
 ```
 
 ## Aggregate Artifacts
@@ -21,6 +22,8 @@ make demo-all
 | `reports/generated/conformance-haircut-policy-evaluation-report.json` | JSON | `make test-conformance` | supporting haircut-vector evidence for lendable-value arithmetic |
 | `reports/generated/final-demo-pack.json` | JSON | `make demo-all` | machine-readable package index for the Quickstart-backed final prototype demonstration |
 | `reports/generated/final-demo-pack-summary.md` | Markdown | `make demo-all` | operator and reviewer summary of the final prototype package |
+| `reports/generated/proposal-submission-manifest.json` | JSON | `make proposal-package` | machine-readable reviewer-facing wrapper that freezes the current Quickstart proof set, reviewer docs, and proposal claim boundary |
+| `reports/generated/proposal-submission-summary.md` | Markdown | `make proposal-package` | short reviewer summary for proposal submission built from the generated runtime evidence |
 
 ## Quickstart Runtime Foundation Artifacts
 
@@ -78,6 +81,9 @@ make demo-all
 
 The final demo package should be read together with:
 
+- `docs/evidence/REVIEWER_START_HERE.md`
+- `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`
+- `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md`
 - `docs/testing/CONFORMANCE_SUITE.md`
 - `docs/runbooks/FINAL_DEMO_RUNBOOK.md`
 - `docs/integration/THIRD_PARTY_INTEGRATION_GUIDE.md`
@@ -86,11 +92,12 @@ The final demo package should be read together with:
 
 ## Reviewer Workflow
 
-1. run `make demo-all`
-2. inspect `reports/generated/final-demo-pack.json`
-3. inspect `reports/generated/conformance-suite-report.json`
-4. inspect the Quickstart deployment receipt and concrete reference adapter proof artifacts
-5. inspect the three Quickstart-backed confidential workflow reports
-6. inspect the readiness assessment, integration guide, and this artifact index
+1. run `make proposal-package`
+2. inspect `reports/generated/proposal-submission-manifest.json`
+3. inspect `reports/generated/final-demo-pack.json`
+4. inspect `reports/generated/conformance-suite-report.json`
+5. inspect the Quickstart deployment receipt and concrete reference adapter proof artifacts
+6. inspect the three Quickstart-backed confidential workflow reports
+7. inspect the readiness assessment, reviewer memo, integration guide, and this artifact index
 
 The package is only valid if the machine-readable artifacts, Markdown summaries, and documented command surface all line up with one another and the real-versus-staged boundary remains explicit.

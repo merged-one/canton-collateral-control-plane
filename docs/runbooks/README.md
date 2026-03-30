@@ -41,5 +41,6 @@ The repository now includes:
 - `make demo-substitution` for the first end-to-end substitution operator demo
 - `make test-conformance` for the aggregate invariant-verification package
 - `make demo-all` for the final packaged prototype demonstration
+- `make proposal-package` for the reviewer-facing proposal submission wrapper around the final demo pack
 
 Future workflow additions should continue to add or update at least one runbook and one reproducible command.

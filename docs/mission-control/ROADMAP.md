@@ -5,7 +5,7 @@ This roadmap currently reflects the 2026-03-28 development-fund proposal. If the
 The roadmap describes the build-out of the Control Plane subsystems plus the adjacent data-plane integrations they depend on. The rename to "Canton Collateral Control Plane" is a clarification of the existing architecture, not a change in business direction.
 
 Current staging note:
-The repository now has a pinned Quickstart bootstrap, a containerized runtime bridge that builds the Control Plane DAR against the pinned Quickstart runtime line, real Quickstart start, deploy, seed, status, and reference-token-adapter commands, one concrete Quickstart-backed adapter proof path, Quickstart-backed end-to-end margin-call, substitution, and return demos, plus a conformance suite and final demo pack that center those runtime-backed paths. The remaining roadmap still applies because the current adapter path is narrow and reference-grade rather than a broad production integration surface.
+The repository now has a pinned Quickstart bootstrap, a containerized runtime bridge that builds the Control Plane DAR against the pinned Quickstart runtime line, real Quickstart start, deploy, seed, status, and reference-token-adapter commands, one concrete Quickstart-backed adapter proof path, Quickstart-backed end-to-end margin-call, substitution, and return demos, a conformance suite and final demo pack that center those runtime-backed paths, and a proposal-submission wrapper that packages the reviewer memo plus walkthrough surfaces around that proof set. The remaining roadmap still applies because the current adapter path is narrow and reference-grade rather than a broad production integration surface.
 
 ## Phase 0: Mission Control Spine
 
@@ -108,12 +108,14 @@ Expected outputs:
 - Quickstart-based demo environment
 - maintainer, operator, and integration documentation
 - reference machine-readable and human-readable reports
-- recorded walkthrough
+- reviewer start path and proposal submission memo
+- repo-tracked walkthrough script
 - adoption guidance for venues, custodians, financing apps, treasury desks, and collateral-service providers
 
 Acceptance focus:
 
 - a third party can run the Quickstart-backed demo package from documented commands
+- a reviewer can follow one deterministic proposal-package path without reconstructing repo context manually
 - at least two sample policy profiles and two sample execution reports are published
 - integration guidance is concrete enough for external adopters
 - proposal packaging distinguishes runtime-proven capability from staged prototype scope explicitly

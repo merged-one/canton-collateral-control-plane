@@ -62,13 +62,14 @@ A fund reviewer should see four concrete changes:
 
 Reviewers should inspect the runtime artifacts in this order:
 
-1. `reports/generated/localnet-control-plane-deployment-receipt.json`
-2. `reports/generated/localnet-reference-token-adapter-execution-report.json`
-3. `reports/generated/localnet-reference-token-adapter-status.json`
-4. `reports/generated/margin-call-quickstart-execution-report.json`
-5. `reports/generated/substitution-quickstart-report.json`
-6. `reports/generated/return-quickstart-report.json`
-7. `reports/generated/conformance-suite-report.json`
-8. `reports/generated/final-demo-pack.json`
+1. `reports/generated/proposal-submission-manifest.json`
+2. `reports/generated/localnet-control-plane-deployment-receipt.json`
+3. `reports/generated/localnet-reference-token-adapter-execution-report.json`
+4. `reports/generated/localnet-reference-token-adapter-status.json`
+5. `reports/generated/margin-call-quickstart-execution-report.json`
+6. `reports/generated/substitution-quickstart-report.json`
+7. `reports/generated/return-quickstart-report.json`
+8. `reports/generated/conformance-suite-report.json`
+9. `reports/generated/final-demo-pack.json`
 
-That sequence shows the Quickstart deployment surface, the standalone adapter seam, the three workflow types, and then the aggregate package that ties them together.
+That sequence shows the reviewer wrapper first, then the Quickstart deployment surface, the standalone adapter seam, the three workflow types, and finally the aggregate runtime package that ties them together.

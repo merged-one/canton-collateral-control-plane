@@ -14,5 +14,5 @@ make --no-print-directory test-optimizer
 make --no-print-directory daml-build
 make --no-print-directory daml-test
 make --no-print-directory demo-run
-make --no-print-directory demo-all
-echo "verify-portable: policy-engine, optimizer, Daml workflow, aggregate conformance suite, and final demo pack checks passed"
+make --no-print-directory proposal-package
+echo "verify-portable: policy-engine, optimizer, Daml workflow, aggregate conformance suite, final demo pack, and proposal submission package checks passed"

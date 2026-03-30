@@ -68,6 +68,7 @@ make demo-substitution
 make demo-substitution-quickstart
 make test-conformance
 make demo-all
+make proposal-package
 make verify-portable
 make verify
 ```
@@ -100,7 +101,8 @@ What each command does:
 - `make demo-substitution-quickstart`: start or reuse the Quickstart overlay, evaluate the Quickstart-backed positive and negative substitution scenarios, hand the positive workflow result to the substitution adapter path, and emit chained substitution-report artifacts
 - `make test-conformance`: refresh Quickstart deployment evidence, validate one concrete reference token adapter proof path, and rerun the three Quickstart-backed confidential workflow demos, then emit aggregate invariant pass/fail output
 - `make demo-all`: build the final demo pack from the aggregate conformance output, runtime evidence, and readiness assessment
-- `make verify-portable`: run the full verification loop across docs, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml tests, aggregate conformance, and final demo packaging without requiring Docker
+- `make proposal-package`: wrap the final demo pack with a reviewer-start path, proposal memo, walkthrough materials, and a machine-readable proposal-submission manifest
+- `make verify-portable`: run the full verification loop across docs, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml tests, aggregate conformance, final demo packaging, and proposal submission packaging without requiring Docker
 - `make verify`: run the full verification loop and then add the Quickstart LocalNet smoke execution on top of `make verify-portable`
 
 ## Runtime Layout
@@ -115,7 +117,7 @@ What each command does:
 
 ## Notes
 
-- The current repository now includes an initial deterministic policy engine, an initial deterministic optimizer, initial Daml workflow skeletons, end-to-end margin-call, return, and substitution demos, an aggregate conformance suite, and a final demo pack, but it still does not implement live asset adapters, settlement-window enforcement, or workflow-coupled optimization reservation.
+- The current repository now includes an initial deterministic policy engine, an initial deterministic optimizer, initial Daml workflow skeletons, end-to-end margin-call, return, and substitution demos, an aggregate conformance suite, a final demo pack, and a proposal submission package, but it still does not implement live asset adapters, settlement-window enforcement, or workflow-coupled optimization reservation.
 - The Quickstart LocalNet foundation now stages a real upstream checkout, validates its compose topology, starts an isolated repo-owned Quickstart overlay, deploys the Control Plane DAR, seeds confidential scenario-scoped state, executes Quickstart-backed margin-call, return, and substitution workflow paths, and executes reference token adapter posting, return, plus substitution paths, but it still does not provide production-grade asset adapters, settlement-window enforcement, or workflow-coupled optimizer reservation.
 - `make localnet-build-dar` and `make localnet-deploy-dar` require Docker because the Quickstart-compatible DAR is built inside a Linux container even on Apple Silicon hosts.
 - Future Quickstart or Canton overlay assets should land under `infra/`, not inside the Daml or app package trees.
