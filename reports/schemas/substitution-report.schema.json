@@ -95,6 +95,7 @@
       "required": [
         "demoId",
         "demoVersion",
+        "runtimeMode",
         "command",
         "manifestPath",
         "outputDirectory",
@@ -111,8 +112,19 @@
           "type": "string",
           "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
         },
+        "runtimeMode": {
+          "type": "string",
+          "enum": [
+            "IDE_LEDGER",
+            "QUICKSTART"
+          ]
+        },
         "command": {
-          "const": "make demo-substitution"
+          "type": "string",
+          "enum": [
+            "make demo-substitution",
+            "make demo-substitution-quickstart"
+          ]
         },
         "manifestPath": {
           "$ref": "#/$defs/pathString"
@@ -172,11 +184,18 @@
         "optimizationReportPath",
         "workflowInputPath",
         "workflowResultPath",
+        "quickstartSeedReceiptPath",
+        "adapterExecutionReportPath",
+        "adapterStatusPath",
+        "workflowRuntime",
         "policyDecision",
         "optimizationStatus",
         "recommendedAction",
         "currentPostedLotIds",
         "replacementLotIds",
+        "blockedPhase",
+        "adapterOutcome",
+        "atomicityEvidence",
         "workflow"
       ],
       "properties": {
@@ -232,6 +251,35 @@
             "null"
           ]
         },
+        "quickstartSeedReceiptPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapterExecutionReportPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "adapterStatusPath": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "workflowRuntime": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "IDE_LEDGER",
+            "QUICKSTART",
+            null
+          ]
+        },
         "policyDecision": {
           "type": "string",
           "enum": [
@@ -270,6 +318,45 @@
         },
         "replacementLotIds": {
           "$ref": "#/$defs/stringArray"
+        },
+        "blockedPhase": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "POLICY_EVALUATION",
+            "OPTIMIZATION",
+            "WORKFLOW",
+            "ADAPTER",
+            null
+          ]
+        },
+        "adapterOutcome": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "EXECUTED",
+            "BLOCKED",
+            "NOT_REQUESTED",
+            null
+          ]
+        },
+        "atomicityEvidence": {
+          "type": [
+            "object",
+            "null"
+          ],
+          "anyOf": [
+            {
+              "type": "null"
+            },
+            {
+              "$ref": "#/$defs/atomicityEvidence"
+            }
+          ]
         },
         "workflow": {
           "type": [
@@ -377,6 +464,68 @@
         }
       }
     },
+    "atomicityEvidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "proofStatus",
+        "incumbentEncumberedLotIds",
+        "approvedReplacementLotIds",
+        "adapterActionReleaseLotIds",
+        "adapterActionReplacementLotIds",
+        "finalReleasedLotIds",
+        "finalActiveEncumberedLotIds",
+        "providerVisibleCurrentHoldingLotIds",
+        "providerVisibleReplacementHoldingLotIds",
+        "providerVisibleAdapterReceiptCount",
+        "note"
+      ],
+      "properties": {
+        "proofStatus": {
+          "type": "string",
+          "enum": [
+            "ATOMICALLY_COMMITTED",
+            "BLOCKED_NO_SIDE_EFFECTS",
+            "IDE_LEDGER_WORKFLOW_ONLY"
+          ]
+        },
+        "incumbentEncumberedLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "approvedReplacementLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "adapterActionReleaseLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "adapterActionReplacementLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "finalReleasedLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "finalActiveEncumberedLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "providerVisibleCurrentHoldingLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "providerVisibleReplacementHoldingLotIds": {
+          "$ref": "#/$defs/stringArray"
+        },
+        "providerVisibleAdapterReceiptCount": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "note": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
     "workflowResult": {
       "type": "object",
       "additionalProperties": false,
@@ -403,6 +552,12 @@
         "obligationId": {
           "$ref": "#/$defs/identifier"
         },
+        "correlationId": {
+          "type": "string"
+        },
+        "workflowGate": {
+          "type": "string"
+        },
         "substitutionState": {
           "type": "string",
           "minLength": 1
@@ -414,6 +569,18 @@
         "custodianApproval": {
           "type": "string",
           "minLength": 1
+        },
+        "settlementInstructionId": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "settlementInstructionState": {
+          "type": [
+            "string",
+            "null"
+          ]
         },
         "currentEncumberedLotIds": {
           "$ref": "#/$defs/stringArray"
@@ -431,7 +598,8 @@
           "type": "string",
           "enum": [
             "COMMITTED_ATOMICALLY",
-            "BLOCKED_ATOMICALLY"
+            "BLOCKED_ATOMICALLY",
+            "PENDING_ATOMIC_SETTLEMENT"
           ]
         },
         "executionReportCount": {
@@ -490,13 +658,16 @@
           "enum": [
             "POLICY_EVALUATION",
             "OPTIMIZATION",
-            "WORKFLOW"
+            "QUICKSTART_SEED",
+            "WORKFLOW",
+            "ADAPTER"
           ]
         },
         "status": {
           "type": "string",
           "enum": [
-            "COMPLETED"
+            "COMPLETED",
+            "SKIPPED"
           ]
         },
         "startedAt": {
@@ -539,7 +710,6 @@
         },
         "evidence": {
           "type": "array",
-          "minItems": 1,
           "items": {
             "$ref": "#/$defs/pathString"
           }

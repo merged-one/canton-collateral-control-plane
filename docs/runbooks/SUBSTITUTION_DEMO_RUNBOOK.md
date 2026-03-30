@@ -2,104 +2,118 @@
 
 ## Purpose
 
-Run the first end-to-end substitution prototype and verify that the repository generates real substitution artifacts from policy, optimization, and Daml workflow execution.
+Run the Control Plane substitution demos and verify that the repository generates real substitution artifacts from policy evaluation, optimization, workflow execution, adapter execution where applicable, and final reporting.
 
 ## Preconditions
 
 - run from the repository root
-- local bootstrap completed with `make bootstrap`
-- the repo-local Daml toolchain is available under `.runtime/`
-- no local policy or demo input edits are pending unless intentionally under test
+- `make bootstrap` completed
+- Docker available for the Quickstart-backed path
+- no unintended local scenario or policy edits are pending
 
-## Primary Command
+## Primary Commands
+
+IDE-ledger comparison path:
 
 ```sh
 make demo-substitution
 ```
 
-This command:
+Quickstart-backed end-to-end path:
 
-1. compiles the Daml package through `make daml-build`
-2. evaluates the positive and negative substitution bundles under `examples/demo-scenarios/substitution/`
-3. runs optimizer selection for the scenarios that need replacement recommendations
-4. invokes the Daml substitution workflow path for the positive path plus the workflow-control negative paths
-5. validates the generated `SubstitutionReport` against `reports/schemas/substitution-report.schema.json`
-6. writes JSON and Markdown artifacts under `reports/generated/`
+```sh
+make demo-substitution-quickstart
+```
 
-## Expected Artifacts
+`make demo-substitution` keeps the first substitution prototype on the Daml IDE ledger. `make demo-substitution-quickstart` starts or reuses the pinned Quickstart overlay, deploys the current Control Plane DAR, evaluates substitution scenarios, prepares the positive substitution on Quickstart, invokes the reference token adapter for incumbent release plus replacement movement, refreshes provider-visible status, validates the generated `SubstitutionReport`, and writes JSON plus Markdown artifacts under `reports/generated/`.
 
-After a successful run, confirm that these files exist:
+## Expected Quickstart Artifacts
 
-- `reports/generated/substitution-demo-report.json`
-- `reports/generated/substitution-demo-summary.md`
-- `reports/generated/substitution-demo-timeline.md`
-- `reports/generated/positive-substitution-policy-evaluation-report.json`
-- `reports/generated/positive-substitution-optimization-report.json`
-- `reports/generated/positive-substitution-workflow-input.json`
-- `reports/generated/positive-substitution-workflow-result.json`
+After `make demo-substitution-quickstart` succeeds, confirm these files exist:
 
-The same run also refreshes the negative-path artifacts:
-
-- `reports/generated/negative-replacement-becomes-ineligible-policy-evaluation-report.json`
-- `reports/generated/negative-concentration-breach-policy-evaluation-report.json`
-- `reports/generated/negative-concentration-breach-optimization-report.json`
-- `reports/generated/negative-unauthorized-release-policy-evaluation-report.json`
-- `reports/generated/negative-unauthorized-release-optimization-report.json`
-- `reports/generated/negative-unauthorized-release-workflow-input.json`
-- `reports/generated/negative-unauthorized-release-workflow-result.json`
-- `reports/generated/negative-partial-substitution-policy-evaluation-report.json`
-- `reports/generated/negative-partial-substitution-optimization-report.json`
-- `reports/generated/negative-partial-substitution-workflow-input.json`
-- `reports/generated/negative-partial-substitution-workflow-result.json`
+- `reports/generated/substitution-quickstart-report.json`
+- `reports/generated/substitution-quickstart-summary.md`
+- `reports/generated/substitution-quickstart-timeline.md`
+- `reports/generated/positive-substitution-quickstart-policy-evaluation-report.json`
+- `reports/generated/positive-substitution-quickstart-optimization-report.json`
+- `reports/generated/positive-substitution-quickstart-workflow-input.json`
+- `reports/generated/positive-substitution-quickstart-workflow-result.json`
+- `reports/generated/positive-substitution-quickstart/localnet-control-plane-seed-receipt.json`
+- `reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json`
+- `reports/generated/positive-substitution-quickstart/localnet-substitution-status.json`
+- `reports/generated/negative-replacement-becomes-ineligible-quickstart-policy-evaluation-report.json`
+- `reports/generated/negative-partial-substitution-quickstart-policy-evaluation-report.json`
+- `reports/generated/negative-partial-substitution-quickstart-optimization-report.json`
+- `reports/generated/negative-partial-substitution-quickstart-workflow-input.json`
+- `reports/generated/negative-partial-substitution-quickstart-workflow-result.json`
+- `reports/generated/negative-partial-substitution-quickstart/localnet-control-plane-seed-receipt.json`
+- `reports/generated/negative-partial-substitution-quickstart/localnet-substitution-status.json`
 
 ## Operator Checks
 
-Check the substitution report:
+Inspect the Quickstart substitution report:
 
 ```sh
-jq '{substitutionReportId, overallStatus, demo, scenarios: [.scenarios[] | {scenarioId, mode, result, policyDecision, optimizationStatus, recommendedAction, observedReasonCodes}]}' reports/generated/substitution-demo-report.json
+jq '{substitutionReportId, overallStatus, demo, scenarios: [.scenarios[] | {scenarioId, mode, result, workflowRuntime, adapterOutcome, blockedPhase, atomicityEvidence}]}' reports/generated/substitution-quickstart-report.json
 ```
 
-Check the positive workflow result:
+Inspect the positive workflow handoff before adapter confirmation:
 
 ```sh
-jq '{substitutionState, currentEncumberedLotIds, releasedLotIds, replacementLotIds, activeEncumberedLotIds, atomicityOutcome, executionReportCount}' reports/generated/positive-substitution-workflow-result.json
+jq '{substitutionState, settlementInstructionId, settlementInstructionState, currentEncumberedLotIds, replacementLotIds, activeEncumberedLotIds, atomicityOutcome, controlChecks}' reports/generated/positive-substitution-quickstart-workflow-result.json
 ```
 
-Check the Markdown summary:
+Inspect the positive adapter execution proof:
 
 ```sh
-sed -n '1,220p' reports/generated/substitution-demo-summary.md
+jq '{incumbentEncumberedLotIds, approvedReplacementLotIds, adapterActions, workflowConfirmation}' reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json
+```
+
+Inspect the provider-visible positive post-substitution state:
+
+```sh
+jq '{substitutionState, settlementInstructionState, providerVisibleEncumbrances, providerVisibleCurrentLotHoldings, providerVisibleReplacementLotHoldings, providerVisibleAdapterReceipts}' reports/generated/positive-substitution-quickstart/localnet-substitution-status.json
+```
+
+Inspect the blocked partial-substitution status proof:
+
+```sh
+jq '{substitutionState, settlementInstructionState, providerVisibleEncumbrances, providerVisibleCurrentLotHoldings, providerVisibleReplacementLotHoldings, providerVisibleAdapterReceipts}' reports/generated/negative-partial-substitution-quickstart/localnet-substitution-status.json
 ```
 
 ## Failure Handling
 
-If `make demo-substitution` fails:
+If `make demo-substitution-quickstart` fails:
 
-1. inspect the reported scenario name and failure reason
-2. open the generated scenario artifact under `reports/generated/` if one was written before the failure
-3. run the component commands directly if needed:
-
-```sh
-make policy-eval POLICY=examples/demo-scenarios/substitution/substitution-policy.json INVENTORY=examples/demo-scenarios/substitution/positive-inventory.json
-make optimize POLICY=examples/demo-scenarios/substitution/substitution-policy.json INVENTORY=examples/demo-scenarios/substitution/positive-inventory.json OBLIGATION=examples/demo-scenarios/substitution/positive-obligation.json
-```
-
-4. if the failure comes from Daml workflow execution, confirm the package still builds and the lifecycle tests still pass:
+1. inspect the reported scenario and phase in `reports/generated/substitution-quickstart-report.json` if it was written
+2. inspect the scenario-local artifacts under `reports/generated/positive-substitution-quickstart/` or `reports/generated/negative-partial-substitution-quickstart/`
+3. confirm the Quickstart surface is healthy:
 
 ```sh
-make daml-build
-make daml-test
+make localnet-start-control-plane
+make localnet-status-control-plane
 ```
 
-5. if schema validation fails, inspect the relevant generated JSON file and compare it against:
+4. rerun the substitution-specific Quickstart helpers directly if needed:
 
-- `reports/schemas/policy-evaluation-report.schema.json`
-- `reports/schemas/optimization-report.schema.json`
-- `reports/schemas/substitution-report.schema.json`
+```sh
+sh -n scripts/localnet-seed-substitution-demo.sh
+sh -n scripts/localnet-run-substitution-workflow.sh
+sh -n scripts/localnet-run-substitution-token-adapter.sh
+sh -n scripts/localnet-substitution-status.sh
+make localnet-deploy-dar
+```
+
+5. if the failure is isolated to policy or optimization, rerun the off-ledger steps directly:
+
+```sh
+make policy-eval POLICY=examples/demo-scenarios/substitution/substitution-policy.json INVENTORY=examples/demo-scenarios/substitution/quickstart-positive-inventory.json
+make optimize POLICY=examples/demo-scenarios/substitution/substitution-policy.json INVENTORY=examples/demo-scenarios/substitution/quickstart-positive-inventory.json OBLIGATION=examples/demo-scenarios/substitution/quickstart-positive-obligation.json
+```
 
 ## Recovery Notes
 
-- The run is idempotent with respect to generated artifacts under `reports/generated/`; re-running the command replaces the prior substitution outputs.
-- The demo currently uses the Daml IDE ledger, not the pinned Quickstart LocalNet.
-- The positive workflow path proves encumbered-collateral replacement, approval gating, and atomicity only. It does not yet prove Quickstart deployment, asset-adapter execution, or role-scoped report disclosure.
+- `make demo-substitution` remains the IDE-ledger comparison path and does not exercise Quickstart or the adapter boundary.
+- `make demo-substitution-quickstart` now proves one real positive atomic replacement path and one real blocked partial-substitution path on Quickstart.
+- the current Quickstart substitution path still uses the narrow reference token adapter rather than a production custodian or issuer integration.
+- margin return remains outside the Quickstart-backed adapter chain and is still pending equivalent runtime coverage.

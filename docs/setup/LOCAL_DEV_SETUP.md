@@ -64,6 +64,7 @@ make demo-margin-call
 make demo-margin-call-quickstart
 make demo-return
 make demo-substitution
+make demo-substitution-quickstart
 make test-conformance
 make demo-all
 make verify-portable
@@ -94,6 +95,7 @@ What each command does:
 - `make demo-margin-call-quickstart`: start or reuse the Quickstart overlay, evaluate the Quickstart-backed positive and negative margin-call scenarios, hand the positive workflow result to the reference token adapter, and emit chained execution-report artifacts
 - `make demo-return`: run the first positive and negative end-to-end return scenarios and emit return-report artifacts
 - `make demo-substitution`: run the first positive and negative end-to-end substitution scenarios and emit substitution-report artifacts
+- `make demo-substitution-quickstart`: start or reuse the Quickstart overlay, evaluate the Quickstart-backed positive and negative substitution scenarios, hand the positive workflow result to the substitution adapter path, and emit chained substitution-report artifacts
 - `make test-conformance`: run the aggregate conformance suite and emit explicit invariant pass/fail output across the three confidential workflow demos
 - `make demo-all`: build the final demo pack from the aggregate conformance output
 - `make verify-portable`: run the full verification loop across docs, CPL validation, policy-engine tests, optimizer tests, Daml build, Daml tests, aggregate conformance, and final demo packaging without requiring Docker
@@ -112,7 +114,7 @@ What each command does:
 ## Notes
 
 - The current repository now includes an initial deterministic policy engine, an initial deterministic optimizer, initial Daml workflow skeletons, end-to-end margin-call, return, and substitution demos, an aggregate conformance suite, and a final demo pack, but it still does not implement live asset adapters, settlement-window enforcement, or workflow-coupled optimization reservation.
-- The Quickstart LocalNet foundation now stages a real upstream checkout, validates its compose topology, starts an isolated repo-owned Quickstart overlay, deploys the Control Plane DAR, seeds one confidential collateral scenario with ledger-returned contract identifiers, executes one Quickstart-backed margin-call workflow-preparation path, and executes one reference token adapter path, but it still does not provide broader production-grade asset-adapter coverage, substitution or return adapter coverage, settlement-window enforcement, or workflow-coupled optimizer reservation.
+- The Quickstart LocalNet foundation now stages a real upstream checkout, validates its compose topology, starts an isolated repo-owned Quickstart overlay, deploys the Control Plane DAR, seeds one confidential collateral scenario with ledger-returned contract identifiers, executes Quickstart-backed margin-call and substitution workflow-preparation paths, and executes reference token adapter posting plus substitution paths, but it still does not provide return-adapter coverage, production-grade asset adapters, settlement-window enforcement, or workflow-coupled optimizer reservation.
 - `make localnet-build-dar` and `make localnet-deploy-dar` require Docker because the Quickstart-compatible DAR is built inside a Linux container even on Apple Silicon hosts.
 - Future Quickstart or Canton overlay assets should land under `infra/`, not inside the Daml or app package trees.
 - If the toolchain needs to be rebuilt from scratch, run `make clean-runtime` and then `make bootstrap`.

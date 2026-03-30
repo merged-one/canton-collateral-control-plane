@@ -1,0 +1,20 @@
+{
+  "obligationId": "quickstart-substitution-obligation-621",
+  "obligationVersion": "1.0.0",
+  "asOf": "2026-04-16T14:00:00Z",
+  "settlementCurrency": "USD",
+  "coverageMetric": "LENDABLE_VALUE",
+  "obligationAmount": 430000.0,
+  "currentPostedLotIds": [
+    "quickstart-sub-current-eib-621",
+    "quickstart-sub-current-kfw-621"
+  ],
+  "substitutionRequest": {
+    "requestId": "quickstart-sub-request-partial-621",
+    "mustReplaceLotIds": [
+      "quickstart-sub-current-eib-621",
+      "quickstart-sub-current-kfw-621"
+    ],
+    "atomicityRequired": true
+  }
+}

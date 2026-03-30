@@ -1,0 +1,57 @@
+{
+  "scenarioId": "negative-partial-substitution-quickstart",
+  "obligationId": "quickstart-substitution-obligation-621",
+  "correlationId": "quickstart-substitution-correlation-621",
+  "policyVersion": "cpl-v0.1-quickstart-substitution-demo",
+  "snapshotId": "quickstart-substitution-snapshot-621",
+  "decisionReference": "quickstart-substitution-decision-621",
+  "providerParty": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a",
+  "securedParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "custodianParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "currentEncumberedLotIds": [
+    "quickstart-sub-current-eib-621",
+    "quickstart-sub-current-kfw-621"
+  ],
+  "replacementLots": [
+    {
+      "jurisdiction": "US",
+      "quantity": 225000.0,
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "sourceAccount": "provider-account-substitution-621",
+      "issuer": "FANNIE_MAE",
+      "assetClass": "AgencyDebt",
+      "destinationAccount": "secured-account-substitution-621",
+      "currency": "USD",
+      "tokenAdapterReference": "adapter/quickstart/substitution/fannie-mae",
+      "settlementSystem": "Fedwire",
+      "lotId": "quickstart-sub-repl-fannie-621",
+      "custodyAccount": "provider-account-substitution-621",
+      "assetId": "quickstart-sub-repl-fannie-asset-621"
+    },
+    {
+      "jurisdiction": "US",
+      "quantity": 250000.0,
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "sourceAccount": "provider-account-substitution-621",
+      "issuer": "UST",
+      "assetClass": "SovereignDebt",
+      "destinationAccount": "secured-account-substitution-621",
+      "currency": "USD",
+      "tokenAdapterReference": "adapter/quickstart/substitution/us-treasury",
+      "settlementSystem": "Fedwire",
+      "lotId": "quickstart-sub-repl-ust-621",
+      "custodyAccount": "provider-account-substitution-621",
+      "assetId": "quickstart-sub-repl-ust-asset-621"
+    }
+  ],
+  "requiresSecuredPartyApproval": true,
+  "requiresCustodianApproval": true,
+  "atomicityRequired": true,
+  "workflowGate": "ATTEMPT_PARTIAL_SETTLEMENT"
+}

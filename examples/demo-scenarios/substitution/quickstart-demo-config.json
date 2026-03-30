@@ -1,0 +1,133 @@
+{
+  "demoId": "substitution-quickstart",
+  "demoVersion": "0.1.0",
+  "scenarios": [
+    {
+      "scenarioId": "positive-substitution-quickstart",
+      "mode": "POSITIVE",
+      "description": "The Control Plane evaluates policy, selects a replacement set, prepares the substitution workflow on Quickstart, executes the token-adapter-driven incumbent release plus replacement path, and proves atomic post-substitution state.",
+      "policy": "substitution-policy.json",
+      "inventory": "quickstart-positive-inventory.json",
+      "obligation": "quickstart-positive-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "runAdapter": true,
+      "quickstartScenarioManifest": "../../../infra/quickstart/scenarios/confidential-substitution-demo-positive-scenario.json",
+      "workflowGate": "PREPARE_FOR_ADAPTER",
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "SUBSTITUTE",
+        "workflowSubstitutionState": "PendingSettlement",
+        "workflowSettlementInstructionState": "PendingSettlement",
+        "workflowGate": "PREPARE_FOR_ADAPTER",
+        "activeEncumberedLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "releasedLotIds": [],
+        "atomicityOutcome": "PENDING_ATOMIC_SETTLEMENT",
+        "minimumExecutionReportCount": 0,
+        "requiredControlChecks": [
+          "APPROVAL_GATE_BLOCKED"
+        ],
+        "adapterReceiptStatus": "EXECUTED",
+        "adapterReleaseLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "adapterReplacementLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "adapterSubstitutionStateAfterConfirmation": "Closed",
+        "adapterSettledInstructionState": "Settled",
+        "finalActiveEncumberedLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "finalReleasedLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "finalCurrentHoldingLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "finalReplacementHoldingLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "reasonCodes": []
+      }
+    },
+    {
+      "scenarioId": "negative-replacement-becomes-ineligible-quickstart",
+      "mode": "NEGATIVE",
+      "description": "A candidate replacement asset becomes ineligible before runtime execution, so the substitution request is blocked at policy evaluation time and no Quickstart or adapter state is touched.",
+      "policy": "substitution-policy.json",
+      "inventory": "negative-ineligible-inventory.json",
+      "obligation": "negative-ineligible-obligation.json",
+      "runOptimization": false,
+      "runWorkflow": false,
+      "expected": {
+        "policyOverallDecision": "REJECT",
+        "reasonCodes": [
+          "ASSET_CLASS_NOT_ELIGIBLE",
+          "HAIRCUT_RULE_NOT_FOUND",
+          "ISSUER_NOT_ON_ALLOW_LIST",
+          "ISSUER_RATING_BELOW_MINIMUM",
+          "ISSUER_TYPE_NOT_ALLOWED",
+          "ISSUE_TYPE_NOT_ELIGIBLE"
+        ]
+      }
+    },
+    {
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "mode": "NEGATIVE",
+      "description": "Policy and optimization pass, but Quickstart rejects a partial replacement attempt before settlement intent commits, leaving the incumbent encumbrance and holding state intact and emitting no adapter receipt.",
+      "policy": "substitution-policy.json",
+      "inventory": "quickstart-negative-partial-inventory.json",
+      "obligation": "quickstart-negative-partial-obligation.json",
+      "runOptimization": true,
+      "runWorkflow": true,
+      "runAdapter": false,
+      "quickstartScenarioManifest": "../../../infra/quickstart/scenarios/confidential-substitution-demo-partial-scenario.json",
+      "workflowGate": "ATTEMPT_PARTIAL_SETTLEMENT",
+      "expected": {
+        "policyOverallDecision": "ACCEPT",
+        "optimizationStatus": "OPTIMAL",
+        "recommendedAction": "SUBSTITUTE",
+        "workflowSubstitutionState": "Approved",
+        "workflowSettlementInstructionState": null,
+        "workflowGate": "ATTEMPT_PARTIAL_SETTLEMENT",
+        "activeEncumberedLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "releasedLotIds": [],
+        "atomicityOutcome": "BLOCKED_ATOMICALLY",
+        "minimumExecutionReportCount": 0,
+        "requiredControlChecks": [
+          "APPROVAL_GATE_BLOCKED",
+          "PARTIAL_SUBSTITUTION_BLOCKED"
+        ],
+        "blockedSubstitutionState": "Approved",
+        "blockedActiveEncumberedLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "blockedReleasedLotIds": [],
+        "blockedCurrentHoldingLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "blockedReplacementHoldingLotIds": [],
+        "reasonCodes": [
+          "APPROVAL_GATE_BLOCKED",
+          "PARTIAL_SUBSTITUTION_BLOCKED"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "scenarioId": "quickstart-substitution-demo-521",
+  "obligationId": "quickstart-substitution-obligation-521",
+  "correlationId": "quickstart-substitution-correlation-521",
+  "policyVersion": "cpl-v0.1-quickstart-substitution-demo",
+  "snapshotId": "quickstart-substitution-snapshot-521",
+  "decisionReference": "quickstart-substitution-decision-521",
+  "operator": {
+    "partyHint": "controlplane-operator-quickstart-substitution-521",
+    "displayName": "Control Plane Operator Substitution 521",
+    "userId": "control-plane-operator-substitution-521"
+  },
+  "custodian": {
+    "partyHint": "controlplane-custodian-quickstart-substitution-521",
+    "displayName": "Control Plane Custodian Substitution 521",
+    "userId": "control-plane-custodian-substitution-521",
+    "reuseSecuredPartyHostedIdentity": true
+  },
+  "currentEncumberedLots": [
+    {
+      "lotId": "quickstart-sub-current-kfw-521",
+      "assetId": "quickstart-sub-current-kfw-asset-521",
+      "issuer": "KFW",
+      "assetClass": "AgencyDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/substitution/kfw",
+      "jurisdiction": "DE",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "secured-account-substitution-521",
+      "quantity": 250000.0,
+      "sourceAccount": "secured-account-substitution-521",
+      "destinationAccount": "provider-account-substitution-521"
+    },
+    {
+      "lotId": "quickstart-sub-current-eib-521",
+      "assetId": "quickstart-sub-current-eib-asset-521",
+      "issuer": "EIB",
+      "assetClass": "SupranationalDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/substitution/eib",
+      "jurisdiction": "FR",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "secured-account-substitution-521",
+      "quantity": 250000.0,
+      "sourceAccount": "secured-account-substitution-521",
+      "destinationAccount": "provider-account-substitution-521"
+    }
+  ],
+  "replacementLots": [
+    {
+      "lotId": "quickstart-sub-repl-ust-521",
+      "assetId": "quickstart-sub-repl-ust-asset-521",
+      "issuer": "UST",
+      "assetClass": "SovereignDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/substitution/us-treasury",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "provider-account-substitution-521",
+      "quantity": 250000.0,
+      "sourceAccount": "provider-account-substitution-521",
+      "destinationAccount": "secured-account-substitution-521"
+    },
+    {
+      "lotId": "quickstart-sub-repl-fannie-521",
+      "assetId": "quickstart-sub-repl-fannie-asset-521",
+      "issuer": "FANNIE_MAE",
+      "assetClass": "AgencyDebt",
+      "currency": "USD",
+      "settlementSystem": "Fedwire",
+      "tokenAdapterReference": "adapter/quickstart/substitution/fannie-mae",
+      "jurisdiction": "US",
+      "transferabilityFlags": [
+        "deliverable",
+        "pledgeable"
+      ],
+      "custodyAccount": "provider-account-substitution-521",
+      "quantity": 225000.0,
+      "sourceAccount": "provider-account-substitution-521",
+      "destinationAccount": "secured-account-substitution-521"
+    }
+  ]
+}

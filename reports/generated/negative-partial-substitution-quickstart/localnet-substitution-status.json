@@ -1,0 +1,40 @@
+{
+  "providerVisibleEncumbrances": [{
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-kfw-621",
+    "status": "EncumbrancePledged",
+    "encumbranceId": "quickstart-substitution-correlation-621-current-quickstart-sub-current-kfw-621",
+    "correlationId": "quickstart-substitution-correlation-621-baseline"
+  }, {
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-eib-621",
+    "status": "EncumbrancePledged",
+    "encumbranceId": "quickstart-substitution-correlation-621-current-quickstart-sub-current-eib-621",
+    "correlationId": "quickstart-substitution-correlation-621-baseline"
+  }],
+  "settlementInstructionState": null,
+  "substitutionState": "Approved",
+  "providerVisibleReplacementLotHoldings": [],
+  "scenarioId": "quickstart-substitution-demo-621",
+  "providerVisibleExecutionReportCount": 0,
+  "providerVisibleCurrentLotHoldings": [{
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-kfw-621",
+    "accountId": "secured-account-substitution-621",
+    "controlState": "SettledToSecuredAccount",
+    "assetId": "quickstart-sub-current-kfw-asset-621",
+    "holdingId": "quickstart-substitution-demo-621-baseline-holding-quickstart-sub-current-kfw-621",
+    "sourceReference": "quickstart-substitution-baseline",
+    "beneficialOwner": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc"
+  }, {
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-eib-621",
+    "accountId": "secured-account-substitution-621",
+    "controlState": "SettledToSecuredAccount",
+    "assetId": "quickstart-sub-current-eib-asset-621",
+    "holdingId": "quickstart-substitution-demo-621-baseline-holding-quickstart-sub-current-eib-621",
+    "sourceReference": "quickstart-substitution-baseline",
+    "beneficialOwner": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc"
+  }],
+  "providerVisibleAdapterReceipts": []
+}

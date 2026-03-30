@@ -4,7 +4,7 @@
 
 The future system will manage confidential collateral policy, inventory, valuation, workflow, and reporting state across multiple parties. This document records the threat posture implied by the architecture package and the design areas that must remain visible as implementation begins.
 
-The current repository state now includes an initial off-ledger policy evaluation engine, an initial off-ledger optimizer, initial Daml workflow templates for obligations, posting, substitution, return, settlement intent, and execution reporting, end-to-end margin-call, return, and substitution demo runners plus their machine-readable report contracts, an aggregate conformance suite, a final demo pack, a pinned Quickstart bootstrap plus package-deployment, isolated overlay, seeded-scenario, and status-evidence layer, the first Quickstart-backed reference token adapter path, and one Quickstart-backed end-to-end margin-call orchestration path that chains policy, optimization, workflow preparation, adapter execution, and execution reporting. Those surfaces make privacy, determinism, authority, audit boundaries, runtime-version boundaries, and adapter-boundary discipline concrete, but they are still a skeleton layer rather than a full disclosure-profile, replay-hardening, or production-grade adapter implementation.
+The current repository state now includes an initial off-ledger policy evaluation engine, an initial off-ledger optimizer, initial Daml workflow templates for obligations, posting, substitution, return, settlement intent, and execution reporting, end-to-end margin-call, return, and substitution demo runners plus their machine-readable report contracts, an aggregate conformance suite, a final demo pack, a pinned Quickstart bootstrap plus package-deployment, isolated overlay, seeded-scenario, and status-evidence layer, the first Quickstart-backed reference token adapter path, one Quickstart-backed end-to-end margin-call orchestration path, and one Quickstart-backed end-to-end substitution orchestration path that chains policy, optimization, workflow execution, adapter execution, provider-visible status refresh, and final reporting. Those surfaces make privacy, determinism, authority, audit boundaries, runtime-version boundaries, and adapter-boundary discipline concrete, but they are still a skeleton layer rather than a full disclosure-profile, replay-hardening, or production-grade adapter implementation.
 
 ## Protected Assets
 
@@ -19,6 +19,7 @@ The current repository state now includes an initial off-ledger policy evaluatio
 - substitution request scope, required-release lot sets, and atomicity flags
 - margin-call demo manifests and workflow-input payloads
 - Quickstart margin-call seed receipts, workflow-result artifacts, and adapter-status artifacts
+- Quickstart substitution seed receipts, workflow-result artifacts, adapter execution reports, and provider-visible substitution-status artifacts
 - return demo manifests, workflow-input payloads, and return reports
 - substitution demo manifests, workflow-input payloads, and substitution reports
 - conformance-suite reports and supporting determinism plus haircut evidence
@@ -65,7 +66,7 @@ The current repository state now includes an initial off-ledger policy evaluatio
 | Host-versus-Quickstart runtime drift | Operators could trust the host-native IDE-ledger path while the Quickstart-compatible DAR build or deploy path has silently broken. | Keep the dual-runtime bridge explicit, pin the containerized Quickstart build inputs, and verify package build plus deployment through documented commands and evidence. |
 | Over-broad Quickstart seed rights | Seed automation could accidentally create users or rights that see or act beyond the intended provider, secured-party, custodian, or operator scope. | Keep hosted-user creation explicit and participant-scoped, map parties to participants in generated configs, and query status from the intended provider-visible view. |
 | Adapter authority drift | A future adapter could start reinterpreting policy or acting as the hidden owner of settlement authority instead of remaining a data-plane action surface. | Keep the adapter boundary explicit in ADR 0018, consume workflow outputs rather than re-derive them, emit adapter receipts keyed to workflow identifiers, and require workflow confirmation to remain on Canton. |
-| Workflow-to-adapter handoff drift | The Quickstart orchestration could invoke the adapter on a blocked or stale posting path. | Derive adapter execution only from a fresh workflow-result artifact with an exposed settlement instruction, reseed Quickstart state per scenario, and prove blocked paths emit zero adapter receipts, holdings, and encumbrances. |
+| Workflow-to-adapter handoff drift | The Quickstart orchestration could invoke the adapter on a blocked, stale, already-settled, or partial workflow path. | Derive adapter execution only from a fresh workflow-result artifact with an exposed settlement instruction, reseed or rotate completed Quickstart substitution scenarios, and prove blocked paths emit zero adapter receipts, holdings, and encumbrances. |
 | Seed or status evidence drift | Operators could trust local manifests or stale files instead of the active Quickstart ledger state. | Write receipts from ledger-returned ids only and regenerate status snapshots from active-contract queries against the running LocalNet. |
 | Environment drift | The system could become impossible to reproduce or validate consistently. | Pinned dependencies, checksum-verified bootstrap commands, and release evidence. |
 
@@ -94,4 +95,4 @@ The current repository state now includes an initial off-ledger policy evaluatio
 - how should the current workflow-party execution reports be transformed into narrower operator, auditor, or external-integration views?
 - how should future consumers reject or negotiate policies that require a newer `cplVersion` than they support?
 - when should the current scenario-derived return approval requirements become first-class CPL return-right clauses?
-- when should the current Quickstart-backed margin-call chain expand into substitution, return, and role-scoped report generation?
+- when should the current Quickstart-backed runtime chain expand from margin-call plus substitution into return and role-scoped report generation?

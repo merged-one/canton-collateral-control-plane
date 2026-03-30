@@ -1,0 +1,595 @@
+{
+  "$schema": "../../reports/schemas/substitution-report.schema.json",
+  "reportType": "SubstitutionReport",
+  "reportVersion": "0.1.0",
+  "substitutionReportId": "srr-a8a9d213c0f6408a",
+  "generatedAt": "2026-03-30T03:03:13Z",
+  "overallStatus": "PASS",
+  "demo": {
+    "demoId": "substitution-quickstart",
+    "demoVersion": "0.1.0",
+    "runtimeMode": "QUICKSTART",
+    "command": "make demo-substitution-quickstart",
+    "manifestPath": "examples/demo-scenarios/substitution/quickstart-demo-config.json",
+    "outputDirectory": "reports/generated",
+    "primaryOptimizationArtifact": "reports/generated/positive-substitution-quickstart-optimization-report.json",
+    "scenarioCount": 3,
+    "positiveScenarioCount": 1,
+    "negativeScenarioCount": 2
+  },
+  "artifacts": {
+    "substitutionReportPath": "reports/generated/substitution-quickstart-report.json",
+    "markdownSummaryPath": "reports/generated/substitution-quickstart-summary.md",
+    "timelinePath": "reports/generated/substitution-quickstart-timeline.md"
+  },
+  "scenarios": [
+    {
+      "scenarioId": "positive-substitution-quickstart",
+      "mode": "POSITIVE",
+      "description": "The Control Plane evaluates policy, selects a replacement set, prepares the substitution workflow on Quickstart, executes the token-adapter-driven incumbent release plus replacement path, and proves atomic post-substitution state.",
+      "result": "SUCCESS",
+      "summary": "Quickstart preserved the incumbent encumbrance set until the full replacement scope was approved, the adapter released quickstart-sub-current-eib-521, quickstart-sub-current-kfw-521 and moved quickstart-sub-repl-fannie-521, quickstart-sub-repl-ust-521, and Canton closed the substitution atomically.",
+      "observedReasonCodes": [],
+      "expectedReasonCodes": [],
+      "policyEvaluationReportPath": "reports/generated/positive-substitution-quickstart-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/positive-substitution-quickstart-optimization-report.json",
+      "workflowInputPath": "reports/generated/positive-substitution-quickstart-workflow-input.json",
+      "workflowResultPath": "reports/generated/positive-substitution-quickstart-workflow-result.json",
+      "quickstartSeedReceiptPath": "reports/generated/positive-substitution-quickstart/localnet-control-plane-seed-receipt.json",
+      "adapterExecutionReportPath": "reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json",
+      "adapterStatusPath": "reports/generated/positive-substitution-quickstart/localnet-substitution-status.json",
+      "workflowRuntime": "QUICKSTART",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "SUBSTITUTE",
+      "currentPostedLotIds": [
+        "quickstart-sub-current-eib-521",
+        "quickstart-sub-current-kfw-521"
+      ],
+      "replacementLotIds": [
+        "quickstart-sub-repl-fannie-521",
+        "quickstart-sub-repl-ust-521"
+      ],
+      "blockedPhase": null,
+      "adapterOutcome": "EXECUTED",
+      "atomicityEvidence": {
+        "proofStatus": "ATOMICALLY_COMMITTED",
+        "incumbentEncumberedLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "approvedReplacementLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "adapterActionReleaseLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "adapterActionReplacementLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "finalReleasedLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "finalActiveEncumberedLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "providerVisibleCurrentHoldingLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "providerVisibleReplacementHoldingLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "providerVisibleAdapterReceiptCount": 1,
+        "note": "The adapter moved the full incumbent release scope and the full replacement scope, then Canton confirmed substitution settlement with released incumbent encumbrances and newly pledged replacement encumbrances."
+      },
+      "workflow": {
+        "releasedLotIds": [],
+        "executionReports": [],
+        "executionReportCount": 0,
+        "workflowGate": "PREPARE_FOR_ADAPTER",
+        "settlementInstructionId": "quickstart-substitution-correlation-521-instruction",
+        "settlementInstructionState": "PendingSettlement",
+        "obligationId": "quickstart-substitution-obligation-521",
+        "atomicityOutcome": "PENDING_ATOMIC_SETTLEMENT",
+        "controlChecks": [
+          {
+            "checkId": "APPROVAL_GATE_BLOCKED",
+            "status": "PASS",
+            "detail": "provider could not create a settlement intent until the required approvals were recorded on Quickstart"
+          }
+        ],
+        "scenarioId": "positive-substitution-quickstart",
+        "steps": [
+          {
+            "actor": "provider",
+            "step": 1,
+            "state": "Encumbered",
+            "phase": "BASELINE",
+            "detail": "provider started from an already pledged incumbent collateral set on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "Draft",
+            "phase": "SUBSTITUTION",
+            "detail": "provider created the draft substitution request on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "Submitted",
+            "phase": "SUBSTITUTION",
+            "detail": "provider submitted the substitution request on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 4,
+            "state": "UnderEvaluation",
+            "phase": "SUBSTITUTION",
+            "detail": "provider moved the substitution request into evaluation on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 5,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "provider recorded the optimizer-selected replacement set on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 6,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider could not create a substitution settlement intent before the required approvals were recorded"
+          },
+          {
+            "actor": "secured-party",
+            "step": 7,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "secured party approved the substitution request on Quickstart"
+          },
+          {
+            "actor": "custodian",
+            "step": 8,
+            "state": "Approved",
+            "phase": "SUBSTITUTION",
+            "detail": "custodian approved the substitution request on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 9,
+            "state": "PendingSettlement",
+            "phase": "SETTLEMENT",
+            "detail": "provider submitted the full approved replacement set and exposed the substitution instruction to the adapter"
+          }
+        ],
+        "currentEncumberedLotIds": [
+          "quickstart-sub-current-eib-521",
+          "quickstart-sub-current-kfw-521"
+        ],
+        "substitutionState": "PendingSettlement",
+        "custodianApproval": "ApprovalGranted",
+        "activeEncumberedLotIds": [
+          "quickstart-sub-current-kfw-521",
+          "quickstart-sub-current-eib-521"
+        ],
+        "securedPartyApproval": "ApprovalGranted",
+        "replacementLotIds": [
+          "quickstart-sub-repl-fannie-521",
+          "quickstart-sub-repl-ust-521"
+        ],
+        "correlationId": "quickstart-substitution-correlation-521"
+      }
+    },
+    {
+      "scenarioId": "negative-replacement-becomes-ineligible-quickstart",
+      "mode": "NEGATIVE",
+      "description": "A candidate replacement asset becomes ineligible before runtime execution, so the substitution request is blocked at policy evaluation time and no Quickstart or adapter state is touched.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Policy evaluation blocked the replacement inventory with decision REJECT and reason codes ASSET_CLASS_NOT_ELIGIBLE, HAIRCUT_RULE_NOT_FOUND, ISSUER_NOT_ON_ALLOW_LIST, ISSUER_RATING_BELOW_MINIMUM, ISSUER_TYPE_NOT_ALLOWED, ISSUE_TYPE_NOT_ELIGIBLE.",
+      "observedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE",
+        "HAIRCUT_RULE_NOT_FOUND",
+        "ISSUER_NOT_ON_ALLOW_LIST",
+        "ISSUER_RATING_BELOW_MINIMUM",
+        "ISSUER_TYPE_NOT_ALLOWED",
+        "ISSUE_TYPE_NOT_ELIGIBLE"
+      ],
+      "expectedReasonCodes": [
+        "ASSET_CLASS_NOT_ELIGIBLE",
+        "HAIRCUT_RULE_NOT_FOUND",
+        "ISSUER_NOT_ON_ALLOW_LIST",
+        "ISSUER_RATING_BELOW_MINIMUM",
+        "ISSUER_TYPE_NOT_ALLOWED",
+        "ISSUE_TYPE_NOT_ELIGIBLE"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-replacement-becomes-ineligible-quickstart-policy-evaluation-report.json",
+      "optimizationReportPath": null,
+      "workflowInputPath": null,
+      "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
+      "policyDecision": "REJECT",
+      "optimizationStatus": null,
+      "recommendedAction": null,
+      "currentPostedLotIds": [
+        "sub-current-eib",
+        "sub-current-kfw"
+      ],
+      "replacementLotIds": [],
+      "blockedPhase": "POLICY_EVALUATION",
+      "adapterOutcome": "NOT_REQUESTED",
+      "atomicityEvidence": null,
+      "workflow": null
+    },
+    {
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "mode": "NEGATIVE",
+      "description": "Policy and optimization pass, but Quickstart rejects a partial replacement attempt before settlement intent commits, leaving the incumbent encumbrance and holding state intact and emitting no adapter receipt.",
+      "result": "EXPECTED_FAILURE",
+      "summary": "Quickstart blocked the partial substitution before settlement commit, the incumbent encumbrance set remained quickstart-sub-current-eib-621, quickstart-sub-current-kfw-621, and the adapter surface remained at 0 receipts.",
+      "observedReasonCodes": [
+        "APPROVAL_GATE_BLOCKED",
+        "PARTIAL_SUBSTITUTION_BLOCKED"
+      ],
+      "expectedReasonCodes": [
+        "APPROVAL_GATE_BLOCKED",
+        "PARTIAL_SUBSTITUTION_BLOCKED"
+      ],
+      "policyEvaluationReportPath": "reports/generated/negative-partial-substitution-quickstart-policy-evaluation-report.json",
+      "optimizationReportPath": "reports/generated/negative-partial-substitution-quickstart-optimization-report.json",
+      "workflowInputPath": "reports/generated/negative-partial-substitution-quickstart-workflow-input.json",
+      "workflowResultPath": "reports/generated/negative-partial-substitution-quickstart-workflow-result.json",
+      "quickstartSeedReceiptPath": "reports/generated/negative-partial-substitution-quickstart/localnet-control-plane-seed-receipt.json",
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": "reports/generated/negative-partial-substitution-quickstart/localnet-substitution-status.json",
+      "workflowRuntime": "QUICKSTART",
+      "policyDecision": "ACCEPT",
+      "optimizationStatus": "OPTIMAL",
+      "recommendedAction": "SUBSTITUTE",
+      "currentPostedLotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621"
+      ],
+      "replacementLotIds": [
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "blockedPhase": "WORKFLOW",
+      "adapterOutcome": "BLOCKED",
+      "atomicityEvidence": {
+        "proofStatus": "BLOCKED_NO_SIDE_EFFECTS",
+        "incumbentEncumberedLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "approvedReplacementLotIds": [
+          "quickstart-sub-repl-fannie-621",
+          "quickstart-sub-repl-ust-621"
+        ],
+        "adapterActionReleaseLotIds": [],
+        "adapterActionReplacementLotIds": [],
+        "finalReleasedLotIds": [],
+        "finalActiveEncumberedLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "providerVisibleCurrentHoldingLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "providerVisibleReplacementHoldingLotIds": [],
+        "providerVisibleAdapterReceiptCount": 0,
+        "note": "Quickstart blocked the partial substitution before any adapter receipt or replacement movement could commit, and the incumbent encumbrance and holding set remained intact."
+      },
+      "workflow": {
+        "releasedLotIds": [],
+        "executionReports": [],
+        "executionReportCount": 0,
+        "workflowGate": "ATTEMPT_PARTIAL_SETTLEMENT",
+        "settlementInstructionId": null,
+        "settlementInstructionState": null,
+        "obligationId": "quickstart-substitution-obligation-621",
+        "atomicityOutcome": "BLOCKED_ATOMICALLY",
+        "controlChecks": [
+          {
+            "checkId": "APPROVAL_GATE_BLOCKED",
+            "status": "PASS",
+            "detail": "provider could not create a settlement intent until the required approvals were recorded on Quickstart"
+          },
+          {
+            "checkId": "PARTIAL_SUBSTITUTION_BLOCKED",
+            "status": "PASS",
+            "detail": "the workflow rejected the partial replacement set and no adapter side effects were permitted to commit"
+          }
+        ],
+        "scenarioId": "negative-partial-substitution-quickstart",
+        "steps": [
+          {
+            "actor": "provider",
+            "step": 1,
+            "state": "Encumbered",
+            "phase": "BASELINE",
+            "detail": "provider started from an already pledged incumbent collateral set on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 2,
+            "state": "Draft",
+            "phase": "SUBSTITUTION",
+            "detail": "provider created the draft substitution request on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 3,
+            "state": "Submitted",
+            "phase": "SUBSTITUTION",
+            "detail": "provider submitted the substitution request on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 4,
+            "state": "UnderEvaluation",
+            "phase": "SUBSTITUTION",
+            "detail": "provider moved the substitution request into evaluation on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 5,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "provider recorded the optimizer-selected replacement set on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 6,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider could not create a substitution settlement intent before the required approvals were recorded"
+          },
+          {
+            "actor": "secured-party",
+            "step": 7,
+            "state": "PendingApproval",
+            "phase": "SUBSTITUTION",
+            "detail": "secured party approved the substitution request on Quickstart"
+          },
+          {
+            "actor": "custodian",
+            "step": 8,
+            "state": "Approved",
+            "phase": "SUBSTITUTION",
+            "detail": "custodian approved the substitution request on Quickstart"
+          },
+          {
+            "actor": "provider",
+            "step": 9,
+            "state": "Blocked",
+            "phase": "CONTROL",
+            "detail": "provider attempted a partial replacement set and the workflow rejected it before any adapter side effects committed"
+          }
+        ],
+        "currentEncumberedLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ],
+        "substitutionState": "Approved",
+        "custodianApproval": "ApprovalGranted",
+        "activeEncumberedLotIds": [
+          "quickstart-sub-current-kfw-621",
+          "quickstart-sub-current-eib-621"
+        ],
+        "securedPartyApproval": "ApprovalGranted",
+        "replacementLotIds": [
+          "quickstart-sub-repl-fannie-621",
+          "quickstart-sub-repl-ust-621"
+        ],
+        "correlationId": "quickstart-substitution-correlation-621"
+      }
+    }
+  ],
+  "timeline": [
+    {
+      "sequence": 1,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution-quickstart",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:52:42Z",
+      "finishedAt": "2026-03-30T02:52:42Z",
+      "artifactPath": "reports/generated/positive-substitution-quickstart-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for positive scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 2,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution-quickstart",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:52:42Z",
+      "finishedAt": "2026-03-30T02:52:42Z",
+      "artifactPath": "reports/generated/positive-substitution-quickstart-optimization-report.json",
+      "detail": "Optimized the substitution request for scenario positive-substitution-quickstart with recommendation SUBSTITUTE."
+    },
+    {
+      "sequence": 3,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution-quickstart",
+      "phase": "QUICKSTART_SEED",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:52:42Z",
+      "finishedAt": "2026-03-30T02:54:08Z",
+      "artifactPath": "reports/generated/positive-substitution-quickstart/localnet-control-plane-seed-receipt.json",
+      "detail": "Seeded or reused the declared Quickstart substitution scenario for positive-substitution-quickstart before workflow execution."
+    },
+    {
+      "sequence": 4,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution-quickstart",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:54:08Z",
+      "finishedAt": "2026-03-30T02:55:40Z",
+      "artifactPath": "reports/generated/positive-substitution-quickstart-workflow-result.json",
+      "detail": "Prepared the Quickstart substitution workflow for scenario positive-substitution-quickstart and exposed the full replacement instruction to the adapter."
+    },
+    {
+      "sequence": 5,
+      "scenarioSequence": 1,
+      "scenarioId": "positive-substitution-quickstart",
+      "phase": "ADAPTER",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:55:40Z",
+      "finishedAt": "2026-03-30T02:57:13Z",
+      "artifactPath": "reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json",
+      "detail": "Executed the reference token adapter for scenario positive-substitution-quickstart, released the incumbent holdings, moved the replacement holdings, and confirmed substitution settlement on Quickstart."
+    },
+    {
+      "sequence": 6,
+      "scenarioSequence": 2,
+      "scenarioId": "negative-replacement-becomes-ineligible-quickstart",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:58:40Z",
+      "finishedAt": "2026-03-30T02:58:40Z",
+      "artifactPath": "reports/generated/negative-replacement-becomes-ineligible-quickstart-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for negative scenario with overall decision REJECT."
+    },
+    {
+      "sequence": 7,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "phase": "POLICY_EVALUATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:58:40Z",
+      "finishedAt": "2026-03-30T02:58:40Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-quickstart-policy-evaluation-report.json",
+      "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
+    },
+    {
+      "sequence": 8,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "phase": "OPTIMIZATION",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:58:40Z",
+      "finishedAt": "2026-03-30T02:58:40Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-quickstart-optimization-report.json",
+      "detail": "Optimized the substitution request for scenario negative-partial-substitution-quickstart with recommendation SUBSTITUTE."
+    },
+    {
+      "sequence": 9,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "phase": "QUICKSTART_SEED",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T02:58:40Z",
+      "finishedAt": "2026-03-30T03:00:08Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-quickstart/localnet-control-plane-seed-receipt.json",
+      "detail": "Seeded or reused the declared Quickstart substitution scenario for negative-partial-substitution-quickstart before workflow execution."
+    },
+    {
+      "sequence": 10,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "phase": "WORKFLOW",
+      "status": "COMPLETED",
+      "startedAt": "2026-03-30T03:00:08Z",
+      "finishedAt": "2026-03-30T03:01:44Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-quickstart-workflow-result.json",
+      "detail": "Recorded the Quickstart substitution control failure for scenario negative-partial-substitution-quickstart with workflow state Approved."
+    },
+    {
+      "sequence": 11,
+      "scenarioSequence": 3,
+      "scenarioId": "negative-partial-substitution-quickstart",
+      "phase": "ADAPTER",
+      "status": "SKIPPED",
+      "startedAt": "2026-03-30T03:01:44Z",
+      "finishedAt": "2026-03-30T03:03:13Z",
+      "artifactPath": "reports/generated/negative-partial-substitution-quickstart/localnet-substitution-status.json",
+      "detail": "Did not invoke the adapter for scenario negative-partial-substitution-quickstart because the substitution workflow blocked before a committed replacement handoff."
+    }
+  ],
+  "invariantChecks": [
+    {
+      "invariantId": "PDR-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-quickstart-policy-evaluation-report.json"
+      ],
+      "note": "The positive Quickstart substitution path used a generated policy-evaluation report derived from declared inputs."
+    },
+    {
+      "invariantId": "ALLOC-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-quickstart-optimization-report.json"
+      ],
+      "note": "The optimizer produced a deterministic replacement recommendation that matched the declared Quickstart substitution seed scope."
+    },
+    {
+      "invariantId": "WF-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-quickstart/localnet-control-plane-seed-receipt.json",
+        "reports/generated/positive-substitution-quickstart-workflow-result.json"
+      ],
+      "note": "The Quickstart substitution workflow remained authoritative for incumbent scope, approvals, settlement intent, and final atomic closure."
+    },
+    {
+      "invariantId": "ADAPT-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-quickstart-workflow-result.json",
+        "reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json",
+        "reports/generated/positive-substitution-quickstart/localnet-substitution-status.json"
+      ],
+      "note": "The reference token adapter consumed the Quickstart substitution handoff artifact, executed incumbent release plus replacement movement, and emitted auditable receipts without bypassing workflow authority."
+    },
+    {
+      "invariantId": "ATOM-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json",
+        "reports/generated/positive-substitution-quickstart/localnet-substitution-status.json",
+        "reports/generated/negative-partial-substitution-quickstart-workflow-result.json",
+        "reports/generated/negative-partial-substitution-quickstart/localnet-substitution-status.json"
+      ],
+      "note": "The positive Quickstart path committed the full release-and-replacement scope atomically, and the blocked partial path preserved the incumbent encumbrance and holding state without adapter side effects."
+    },
+    {
+      "invariantId": "REPT-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/positive-substitution-quickstart-policy-evaluation-report.json",
+        "reports/generated/positive-substitution-quickstart-optimization-report.json",
+        "reports/generated/positive-substitution-quickstart-workflow-result.json",
+        "reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json",
+        "reports/generated/positive-substitution-quickstart/localnet-substitution-status.json"
+      ],
+      "note": "The Quickstart substitution report references real policy, optimization, workflow, adapter, and status artifacts rather than operator-authored summaries."
+    },
+    {
+      "invariantId": "EXCP-001",
+      "status": "PASS",
+      "evidence": [
+        "reports/generated/negative-replacement-becomes-ineligible-quickstart-policy-evaluation-report.json",
+        "reports/generated/negative-partial-substitution-quickstart-policy-evaluation-report.json",
+        "reports/generated/negative-partial-substitution-quickstart-workflow-result.json",
+        "reports/generated/negative-partial-substitution-quickstart/localnet-substitution-status.json"
+      ],
+      "note": "The negative Quickstart substitution scenarios failed deterministically for policy ineligibility and blocked partial substitution without fabricating downstream adapter success."
+    }
+  ]
+}

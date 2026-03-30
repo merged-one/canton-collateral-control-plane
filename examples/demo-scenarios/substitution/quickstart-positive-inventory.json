@@ -1,0 +1,173 @@
+{
+  "inventorySetId": "quickstart-substitution-positive-inventory-521",
+  "inventoryVersion": "1.0.0",
+  "evaluationContext": {
+    "asOf": "2026-04-16T14:00:00Z",
+    "settlementCurrency": "USD",
+    "valuationCurrency": "USD",
+    "providerIssuerIds": [
+      "dealer-a"
+    ],
+    "exposureCounterparties": [
+      {
+        "role": "PLEDGOR",
+        "partyId": "dealer-a",
+        "issuerIds": [
+          "dealer-a"
+        ],
+        "groupIds": [
+          "dealer-group"
+        ],
+        "country": "US"
+      },
+      {
+        "role": "OBLIGOR",
+        "partyId": "dealer-a",
+        "issuerIds": [
+          "dealer-a"
+        ],
+        "groupIds": [
+          "dealer-group"
+        ],
+        "country": "US"
+      },
+      {
+        "role": "SECURED_PARTY",
+        "partyId": "new-york-fed",
+        "issuerIds": [
+          "new-york-fed"
+        ],
+        "groupIds": [
+          "central-bank-group"
+        ],
+        "country": "US"
+      }
+    ]
+  },
+  "candidateLots": [
+    {
+      "lotId": "quickstart-sub-current-kfw-521",
+      "assetId": "quickstart-sub-current-kfw-asset-521",
+      "assetClass": "AGENCY_BOND",
+      "issueType": "AGENCY",
+      "issuerId": "kfw",
+      "issuerType": "AGENCY",
+      "issuerGroupIds": [
+        "kfw-group"
+      ],
+      "longTermRating": "AAA",
+      "currency": "USD",
+      "issuanceJurisdiction": "DE",
+      "riskJurisdiction": "DE",
+      "custodianId": "euroclear-bank",
+      "custodyJurisdiction": "BE",
+      "accountType": "THIRD_PARTY_CUSTODY",
+      "isSegregated": true,
+      "hasControlAgreement": true,
+      "isInternalCustody": false,
+      "isEncumbered": false,
+      "isReuseOfReceivedCollateral": false,
+      "freeAllocationPercent": 1.0,
+      "segregationType": "CENTRAL_BANK_RESTRICTED",
+      "accountDesignation": "pledge-window-account",
+      "thirdPartyAcknowledgementReceived": true,
+      "marketValue": 250000.0,
+      "nominalValue": 250000.0,
+      "outstandingPrincipal": 250000.0,
+      "residualMaturityDays": 720
+    },
+    {
+      "lotId": "quickstart-sub-current-eib-521",
+      "assetId": "quickstart-sub-current-eib-asset-521",
+      "assetClass": "SUPRANATIONAL_BOND",
+      "issueType": "SUPRANATIONAL",
+      "issuerId": "eib",
+      "issuerType": "SUPRANATIONAL",
+      "issuerGroupIds": [
+        "eib-group"
+      ],
+      "longTermRating": "AAA",
+      "currency": "USD",
+      "issuanceJurisdiction": "FR",
+      "riskJurisdiction": "FR",
+      "custodianId": "euroclear-bank",
+      "custodyJurisdiction": "BE",
+      "accountType": "THIRD_PARTY_CUSTODY",
+      "isSegregated": true,
+      "hasControlAgreement": true,
+      "isInternalCustody": false,
+      "isEncumbered": false,
+      "isReuseOfReceivedCollateral": false,
+      "freeAllocationPercent": 1.0,
+      "segregationType": "CENTRAL_BANK_RESTRICTED",
+      "accountDesignation": "pledge-window-account",
+      "thirdPartyAcknowledgementReceived": true,
+      "marketValue": 250000.0,
+      "nominalValue": 250000.0,
+      "outstandingPrincipal": 250000.0,
+      "residualMaturityDays": 900
+    },
+    {
+      "lotId": "quickstart-sub-repl-ust-521",
+      "assetId": "quickstart-sub-repl-ust-asset-521",
+      "assetClass": "SOVEREIGN_BOND",
+      "issueType": "SOVEREIGN",
+      "issuerId": "us-treasury",
+      "issuerType": "SOVEREIGN",
+      "issuerGroupIds": [
+        "us-sovereign-group"
+      ],
+      "longTermRating": "AA+",
+      "currency": "USD",
+      "issuanceJurisdiction": "US",
+      "riskJurisdiction": "US",
+      "custodianId": "new-york-fed",
+      "custodyJurisdiction": "US",
+      "accountType": "CENTRAL_BANK_ACCOUNT",
+      "isSegregated": true,
+      "hasControlAgreement": true,
+      "isInternalCustody": false,
+      "isEncumbered": false,
+      "isReuseOfReceivedCollateral": false,
+      "freeAllocationPercent": 1.0,
+      "segregationType": "CENTRAL_BANK_RESTRICTED",
+      "accountDesignation": "pledge-window-account",
+      "thirdPartyAcknowledgementReceived": true,
+      "marketValue": 250000.0,
+      "nominalValue": 250000.0,
+      "outstandingPrincipal": 250000.0,
+      "residualMaturityDays": 180
+    },
+    {
+      "lotId": "quickstart-sub-repl-fannie-521",
+      "assetId": "quickstart-sub-repl-fannie-asset-521",
+      "assetClass": "AGENCY_BOND",
+      "issueType": "AGENCY",
+      "issuerId": "fannie-mae",
+      "issuerType": "AGENCY",
+      "issuerGroupIds": [
+        "fannie-group"
+      ],
+      "longTermRating": "AA",
+      "currency": "USD",
+      "issuanceJurisdiction": "US",
+      "riskJurisdiction": "US",
+      "custodianId": "new-york-fed",
+      "custodyJurisdiction": "US",
+      "accountType": "CENTRAL_BANK_ACCOUNT",
+      "isSegregated": true,
+      "hasControlAgreement": true,
+      "isInternalCustody": false,
+      "isEncumbered": false,
+      "isReuseOfReceivedCollateral": false,
+      "freeAllocationPercent": 1.0,
+      "segregationType": "CENTRAL_BANK_RESTRICTED",
+      "accountDesignation": "pledge-window-account",
+      "thirdPartyAcknowledgementReceived": true,
+      "marketValue": 225000.0,
+      "nominalValue": 225000.0,
+      "outstandingPrincipal": 225000.0,
+      "residualMaturityDays": 540
+    }
+  ]
+}

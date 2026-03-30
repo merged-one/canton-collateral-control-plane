@@ -1,0 +1,915 @@
+module CantonCollateral.QuickstartSubstitution where
+
+import Daml.Script
+
+import CantonCollateral.Encumbrance
+import CantonCollateral.Inventory
+import CantonCollateral.QuickstartAdapter
+import CantonCollateral.QuickstartSeed
+import CantonCollateral.ReferenceToken
+import CantonCollateral.Report
+import CantonCollateral.Roles
+import CantonCollateral.Settlement
+import CantonCollateral.Substitution
+import CantonCollateral.Types
+
+data SeededEncumbrance = SeededEncumbrance
+  with
+    lotId : Text
+    encumbranceId : Text
+    contractId : ContractId EncumbranceState
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionSeedInput = QuickstartSubstitutionSeedInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    correlationId : Text
+    policyVersion : Text
+    snapshotId : Text
+    decisionReference : Text
+    providerParty : Party
+    providerUserId : Text
+    securedParty : Party
+    securedPartyUserId : Text
+    operatorPartyHint : Text
+    operatorDisplayName : Text
+    operatorUserId : Text
+    custodianPartyHint : Text
+    custodianDisplayName : Text
+    custodianUserId : Text
+    currentEncumberedLots : [QuickstartSeedLotInput]
+    replacementLots : [QuickstartSeedLotInput]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionSeedResult = QuickstartSubstitutionSeedResult
+  with
+    scenarioId : Text
+    obligationId : Text
+    correlationId : Text
+    policyVersion : Text
+    snapshotId : Text
+    decisionReference : Text
+    providerParty : Party
+    securedParty : Party
+    operatorParty : Party
+    custodianParty : Party
+    operatorUserId : Text
+    custodianUserId : Text
+    roleRegistrations : [SeededRoleRegistration]
+    currentInventoryLots : [SeededInventoryLot]
+    replacementInventoryLots : [SeededInventoryLot]
+    currentEncumbrances : [SeededEncumbrance]
+    referenceTokenHoldings : [SeededReferenceTokenHolding]
+    currentEncumberedLots : [QuickstartSeedLotInput]
+    replacementLots : [QuickstartSeedLotInput]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionWorkflowInput = QuickstartSubstitutionWorkflowInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    correlationId : Text
+    policyVersion : Text
+    snapshotId : Text
+    decisionReference : Text
+    providerParty : Party
+    securedParty : Party
+    custodianParty : Party
+    currentEncumberedLotIds : [Text]
+    replacementLots : [QuickstartSeedLotInput]
+    requiresSecuredPartyApproval : Bool
+    requiresCustodianApproval : Bool
+    atomicityRequired : Bool
+    workflowGate : Text
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionWorkflowStep = QuickstartSubstitutionWorkflowStep
+  with
+    step : Int
+    phase : Text
+    actor : Text
+    state : Text
+    detail : Text
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionExecutionReport = QuickstartSubstitutionExecutionReport
+  with
+    reportId : Text
+    workflowType : Text
+    outcome : Text
+    summary : Text
+    eventIds : [Text]
+    eventStates : [Text]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionControlCheck = QuickstartSubstitutionControlCheck
+  with
+    checkId : Text
+    status : Text
+    detail : Text
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionWorkflowResult = QuickstartSubstitutionWorkflowResult
+  with
+    scenarioId : Text
+    obligationId : Text
+    correlationId : Text
+    workflowGate : Text
+    substitutionState : Text
+    securedPartyApproval : Text
+    custodianApproval : Text
+    settlementInstructionId : Optional Text
+    settlementInstructionState : Optional Text
+    currentEncumberedLotIds : [Text]
+    releasedLotIds : [Text]
+    replacementLotIds : [Text]
+    activeEncumberedLotIds : [Text]
+    atomicityOutcome : Text
+    executionReportCount : Int
+    executionReports : [QuickstartSubstitutionExecutionReport]
+    controlChecks : [QuickstartSubstitutionControlCheck]
+    steps : [QuickstartSubstitutionWorkflowStep]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionAdapterInput = QuickstartSubstitutionAdapterInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    providerParty : Party
+    securedParty : Party
+    custodianParty : Party
+    settlementInstructionId : Text
+    currentEncumberedLots : [QuickstartSeedLotInput]
+    replacementLots : [QuickstartSeedLotInput]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionAdapterActions = QuickstartSubstitutionAdapterActions
+  with
+    adapterReceipt : AdapterReceiptView
+    releaseMovements : [ReferenceTokenMovement]
+    replacementMovements : [ReferenceTokenMovement]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionWorkflowConfirmationView = QuickstartSubstitutionWorkflowConfirmationView
+  with
+    substitutionStateBefore : Text
+    substitutionStateAfterConfirmation : Text
+    settledInstructionState : Text
+    providerVisibleExecutionReportCount : Int
+    providerVisibleEncumbranceCount : Int
+    releasedLotIds : [Text]
+    activeEncumberedLotIds : [Text]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionAdapterReport = QuickstartSubstitutionAdapterReport
+  with
+    reportVersion : Text
+    adapterName : Text
+    adapterVersion : Text
+    scenarioId : Text
+    startedAt : Time
+    finishedAt : Time
+    settlementInstruction : AdapterSettlementInstructionView
+    incumbentEncumberedLotIds : [Text]
+    approvedReplacementLotIds : [Text]
+    encumbranceContextBefore : [AdapterEncumbranceView]
+    referenceTokenHoldingsBefore : [AdapterHoldingView]
+    adapterActions : QuickstartSubstitutionAdapterActions
+    referenceTokenHoldingsAfter : [AdapterHoldingView]
+    workflowConfirmation : QuickstartSubstitutionWorkflowConfirmationView
+    encumbranceContextAfter : [AdapterEncumbranceView]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionStatusInput = QuickstartSubstitutionStatusInput
+  with
+    scenarioId : Text
+    obligationId : Text
+    providerParty : Party
+    currentEncumberedLotIds : [Text]
+    replacementLotIds : [Text]
+  deriving (Eq, Show)
+
+data QuickstartSubstitutionStatusResult = QuickstartSubstitutionStatusResult
+  with
+    scenarioId : Text
+    substitutionState : Optional Text
+    settlementInstructionState : Optional Text
+    providerVisibleExecutionReportCount : Int
+    providerVisibleEncumbrances : [AdapterEncumbranceView]
+    providerVisibleCurrentLotHoldings : [AdapterHoldingView]
+    providerVisibleReplacementLotHoldings : [AdapterHoldingView]
+    providerVisibleAdapterReceipts : [AdapterReceiptStatusView]
+  deriving (Eq, Show)
+
+expectActiveSubstitutionRequest : Party -> ContractId SubstitutionRequest -> Text -> Script SubstitutionRequest
+expectActiveSubstitutionRequest party cid missingMessage = do
+  substitutions <- query @SubstitutionRequest party
+  expectContractFromQuery substitutions cid missingMessage
+
+findSubstitutionByObligationId : Party -> Text -> Script (ContractId SubstitutionRequest, SubstitutionRequest)
+findSubstitutionByObligationId party obligationId = do
+  substitutions <- queryFilter @SubstitutionRequest party (\substitution -> substitution.obligationId == obligationId)
+  expectSingleMatch ("missing substitution request for obligation " <> obligationId) substitutions
+
+findSubstitutionForInstruction :
+  Party ->
+  Text ->
+  Text ->
+  ContractId SettlementInstruction ->
+  Script (ContractId SubstitutionRequest, SubstitutionRequest)
+findSubstitutionForInstruction party obligationId instructionId instructionCid = do
+  substitutions <-
+    queryFilter @SubstitutionRequest party
+      (\substitution ->
+        substitution.obligationId == obligationId
+          && substitution.state == PendingSettlement
+          && substitution.settlementInstructionCid == Some instructionCid
+      )
+  expectSingleMatch
+    ("missing substitution request for settlement instruction " <> instructionId)
+    substitutions
+
+workflowStatePriority : WorkflowState -> Int
+workflowStatePriority state =
+  case state of
+    Closed -> 100
+    Settled -> 90
+    ExceptionOpen -> 80
+    PendingSettlement -> 70
+    Approved -> 60
+    PendingApproval -> 50
+    UnderEvaluation -> 40
+    Submitted -> 30
+    Draft -> 20
+    Rejected -> 10
+    Expired -> 0
+
+preferSubstitution :
+  (ContractId SubstitutionRequest, SubstitutionRequest) ->
+  (ContractId SubstitutionRequest, SubstitutionRequest) ->
+  (ContractId SubstitutionRequest, SubstitutionRequest)
+preferSubstitution left@(_, leftSubstitution) right@(_, rightSubstitution) =
+  let leftPriority = workflowStatePriority leftSubstitution.state
+      rightPriority = workflowStatePriority rightSubstitution.state
+  in
+    if leftPriority > rightPriority then left else
+      if leftPriority < rightPriority then right else
+        case (leftSubstitution.settlementInstructionCid, rightSubstitution.settlementInstructionCid) of
+          (Some _, None) -> left
+          (None, Some _) -> right
+          _ -> left
+
+bestVisibleSubstitution :
+  [(ContractId SubstitutionRequest, SubstitutionRequest)] ->
+  Optional (ContractId SubstitutionRequest, SubstitutionRequest)
+bestVisibleSubstitution substitutions =
+  case substitutions of
+    [] -> None
+    substitution :: rest -> Some (bestVisibleSubstitutionFrom substitution rest)
+
+bestVisibleSubstitutionFrom :
+  (ContractId SubstitutionRequest, SubstitutionRequest) ->
+  [(ContractId SubstitutionRequest, SubstitutionRequest)] ->
+  (ContractId SubstitutionRequest, SubstitutionRequest)
+bestVisibleSubstitutionFrom current remaining =
+  case remaining of
+    [] -> current
+    next :: tail -> bestVisibleSubstitutionFrom (preferSubstitution current next) tail
+
+preferInstruction :
+  (ContractId SettlementInstruction, SettlementInstruction) ->
+  (ContractId SettlementInstruction, SettlementInstruction) ->
+  (ContractId SettlementInstruction, SettlementInstruction)
+preferInstruction left@(_, leftInstruction) right@(_, rightInstruction) =
+  if workflowStatePriority leftInstruction.state >= workflowStatePriority rightInstruction.state then left else right
+
+bestVisibleInstruction :
+  [(ContractId SettlementInstruction, SettlementInstruction)] ->
+  Optional (ContractId SettlementInstruction, SettlementInstruction)
+bestVisibleInstruction instructions =
+  case instructions of
+    [] -> None
+    instruction :: rest -> Some (bestVisibleInstructionFrom instruction rest)
+
+bestVisibleInstructionFrom :
+  (ContractId SettlementInstruction, SettlementInstruction) ->
+  [(ContractId SettlementInstruction, SettlementInstruction)] ->
+  (ContractId SettlementInstruction, SettlementInstruction)
+bestVisibleInstructionFrom current remaining =
+  case remaining of
+    [] -> current
+    next :: tail -> bestVisibleInstructionFrom (preferInstruction current next) tail
+
+findCurrentEncumbrances :
+  Party ->
+  Text ->
+  [Text] ->
+  Script [(ContractId EncumbranceState, EncumbranceState)]
+findCurrentEncumbrances party obligationId lotIdsInScope = do
+  encumbrances <-
+    queryFilter @EncumbranceState party
+      (\encumbrance ->
+        encumbrance.obligationId == obligationId
+          && containsText encumbrance.lotId lotIdsInScope
+          && encumbrance.status == EncumbrancePledged
+      )
+  assertMsg "current encumbrance scope drifted from the declared incumbent lot set" (length encumbrances == length lotIdsInScope)
+  pure encumbrances
+
+reportEventIds : [ExecutionEvent] -> [Text]
+reportEventIds [] = []
+reportEventIds (event :: rest) = event.eventId :: reportEventIds rest
+
+reportEventStates : [ExecutionEvent] -> [Text]
+reportEventStates [] = []
+reportEventStates (event :: rest) = show event.eventState :: reportEventStates rest
+
+reportSummaries : [(ContractId ExecutionReportRecord, ExecutionReportRecord)] -> [QuickstartSubstitutionExecutionReport]
+reportSummaries [] = []
+reportSummaries ((_, report) :: rest) =
+  (QuickstartSubstitutionExecutionReport with
+    reportId = report.reportId
+    workflowType = show report.workflowType
+    outcome = show report.outcome
+    summary = report.summary
+    eventIds = reportEventIds report.events
+    eventStates = reportEventStates report.events)
+    :: reportSummaries rest
+
+pledgedLotIds : [(ContractId EncumbranceState, EncumbranceState)] -> [Text]
+pledgedLotIds encumbrances =
+  map (\(_, encumbrance) -> encumbrance.lotId)
+    (filter (\(_, encumbrance) -> encumbrance.status == EncumbrancePledged) encumbrances)
+
+releasedEncumbranceLotIds : [(ContractId EncumbranceState, EncumbranceState)] -> [Text]
+releasedEncumbranceLotIds encumbrances =
+  map (\(_, encumbrance) -> encumbrance.lotId)
+    (filter (\(_, encumbrance) -> encumbrance.status == EncumbranceReleased) encumbrances)
+
+workflowStep : Int -> Text -> Text -> Text -> Text -> QuickstartSubstitutionWorkflowStep
+workflowStep step phase actor state detail =
+  QuickstartSubstitutionWorkflowStep with
+    step
+    phase
+    actor
+    state
+    detail
+
+seedSubstitutionScenario : QuickstartSubstitutionSeedInput -> Script QuickstartSubstitutionSeedResult
+seedSubstitutionScenario input = script do
+  assertMsg "Quickstart substitution seed requires at least one incumbent encumbered lot" (not (null input.currentEncumberedLots))
+  assertMsg "Quickstart substitution seed requires at least one replacement lot" (not (null input.replacementLots))
+
+  providerUserId <- ensureHostedUserOn input.providerUserId input.providerParty appUserAdminParticipant
+  securedPartyUserId <- ensureHostedUserOn input.securedPartyUserId input.securedParty appProviderAdminParticipant
+  operatorParty <- getOrAllocatePartyOn input.operatorDisplayName input.operatorPartyHint appProviderAdminParticipant
+  operatorUserId <- getOrCreateScopedUserOn input.operatorUserId operatorParty appProviderAdminParticipant
+  custodianParty <- getOrAllocatePartyOn input.custodianDisplayName input.custodianPartyHint appProviderAdminParticipant
+  custodianUserId <- getOrCreateScopedUserOn input.custodianUserId custodianParty appProviderAdminParticipant
+  seededAt <- getTime
+
+  let policyContext =
+        PolicyContext with
+          policyVersion = input.policyVersion
+          snapshotId = input.snapshotId
+          decisionReference = input.decisionReference
+  let inventoryVisibility = [input.securedParty, custodianParty]
+  let roleRegistryOperator = input.securedParty
+
+  providerRoleRegistrationCid <- submitUserOn securedPartyUserId appProviderAdminParticipant do
+    createCmd PartyRoleRegistration with
+      registryOperator = roleRegistryOperator
+      participant = input.providerParty
+      role = CollateralProviderRole
+      label = "provider"
+
+  securedRoleRegistrationCid <- submitUserOn securedPartyUserId appProviderAdminParticipant do
+    createCmd PartyRoleRegistration with
+      registryOperator = roleRegistryOperator
+      participant = input.securedParty
+      role = SecuredPartyRole
+      label = "secured-party"
+
+  custodianRoleRegistrationCid <- submitUserOn securedPartyUserId appProviderAdminParticipant do
+    createCmd PartyRoleRegistration with
+      registryOperator = roleRegistryOperator
+      participant = custodianParty
+      role = CustodianRole
+      label = "custodian"
+
+  currentInventoryCids <-
+    mapA
+      (\currentLot -> submitUserOn providerUserId appUserAdminParticipant do
+        createCmd CollateralInventoryLot with
+          lotId = currentLot.lotId
+          owner = input.providerParty
+          custodian = custodianParty
+          visibilityObservers = inventoryVisibility
+          asset = mkAsset currentLot
+          custodyAccount = currentLot.custodyAccount
+          quantity = currentLot.quantity
+          availableQuantity = currentLot.quantity
+          controlMethod = "quickstart-substitution-current-encumbered"
+          provenance = "Quickstart seeded confidential substitution incumbent set"
+          availabilityStart = seededAt
+          availabilityEnd = None
+      )
+      input.currentEncumberedLots
+
+  replacementInventoryCids <-
+    mapA
+      (\replacementLot -> submitUserOn providerUserId appUserAdminParticipant do
+        createCmd CollateralInventoryLot with
+          lotId = replacementLot.lotId
+          owner = input.providerParty
+          custodian = custodianParty
+          visibilityObservers = inventoryVisibility
+          asset = mkAsset replacementLot
+          custodyAccount = replacementLot.custodyAccount
+          quantity = replacementLot.quantity
+          availableQuantity = replacementLot.quantity
+          controlMethod = "quickstart-substitution-replacement-eligible"
+          provenance = "Quickstart seeded confidential substitution replacement inventory"
+          availabilityStart = seededAt
+          availabilityEnd = None
+      )
+      input.replacementLots
+
+  currentEncumbranceCids <-
+    mapA
+      (\currentLot -> submitUserOn providerUserId appUserAdminParticipant do
+        createCmd EncumbranceState with
+          encumbranceId = input.correlationId <> "-current-" <> currentLot.lotId
+          obligationId = input.obligationId
+          lotId = currentLot.lotId
+          provider = input.providerParty
+          securedParty = input.securedParty
+          custodian = custodianParty
+          visibilityObservers = [input.securedParty, custodianParty]
+          quantity = currentLot.quantity
+          status = EncumbrancePledged
+          policyContext
+          correlationId = input.correlationId <> "-baseline"
+      )
+      input.currentEncumberedLots
+
+  baselineHoldingCids <-
+    mapA
+      (\currentLot -> submitUserOn custodianUserId appProviderAdminParticipant do
+        createCmd ReferenceTokenHolding with
+          holdingId = input.scenarioId <> "-baseline-holding-" <> currentLot.lotId
+          lotId = currentLot.lotId
+          asset = mkAsset currentLot
+          beneficialOwner = input.securedParty
+          custodian = custodianParty
+          accountId = currentLot.sourceAccount
+          quantity = currentLot.quantity
+          controlState = "SettledToSecuredAccount"
+          sourceReference = "quickstart-substitution-baseline"
+          visibilityObservers = [input.providerParty, input.securedParty]
+      )
+      input.currentEncumberedLots
+
+  pure QuickstartSubstitutionSeedResult with
+    scenarioId = input.scenarioId
+    obligationId = input.obligationId
+    correlationId = input.correlationId
+    policyVersion = input.policyVersion
+    snapshotId = input.snapshotId
+    decisionReference = input.decisionReference
+    providerParty = input.providerParty
+    securedParty = input.securedParty
+    operatorParty
+    custodianParty
+    operatorUserId = userIdToText operatorUserId
+    custodianUserId = userIdToText custodianUserId
+    roleRegistrations =
+      [ SeededRoleRegistration with role = "CollateralProviderRole", label = "provider", participant = input.providerParty, contractId = providerRoleRegistrationCid
+      , SeededRoleRegistration with role = "SecuredPartyRole", label = "secured-party", participant = input.securedParty, contractId = securedRoleRegistrationCid
+      , SeededRoleRegistration with role = "CustodianRole", label = "custodian", participant = custodianParty, contractId = custodianRoleRegistrationCid
+      ]
+    currentInventoryLots =
+      zipWith
+        (\currentLot inventoryCid -> SeededInventoryLot with lotId = currentLot.lotId, contractId = inventoryCid)
+        input.currentEncumberedLots
+        currentInventoryCids
+    replacementInventoryLots =
+      zipWith
+        (\replacementLot inventoryCid -> SeededInventoryLot with lotId = replacementLot.lotId, contractId = inventoryCid)
+        input.replacementLots
+        replacementInventoryCids
+    currentEncumbrances =
+      zipWith
+        (\currentLot encumbranceCid ->
+          SeededEncumbrance with
+            lotId = currentLot.lotId
+            encumbranceId = input.correlationId <> "-current-" <> currentLot.lotId
+            contractId = encumbranceCid
+        )
+        input.currentEncumberedLots
+        currentEncumbranceCids
+    referenceTokenHoldings =
+      zipWith
+        (\currentLot holdingCid ->
+          SeededReferenceTokenHolding with
+            lotId = currentLot.lotId
+            holdingId = input.scenarioId <> "-baseline-holding-" <> currentLot.lotId
+            contractId = holdingCid
+        )
+        input.currentEncumberedLots
+        baselineHoldingCids
+    currentEncumberedLots = input.currentEncumberedLots
+    replacementLots = input.replacementLots
+
+runSubstitutionWorkflow : QuickstartSubstitutionWorkflowInput -> Script QuickstartSubstitutionWorkflowResult
+runSubstitutionWorkflow input = script do
+  assertMsg "Quickstart substitution workflow requires at least one current encumbered lot" (not (null input.currentEncumberedLotIds))
+  assertMsg "Quickstart substitution workflow requires at least one replacement lot" (not (null input.replacementLots))
+  assertMsg "unsupported Quickstart substitution workflow gate" (input.workflowGate == "PREPARE_FOR_ADAPTER" || input.workflowGate == "ATTEMPT_PARTIAL_SETTLEMENT")
+
+  now <- getTime
+  currentEncumbrancePairs <- findCurrentEncumbrances input.providerParty input.obligationId input.currentEncumberedLotIds
+  let replacementAllocations = map mkAllocation input.replacementLots
+  let replacementLotIds = map (\lot -> lot.lotId) input.replacementLots
+  let baseSteps =
+        [ workflowStep 1 "BASELINE" "provider" "Encumbered" "provider started from an already pledged incumbent collateral set on Quickstart"
+        , workflowStep 2 "SUBSTITUTION" "provider" "Draft" "provider created the draft substitution request on Quickstart"
+        , workflowStep 3 "SUBSTITUTION" "provider" "Submitted" "provider submitted the substitution request on Quickstart"
+        , workflowStep 4 "SUBSTITUTION" "provider" "UnderEvaluation" "provider moved the substitution request into evaluation on Quickstart"
+        , workflowStep 5 "SUBSTITUTION" "provider" "PendingApproval" "provider recorded the optimizer-selected replacement set on Quickstart"
+        ]
+  let approvalSteps =
+        [ workflowStep 6 "CONTROL" "provider" "Blocked" "provider could not create a substitution settlement intent before the required approvals were recorded"
+        , workflowStep 7 "SUBSTITUTION" "secured-party" "PendingApproval" "secured party approved the substitution request on Quickstart"
+        , workflowStep 8 "SUBSTITUTION" "custodian" "Approved" "custodian approved the substitution request on Quickstart"
+        ]
+  let prepareForAdapterSteps =
+        [ workflowStep 9 "SETTLEMENT" "provider" "PendingSettlement" "provider submitted the full approved replacement set and exposed the substitution instruction to the adapter"
+        ]
+  let partialBlockedSteps =
+        [ workflowStep 9 "CONTROL" "provider" "Blocked" "provider attempted a partial replacement set and the workflow rejected it before any adapter side effects committed"
+        ]
+  let policyContext =
+        PolicyContext with
+          policyVersion = input.policyVersion
+          snapshotId = input.snapshotId
+          decisionReference = input.decisionReference
+
+  draftSubstitutionCid <- submit input.providerParty do
+    createCmd SubstitutionRequest with
+      substitutionId = input.correlationId <> "-substitution"
+      obligationId = input.obligationId
+      provider = input.providerParty
+      securedParty = input.securedParty
+      custodian = input.custodianParty
+      visibilityObservers = [input.securedParty, input.custodianParty]
+      policyContext
+      encumbrancesToRelease = map (\(encumbranceCid, _) -> encumbranceCid) currentEncumbrancePairs
+      replacementLots = replacementAllocations
+      expiryAt = now
+      correlationId = input.correlationId
+      state = Draft
+      requiresSecuredPartyApproval = input.requiresSecuredPartyApproval
+      requiresCustodianApproval = input.requiresCustodianApproval
+      securedPartyApproval = if input.requiresSecuredPartyApproval then ApprovalPending else ApprovalGranted
+      custodianApproval = if input.requiresCustodianApproval then ApprovalPending else ApprovalGranted
+      decisionSummary = "draft Quickstart substitution request created from the optimizer-selected replacement scope"
+      rejectionReason = ""
+      atomicityRequired = input.atomicityRequired
+      settlementInstructionCid = None
+
+  submittedSubstitutionCid <- submit input.providerParty do
+    exerciseCmd draftSubstitutionCid SubmitSubstitutionRequest
+
+  evaluationSubstitutionCid <- submit input.providerParty do
+    exerciseCmd submittedSubstitutionCid StartSubstitutionEvaluation
+
+  feasibleSubstitutionCid <- submit input.providerParty do
+    exerciseCmd evaluationSubstitutionCid $
+      RecordFeasibleSubstitution with
+        nextDecisionSummary = "Quickstart substitution workflow accepted the optimizer-selected replacement scope"
+
+  approvalGateChecks <-
+    if input.requiresSecuredPartyApproval || input.requiresCustodianApproval then do
+      submitMustFail input.providerParty do
+        exerciseCmd feasibleSubstitutionCid $
+          SubmitSubstitutionSettlementIntent with settlementLots = replacementAllocations
+      pure
+        [ QuickstartSubstitutionControlCheck with
+            checkId = "APPROVAL_GATE_BLOCKED"
+            status = "PASS"
+            detail = "provider could not create a settlement intent until the required approvals were recorded on Quickstart"
+        ]
+    else pure []
+
+  afterSecuredPartyApprovalCid <-
+    if input.requiresSecuredPartyApproval then
+      submit input.securedParty do
+        exerciseCmd feasibleSubstitutionCid ApproveSubstitutionBySecuredParty
+    else pure feasibleSubstitutionCid
+
+  afterCustodianApprovalCid <-
+    if input.requiresCustodianApproval then
+      submit input.custodianParty do
+        exerciseCmd afterSecuredPartyApprovalCid ApproveSubstitutionByCustodian
+    else pure afterSecuredPartyApprovalCid
+
+  approvedSubstitution <- expectActiveSubstitutionRequest input.providerParty afterCustodianApprovalCid "approved substitution should remain visible after the Quickstart approvals"
+
+  let partialReplacementAllocations =
+        case replacementAllocations of
+          allocation :: _ -> [allocation]
+          [] -> []
+
+  (finalSubstitutionCid, controlChecks, workflowSteps) <-
+    if input.workflowGate == "ATTEMPT_PARTIAL_SETTLEMENT" then do
+      submitMustFail input.providerParty do
+        exerciseCmd afterCustodianApprovalCid $
+          SubmitSubstitutionSettlementIntent with settlementLots = partialReplacementAllocations
+      pure
+        ( afterCustodianApprovalCid
+        , approvalGateChecks
+            ++ [ QuickstartSubstitutionControlCheck with
+                  checkId = "PARTIAL_SUBSTITUTION_BLOCKED"
+                  status = "PASS"
+                  detail = "the workflow rejected the partial replacement set and no adapter side effects were permitted to commit"
+               ]
+        , baseSteps <> approvalSteps <> partialBlockedSteps
+        )
+    else do
+      pendingSettlementCid <-
+        if approvedSubstitution.state == PendingSettlement then pure afterCustodianApprovalCid else
+          submit input.providerParty do
+            exerciseCmd afterCustodianApprovalCid $
+              SubmitSubstitutionSettlementIntent with settlementLots = replacementAllocations
+      pure
+        ( pendingSettlementCid
+        , approvalGateChecks
+        , baseSteps <> approvalSteps <> prepareForAdapterSteps
+        )
+
+  finalSubstitution <- expectActiveSubstitutionRequest input.providerParty finalSubstitutionCid "final Quickstart substitution request should remain visible to the provider"
+  maybeInstruction <-
+    case finalSubstitution.settlementInstructionCid of
+      Some instructionCid -> do
+        instruction <- expectActiveInstruction input.providerParty instructionCid "substitution settlement instruction should remain visible after workflow preparation"
+        pure (Some instruction)
+      None -> pure None
+  executionReports <- queryFilter @ExecutionReportRecord input.providerParty (\report -> report.obligationId == input.obligationId)
+  encumbrances <- queryFilter @EncumbranceState input.providerParty (\encumbrance -> encumbrance.obligationId == input.obligationId)
+
+  pure QuickstartSubstitutionWorkflowResult with
+    scenarioId = input.scenarioId
+    obligationId = input.obligationId
+    correlationId = input.correlationId
+    workflowGate = input.workflowGate
+    substitutionState = show finalSubstitution.state
+    securedPartyApproval = show finalSubstitution.securedPartyApproval
+    custodianApproval = show finalSubstitution.custodianApproval
+    settlementInstructionId =
+      case maybeInstruction of
+        Some instruction -> Some instruction.instructionId
+        None -> None
+    settlementInstructionState =
+      case maybeInstruction of
+        Some instruction -> Some (show instruction.state)
+        None -> None
+    currentEncumberedLotIds = input.currentEncumberedLotIds
+    releasedLotIds = releasedEncumbranceLotIds encumbrances
+    replacementLotIds = replacementLotIds
+    activeEncumberedLotIds = pledgedLotIds encumbrances
+    atomicityOutcome =
+      if finalSubstitution.state == PendingSettlement then "PENDING_ATOMIC_SETTLEMENT" else
+        if finalSubstitution.state == Closed then "COMMITTED_ATOMICALLY" else
+          "BLOCKED_ATOMICALLY"
+    executionReportCount = length executionReports
+    executionReports = reportSummaries executionReports
+    controlChecks = controlChecks
+    steps = workflowSteps
+
+ensureReplacementHolding :
+  QuickstartSubstitutionAdapterInput ->
+  QuickstartSeedLotInput ->
+  Script (ContractId ReferenceTokenHolding, ReferenceTokenHolding)
+ensureReplacementHolding input replacementLot = do
+  existingHoldings <-
+    queryFilter @ReferenceTokenHolding input.custodianParty
+      (\holding ->
+        holding.lotId == replacementLot.lotId
+          && holding.accountId == replacementLot.sourceAccount
+          && holding.beneficialOwner == input.providerParty
+      )
+  case existingHoldings of
+    existingHolding :: _ -> pure existingHolding
+    [] -> do
+      inventoryLots <- queryFilter @CollateralInventoryLot input.custodianParty (\lot -> lot.lotId == replacementLot.lotId)
+      (_, inventoryLot) <- expectSingleMatch ("missing replacement inventory lot for " <> replacementLot.lotId) inventoryLots
+      assertMsg "replacement inventory lot has insufficient quantity for the adapter move" (inventoryLot.availableQuantity >= replacementLot.quantity)
+      holdingCid <- submit input.custodianParty do
+        createCmd ReferenceTokenHolding with
+          holdingId = input.scenarioId <> "-replacement-holding-" <> replacementLot.lotId
+          lotId = inventoryLot.lotId
+          asset = inventoryLot.asset
+          beneficialOwner = input.providerParty
+          custodian = input.custodianParty
+          accountId = replacementLot.sourceAccount
+          quantity = inventoryLot.availableQuantity
+          controlState = "Available"
+          sourceReference = "adapter-backfill-from-substitution-inventory"
+          visibilityObservers = [input.providerParty, input.securedParty]
+      pure (holdingCid, ReferenceTokenHolding with
+        holdingId = input.scenarioId <> "-replacement-holding-" <> replacementLot.lotId
+        lotId = inventoryLot.lotId
+        asset = inventoryLot.asset
+        beneficialOwner = input.providerParty
+        custodian = input.custodianParty
+        accountId = replacementLot.sourceAccount
+        quantity = inventoryLot.availableQuantity
+        controlState = "Available"
+        sourceReference = "adapter-backfill-from-substitution-inventory"
+        visibilityObservers = [input.providerParty, input.securedParty])
+
+executeReleaseMoves :
+  QuickstartSubstitutionAdapterInput ->
+  SettlementInstruction ->
+  [QuickstartSeedLotInput] ->
+  Script [ReferenceTokenMoveResult]
+executeReleaseMoves input instruction incumbentLots =
+  case incumbentLots of
+    [] -> pure []
+    incumbentLot :: rest -> do
+      holdings <-
+        queryFilter @ReferenceTokenHolding input.custodianParty
+          (\holding ->
+            holding.lotId == incumbentLot.lotId
+              && holding.accountId == incumbentLot.sourceAccount
+              && holding.beneficialOwner == input.securedParty
+          )
+      (holdingCid, _) <- expectSingleMatch ("missing incumbent holding for " <> incumbentLot.lotId) holdings
+      moveResult <- submit input.custodianParty do
+        exerciseCmd holdingCid
+          (MoveByCustodian with
+            movementId = instruction.instructionId <> "-release-" <> incumbentLot.lotId
+            instructionId = instruction.instructionId
+            obligationId = instruction.obligationId
+            destinationBeneficialOwner = input.providerParty
+            destinationAccount = incumbentLot.destinationAccount
+            quantityToMove = incumbentLot.quantity
+            resultingControlState = "ReleasedToProviderAccount"
+            externalTransactionId = instruction.instructionId <> "-release-" <> incumbentLot.lotId
+            nextVisibilityObservers = [input.providerParty, input.securedParty]
+          )
+      restResults <- executeReleaseMoves input instruction rest
+      pure (moveResult :: restResults)
+
+executeReplacementMoves :
+  QuickstartSubstitutionAdapterInput ->
+  SettlementInstruction ->
+  [QuickstartSeedLotInput] ->
+  Script [ReferenceTokenMoveResult]
+executeReplacementMoves input instruction replacementLots =
+  case replacementLots of
+    [] -> pure []
+    replacementLot :: rest -> do
+      (holdingCid, _) <- ensureReplacementHolding input replacementLot
+      moveResult <- submit input.custodianParty do
+        exerciseCmd holdingCid
+          (MoveByCustodian with
+            movementId = instruction.instructionId <> "-replacement-" <> replacementLot.lotId
+            instructionId = instruction.instructionId
+            obligationId = instruction.obligationId
+            destinationBeneficialOwner = input.securedParty
+            destinationAccount = replacementLot.destinationAccount
+            quantityToMove = replacementLot.quantity
+            resultingControlState = "SettledReplacementToSecuredAccount"
+            externalTransactionId = instruction.instructionId <> "-replacement-" <> replacementLot.lotId
+            nextVisibilityObservers = [input.providerParty, input.securedParty]
+          )
+      restResults <- executeReplacementMoves input instruction rest
+      pure (moveResult :: restResults)
+
+referenceTokenSubstitutionAdapterReport :
+  QuickstartSubstitutionAdapterInput ->
+  Script QuickstartSubstitutionAdapterReport
+referenceTokenSubstitutionAdapterReport input = script do
+  startedAt <- getTime
+  (instructionCid, pendingInstruction) <- findInstructionById input.custodianParty input.settlementInstructionId
+  (substitutionCid, pendingSubstitution) <-
+    findSubstitutionForInstruction
+      input.providerParty
+      input.obligationId
+      input.settlementInstructionId
+      instructionCid
+  encumbrancesBefore <- queryEncumbrancesForObligation input.custodianParty input.obligationId
+  holdingsBefore <- queryReferenceTokenHoldings input.custodianParty (map (\lot -> lot.lotId) (input.currentEncumberedLots <> input.replacementLots))
+  existingReceipts <- queryFilter @ReferenceTokenAdapterReceipt input.custodianParty (\receipt -> receipt.instructionId == input.settlementInstructionId)
+  assertMsg "adapter already executed for this substitution instruction" (null existingReceipts)
+
+  releaseMoveResults <- executeReleaseMoves input pendingInstruction input.currentEncumberedLots
+  replacementMoveResults <- executeReplacementMoves input pendingInstruction input.replacementLots
+  receiptTime <- getTime
+  receiptCid <- submit input.custodianParty do
+    createCmd ReferenceTokenAdapterReceipt with
+      receiptId = input.scenarioId <> "-reference-token-substitution-receipt"
+      adapterName = "quickstart-reference-token-adapter"
+      adapterVersion = "v0.1"
+      workflowType = pendingInstruction.workflowType
+      settlementAction = pendingInstruction.action
+      instructionId = pendingInstruction.instructionId
+      obligationId = pendingInstruction.obligationId
+      correlationId = pendingInstruction.correlationId
+      provider = pendingInstruction.provider
+      securedParty = pendingInstruction.securedParty
+      custodian = pendingInstruction.custodian
+      sourceAccount = "MULTI_SCOPE"
+      destinationAccount = "MULTI_SCOPE"
+      encumbranceMode = "REPLACE_ENCUMBRANCE"
+      movements = map (\result -> result.movement) (releaseMoveResults <> replacementMoveResults)
+      executedAt = receiptTime
+      status = "EXECUTED"
+      externalTransactionId = pendingInstruction.instructionId <> "-reference-token-substitution"
+      details = "Reference token adapter executed both the incumbent release path and the replacement movement path for the Quickstart substitution instruction."
+      visibilityObservers = [pendingInstruction.provider, pendingInstruction.securedParty]
+  closedSubstitutionCid <- submit input.custodianParty do
+    exerciseCmd substitutionCid ConfirmSubstitutionSettlement
+  finishedAt <- getTime
+
+  closedSubstitution <- expectActiveSubstitutionRequest input.providerParty closedSubstitutionCid "closed substitution should remain visible after adapter confirmation"
+  (_, settledInstruction) <- findInstructionById input.custodianParty pendingInstruction.instructionId
+  receipt <- expectActiveReceipt input.custodianParty receiptCid "substitution adapter receipt should remain visible after creation"
+  holdingsAfter <- queryReferenceTokenHoldings input.custodianParty (map (\lot -> lot.lotId) (input.currentEncumberedLots <> input.replacementLots))
+  encumbrancesAfter <- queryEncumbrancesForObligation input.custodianParty input.obligationId
+  executionReports <- queryFilter @ExecutionReportRecord input.custodianParty (\report -> report.obligationId == input.obligationId)
+
+  pure QuickstartSubstitutionAdapterReport with
+    reportVersion = "substitution-adapter-execution-report-v0.1"
+    adapterName = "quickstart-reference-token-adapter"
+    adapterVersion = "v0.1"
+    scenarioId = input.scenarioId
+    startedAt
+    finishedAt
+    settlementInstruction = instructionView pendingInstruction
+    incumbentEncumberedLotIds = map (\lot -> lot.lotId) input.currentEncumberedLots
+    approvedReplacementLotIds = map (\lot -> lot.lotId) input.replacementLots
+    encumbranceContextBefore = encumbrancesBefore
+    referenceTokenHoldingsBefore = holdingsBefore
+    adapterActions =
+      QuickstartSubstitutionAdapterActions with
+        adapterReceipt = buildReceiptView receipt
+        releaseMovements = map (\result -> result.movement) releaseMoveResults
+        replacementMovements = map (\result -> result.movement) replacementMoveResults
+    referenceTokenHoldingsAfter = holdingsAfter
+    workflowConfirmation =
+      QuickstartSubstitutionWorkflowConfirmationView with
+        substitutionStateBefore = show pendingSubstitution.state
+        substitutionStateAfterConfirmation = show closedSubstitution.state
+        settledInstructionState = show settledInstruction.state
+        providerVisibleExecutionReportCount = length executionReports
+        providerVisibleEncumbranceCount = length encumbrancesAfter
+        releasedLotIds =
+          map (\encumbrance -> encumbrance.lotId)
+            (filter (\encumbrance -> encumbrance.status == "EncumbranceReleased") encumbrancesAfter)
+        activeEncumberedLotIds =
+          map (\encumbrance -> encumbrance.lotId)
+            (filter (\encumbrance -> encumbrance.status == "EncumbrancePledged") encumbrancesAfter)
+    encumbranceContextAfter = encumbrancesAfter
+
+substitutionStatusForProviderView :
+  QuickstartSubstitutionStatusInput ->
+  Script QuickstartSubstitutionStatusResult
+substitutionStatusForProviderView input = script do
+  substitutions <- queryFilter @SubstitutionRequest input.providerParty (\substitution -> substitution.obligationId == input.obligationId)
+  instructions <- queryFilter @SettlementInstruction input.providerParty (\instruction -> instruction.obligationId == input.obligationId)
+  executionReports <- queryFilter @ExecutionReportRecord input.providerParty (\report -> report.obligationId == input.obligationId)
+  encumbrances <- queryEncumbrancesForObligation input.providerParty input.obligationId
+  currentHoldings <- queryReferenceTokenHoldings input.providerParty input.currentEncumberedLotIds
+  replacementHoldings <- queryReferenceTokenHoldings input.providerParty input.replacementLotIds
+  receipts <- queryFilter @ReferenceTokenAdapterReceipt input.providerParty (\receipt -> receipt.obligationId == input.obligationId)
+
+  pure QuickstartSubstitutionStatusResult with
+    scenarioId = input.scenarioId
+    substitutionState =
+      case bestVisibleSubstitution substitutions of
+        Some (_, substitution) -> Some (show substitution.state)
+        None -> None
+    settlementInstructionState =
+      case bestVisibleInstruction instructions of
+        Some (_, instruction) -> Some (show instruction.state)
+        None -> None
+    providerVisibleExecutionReportCount = length executionReports
+    providerVisibleEncumbrances = encumbrances
+    providerVisibleCurrentLotHoldings = currentHoldings
+    providerVisibleReplacementLotHoldings = replacementHoldings
+    providerVisibleAdapterReceipts =
+      map
+        (\(_, receipt) ->
+          AdapterReceiptStatusView with
+            receiptId = receipt.receiptId
+            instructionId = receipt.instructionId
+            settlementAction = show receipt.settlementAction
+            status = receipt.status
+            externalTransactionId = receipt.externalTransactionId
+            executedAt = receipt.executedAt
+        )
+        receipts

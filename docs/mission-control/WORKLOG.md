@@ -2,6 +2,124 @@
 
 This log is append-oriented. Every task should record intent before changes and outcomes after changes.
 
+## 2026-03-29 - Prompt 17 Quickstart Substitution Adapter End-To-End - Pre-Change
+
+Intent:
+Upgrade the confidential substitution demo so the positive path executes end to end through policy evaluation, optimization, Quickstart-backed substitution workflow execution, the reference token adapter replacement and release path, and final substitution reporting, while at least one negative path proves no partial substitution or unintended adapter side effects can commit.
+
+Task summary:
+
+- refactor the substitution orchestration into an explicit Quickstart mode that can prepare scenario-scoped LocalNet state, run the declared positive substitution path against the deployed Control Plane package, invoke the token-adapter-driven replacement or release handoff, and collect subordinate artifacts into one machine-readable substitution report
+- add or update a reproducible `make demo-substitution-quickstart` command that ensures the LocalNet and package prerequisites are ready, runs the positive and negative Quickstart substitution scenarios, and fails nonzero on genuine workflow or adapter failure
+- expand substitution artifact generation so the report explicitly captures the incumbent encumbered set, replacement set, adapter actions, final post-substitution state, and all-or-nothing atomicity evidence on the real executed path
+- prove at least one blocked negative path where partial substitution is rejected, the incumbent encumbrance set remains intact, and adapter-side effects do not commit
+- update tracker, invariants, evidence, runbooks, specs, setup, and ADR surfaces as needed so the new Quickstart substitution posture and the remaining return-gap boundary are explicit
+
+Expected affected files:
+
+- `Makefile`
+- `app/orchestration/substitution_demo.py`
+- `app/orchestration/substitution_cli.py`
+- `app/orchestration/cli.py` if the shared command surface needs updating
+- new or updated Quickstart substitution helpers under `scripts/`
+- relevant Daml modules under `daml/CantonCollateral/` for Quickstart substitution workflow preparation and adapter-backed replacement evidence
+- substitution scenario manifests under `examples/demo-scenarios/substitution/`
+- `reports/schemas/substitution-report.schema.json` if the report contract needs to expand for Quickstart workflow and adapter evidence
+- generated substitution artifacts under `reports/generated/`
+- `docs/runbooks/SUBSTITUTION_DEMO_RUNBOOK.md`
+- `docs/specs/SUBSTITUTION_REPORT_SPEC.md`
+- `docs/invariants/INVARIANT_REGISTRY.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- `docs/evidence/prompt-17-execution-report.md`
+- `docs/mission-control/MASTER_TRACKER.md`
+- `docs/mission-control/WORKLOG.md`
+- the next ADR only if the Quickstart substitution handoff materially changes the current design boundary
+
+Risk assessment:
+
+- the substitution report could overclaim atomic replacement if it stitches together stale workflow or adapter artifacts rather than artifacts produced by the same Quickstart run
+- the adapter extension could drift past the current boundary discipline if it starts selecting inventory or mutating obligation semantics instead of consuming workflow-declared replacement and release scope
+- the negative-path evidence could be misleading if a blocked substitution still leaves adapter receipts, holdings, or partial encumbrance changes visible after failure
+- the Quickstart substitution path could accidentally depend on hidden seeded state rather than scenario-scoped manifests and explicit reproducible commands
+
+Acceptance criteria:
+
+- `make demo-substitution-quickstart` exists, is documented, and fails nonzero on real Quickstart, workflow, or adapter failure
+- the positive substitution path now runs through real Quickstart-backed workflow execution and the reference token adapter rather than stopping at the IDE ledger
+- the generated substitution report explicitly proves incumbent scope, replacement scope, adapter actions, final post-substitution state, and atomic all-or-nothing replacement on the executed path
+- at least one negative scenario proves no partial substitution, no incumbent release drift, and no unintended adapter side effects on the blocked path
+- relevant checks, docs, invariants, evidence, and generated artifacts are updated and captured
+
+## 2026-03-30 - Prompt 17 Quickstart Substitution Adapter End-To-End - Post-Change
+
+Outcome:
+Upgraded the confidential substitution demo so the Quickstart-backed path now runs end to end through policy evaluation, optimization, Quickstart substitution workflow execution, the reference token adapter replacement or release path, and final substitution reporting, with negative paths that prove no partial substitution or unintended adapter side effects commit.
+
+Completed changes:
+
+- added the Quickstart runtime mode and substitution report-contract expansion in `app/orchestration/substitution_demo.py`, `app/orchestration/substitution_cli.py`, and `reports/schemas/substitution-report.schema.json`
+- added the Quickstart substitution workflow and status layer with `daml/CantonCollateral/QuickstartSubstitution.daml`, `scripts/localnet-seed-substitution-demo.sh`, `scripts/localnet-run-substitution-workflow.sh`, `scripts/localnet-run-substitution-token-adapter.sh`, and `scripts/localnet-substitution-status.sh`
+- added dedicated Quickstart substitution scenario manifests and declared LocalNet seed manifests for:
+  - one positive Quickstart-backed atomic substitution path
+  - one policy-blocked negative path
+  - one workflow-blocked partial substitution path that proves no release, no replacement movement, and no adapter receipt commit
+- updated `make demo-substitution-quickstart` so it starts or reuses the LocalNet, deploys the Control Plane DAR when needed, runs the Quickstart-backed positive and negative substitution scenarios, validates the generated substitution report, and fails nonzero on genuine runtime failure
+- expanded the generated artifact surface so the Quickstart substitution report now references real policy, optimization, workflow, seed, adapter, and blocked-path status artifacts and records `atomicityEvidence` for both committed and blocked outcomes
+- added ADR 0020 and aligned tracker, runbooks, specs, setup, testing, invariants, risks, threat model, evidence, README, and command-surface docs with the new Quickstart-backed substitution chain
+- bumped the shared Daml package version from `0.1.7` to `0.1.8` after the first Quickstart redeploy surfaced a real `KNOWN_PACKAGE_VERSION` conflict on the running participant
+
+Commands run:
+
+```sh
+sh -n scripts/localnet-seed-substitution-demo.sh
+sh -n scripts/localnet-run-substitution-workflow.sh
+sh -n scripts/localnet-run-substitution-token-adapter.sh
+sh -n scripts/localnet-substitution-status.sh
+python3 -m py_compile app/orchestration/substitution_demo.py app/orchestration/substitution_cli.py
+make daml-build
+make demo-substitution
+make localnet-deploy-dar
+make demo-substitution-quickstart
+make docs-lint
+git diff --check
+```
+
+Results:
+
+- the shell syntax checks passed for the new Quickstart substitution workflow, seed, adapter, and status scripts
+- the Python bytecode check passed for the substitution orchestration and CLI modules
+- `make daml-build` passed, and the first Quickstart redeploy attempt surfaced a real `KNOWN_PACKAGE_VERSION` conflict on package version `0.1.7`, proving the runtime path fails nonzero on package drift instead of fabricating success
+- after bumping the shared package version to `0.1.8`, `make localnet-deploy-dar` passed and the deployment receipt now records `.daml/dist-quickstart/canton-collateral-control-plane-0.1.8.dar` with package id `e7c7bb46feecee544cdefbb58661bfc1563eea27dde48dcba85830b62549a0a4`
+- `make demo-substitution` passed and regenerated `reports/generated/substitution-demo-report.json` plus supporting IDE-ledger artifacts for the comparison path
+- `make demo-substitution-quickstart` passed and validated `reports/generated/substitution-quickstart-report.json`, `reports/generated/substitution-quickstart-summary.md`, and `reports/generated/substitution-quickstart-timeline.md`
+- the positive Quickstart scenario produced and linked:
+  - `reports/generated/positive-substitution-quickstart-policy-evaluation-report.json`
+  - `reports/generated/positive-substitution-quickstart-optimization-report.json`
+  - `reports/generated/positive-substitution-quickstart-workflow-input.json`
+  - `reports/generated/positive-substitution-quickstart-workflow-result.json`
+  - `reports/generated/positive-substitution-quickstart/localnet-control-plane-seed-receipt.json`
+  - `reports/generated/positive-substitution-quickstart/localnet-substitution-adapter-execution-report.json`
+  - `reports/generated/positive-substitution-quickstart/localnet-substitution-status.json`
+- the positive Quickstart report proves `ATOMICALLY_COMMITTED` replacement for incumbent lots `quickstart-sub-current-eib-521` and `quickstart-sub-current-kfw-521` with approved replacement lots `quickstart-sub-repl-fannie-521` and `quickstart-sub-repl-ust-521`, and the provider-visible status artifact proves:
+  - substitution state `Closed`
+  - settlement instruction state `Settled`
+  - one adapter receipt
+  - incumbent holdings released back to `provider-account-substitution-521`
+  - replacement holdings settled into `secured-account-substitution-521`
+- the blocked partial Quickstart scenario produced policy, optimization, workflow, seed, and status artifacts but no adapter execution report, and the blocked-path evidence proves `BLOCKED_NO_SIDE_EFFECTS` for incumbent lots `quickstart-sub-current-eib-621` and `quickstart-sub-current-kfw-621` with:
+  - no adapter release actions
+  - no adapter replacement actions
+  - no released lots
+  - no replacement holdings
+  - zero adapter receipts
+  - incumbent holdings still retained in `secured-account-substitution-621`
+- the final accepted Quickstart scenario ids are the fresh `521` positive path and `621` blocked partial path, which avoid stale-state reuse from earlier debug runs
+- `make docs-lint` passed after the new Quickstart substitution docs, ADR, tracker, runbook, and evidence updates landed
+- `git diff --check` passed with no whitespace or patch-format issues
+
+Next step:
+Extend the same Quickstart-backed workflow-plus-adapter discipline to the return path so margin return or release can produce real adapter-backed proof of release semantics rather than stopping at the current workflow skeleton.
+
 ## 2026-03-29 - Prompt 16 Quickstart Margin-Call End-To-End - Pre-Change
 
 Intent:

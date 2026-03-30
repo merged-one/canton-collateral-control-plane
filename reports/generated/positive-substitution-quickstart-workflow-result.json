@@ -1,0 +1,78 @@
+{
+  "releasedLotIds": [],
+  "executionReports": [],
+  "executionReportCount": 0,
+  "workflowGate": "PREPARE_FOR_ADAPTER",
+  "settlementInstructionId": "quickstart-substitution-correlation-521-instruction",
+  "settlementInstructionState": "PendingSettlement",
+  "obligationId": "quickstart-substitution-obligation-521",
+  "atomicityOutcome": "PENDING_ATOMIC_SETTLEMENT",
+  "controlChecks": [{
+    "checkId": "APPROVAL_GATE_BLOCKED",
+    "status": "PASS",
+    "detail": "provider could not create a settlement intent until the required approvals were recorded on Quickstart"
+  }],
+  "scenarioId": "positive-substitution-quickstart",
+  "steps": [{
+    "actor": "provider",
+    "step": 1,
+    "state": "Encumbered",
+    "phase": "BASELINE",
+    "detail": "provider started from an already pledged incumbent collateral set on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 2,
+    "state": "Draft",
+    "phase": "SUBSTITUTION",
+    "detail": "provider created the draft substitution request on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 3,
+    "state": "Submitted",
+    "phase": "SUBSTITUTION",
+    "detail": "provider submitted the substitution request on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 4,
+    "state": "UnderEvaluation",
+    "phase": "SUBSTITUTION",
+    "detail": "provider moved the substitution request into evaluation on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 5,
+    "state": "PendingApproval",
+    "phase": "SUBSTITUTION",
+    "detail": "provider recorded the optimizer-selected replacement set on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 6,
+    "state": "Blocked",
+    "phase": "CONTROL",
+    "detail": "provider could not create a substitution settlement intent before the required approvals were recorded"
+  }, {
+    "actor": "secured-party",
+    "step": 7,
+    "state": "PendingApproval",
+    "phase": "SUBSTITUTION",
+    "detail": "secured party approved the substitution request on Quickstart"
+  }, {
+    "actor": "custodian",
+    "step": 8,
+    "state": "Approved",
+    "phase": "SUBSTITUTION",
+    "detail": "custodian approved the substitution request on Quickstart"
+  }, {
+    "actor": "provider",
+    "step": 9,
+    "state": "PendingSettlement",
+    "phase": "SETTLEMENT",
+    "detail": "provider submitted the full approved replacement set and exposed the substitution instruction to the adapter"
+  }],
+  "currentEncumberedLotIds": ["quickstart-sub-current-eib-521", "quickstart-sub-current-kfw-521"],
+  "substitutionState": "PendingSettlement",
+  "custodianApproval": "ApprovalGranted",
+  "activeEncumberedLotIds": ["quickstart-sub-current-kfw-521", "quickstart-sub-current-eib-521"],
+  "securedPartyApproval": "ApprovalGranted",
+  "replacementLotIds": ["quickstart-sub-repl-fannie-521", "quickstart-sub-repl-ust-521"],
+  "correlationId": "quickstart-substitution-correlation-521"
+}

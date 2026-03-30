@@ -1,0 +1,120 @@
+{
+  "replacementLots": [{
+    "jurisdiction": "US",
+    "quantity": 250000.0000000000,
+    "transferabilityFlags": ["deliverable", "pledgeable"],
+    "sourceAccount": "provider-account-substitution-521",
+    "issuer": "UST",
+    "assetClass": "SovereignDebt",
+    "destinationAccount": "secured-account-substitution-521",
+    "currency": "USD",
+    "tokenAdapterReference": "adapter/quickstart/substitution/us-treasury",
+    "settlementSystem": "Fedwire",
+    "lotId": "quickstart-sub-repl-ust-521",
+    "custodyAccount": "provider-account-substitution-521",
+    "assetId": "quickstart-sub-repl-ust-asset-521"
+  }, {
+    "jurisdiction": "US",
+    "quantity": 225000.0000000000,
+    "transferabilityFlags": ["deliverable", "pledgeable"],
+    "sourceAccount": "provider-account-substitution-521",
+    "issuer": "FANNIE_MAE",
+    "assetClass": "AgencyDebt",
+    "destinationAccount": "secured-account-substitution-521",
+    "currency": "USD",
+    "tokenAdapterReference": "adapter/quickstart/substitution/fannie-mae",
+    "settlementSystem": "Fedwire",
+    "lotId": "quickstart-sub-repl-fannie-521",
+    "custodyAccount": "provider-account-substitution-521",
+    "assetId": "quickstart-sub-repl-fannie-asset-521"
+  }],
+  "decisionReference": "quickstart-substitution-decision-521",
+  "custodianParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "currentInventoryLots": [{
+    "lotId": "quickstart-sub-current-kfw-521",
+    "contractId": "00763a61b3ba31a72f2ba9ebeff575bf6c6cfc30c168d67b440c36353d4af35a04ca1212204d80b80c1cefe47a4f2c907dcb765f726f1cd4f79c37c5b31ffe84700e4cc645"
+  }, {
+    "lotId": "quickstart-sub-current-eib-521",
+    "contractId": "000503ed42c8e914db04cb704e8251a7c77297112aa20faee230816d5acfd7cc20ca1212200def498d7d69ccd09c8a6323f0680651d19c69752a5d66c702f6b79b1b294d16"
+  }],
+  "obligationId": "quickstart-substitution-obligation-521",
+  "roleRegistrations": [{
+    "role": "CollateralProviderRole",
+    "label": "provider",
+    "participant": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a",
+    "contractId": "003e47a6416ef3948866dc27ab57948c5784d069cd3b2d5d07e583eac18d9591d4ca121220ba811077ac5171a3eb40aecf1f75a27aeb0f63ae97324e01e6b62b08dbb90e8b"
+  }, {
+    "role": "SecuredPartyRole",
+    "label": "secured-party",
+    "participant": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+    "contractId": "0098720e4642ca1c9adbd7e304c28d3422bbb9988dc8e72cfd11e098128a29bb06ca121220d60fb31506bf58a6685375b836242f69c1eed27fdcfc34635fe67ce5a6e786fb"
+  }, {
+    "role": "CustodianRole",
+    "label": "custodian",
+    "participant": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+    "contractId": "00110dd93ac5aa999b7da75504b0413514dc86f06e3aecdadd4fd47c6718586efbca12122096a8afec1bef08f2e2b395f9e6549991d10ce90cfee0cc0ee271309dea90f4df"
+  }],
+  "operatorParty": "controlplane-operator-quickstart-substitution-521::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "referenceTokenHoldings": [{
+    "lotId": "quickstart-sub-current-kfw-521",
+    "holdingId": "quickstart-substitution-demo-521-baseline-holding-quickstart-sub-current-kfw-521",
+    "contractId": "00883677ea92fbf94ec0b16c76f5e46e788dfe8ced8ab7b54ecdacfdfaceff1d73ca121220b258a7036f1ed8993f8175b434a0c47788f9a10ecbc3954fb78c342fc27672e6"
+  }, {
+    "lotId": "quickstart-sub-current-eib-521",
+    "holdingId": "quickstart-substitution-demo-521-baseline-holding-quickstart-sub-current-eib-521",
+    "contractId": "004a214402f1c68d0dcccede992f8a0a075e6df57350e9770190b8a76ea2b46ac1ca1212207684409f70d14ec8de75a6fb5bd7bc008072c4d6afc01eb9e403ca7cc1259625"
+  }],
+  "replacementInventoryLots": [{
+    "lotId": "quickstart-sub-repl-ust-521",
+    "contractId": "009cfaf0a4be343c3630e9913d09be7e106a7e24c1b4fddbcaa7ae3883f002fbddca121220d8e5acb7225b3660a24b692b929380a53cf3d1d3064339346768a34514b4c922"
+  }, {
+    "lotId": "quickstart-sub-repl-fannie-521",
+    "contractId": "001405d1903e3b157d32a710f21bccf3a08f18e36c960584d26c33998a33fc90b2ca121220b39e4b498aad83a8bf926d489aa23c4bf8c84685e912c88b05023b82d193341a"
+  }],
+  "operatorUserId": "control-plane-operator-substitution-521",
+  "custodianUserId": "c87743ab-80e0-4b83-935a-4c0582226691",
+  "currentEncumbrances": [{
+    "lotId": "quickstart-sub-current-kfw-521",
+    "encumbranceId": "quickstart-substitution-correlation-521-current-quickstart-sub-current-kfw-521",
+    "contractId": "0096ce892044af35019c6b8ff712f8b7084ad04eb71748457c963df2cda4502249ca12122099caf8e3d27fa952e8c97b2dad412c979479fb4136a49d293fa18efd37fcbfd8"
+  }, {
+    "lotId": "quickstart-sub-current-eib-521",
+    "encumbranceId": "quickstart-substitution-correlation-521-current-quickstart-sub-current-eib-521",
+    "contractId": "00d915b6f6b2b32628d2567338434040e8235ce5ed1267c25db40e96625217e678ca12122000d3e50d89ad58225e9d71a95faf0cf7471cdeab8542d0182172106264f2ae69"
+  }],
+  "scenarioId": "quickstart-substitution-demo-521",
+  "securedParty": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc",
+  "correlationId": "quickstart-substitution-correlation-521",
+  "providerParty": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a",
+  "currentEncumberedLots": [{
+    "jurisdiction": "DE",
+    "quantity": 250000.0000000000,
+    "transferabilityFlags": ["deliverable", "pledgeable"],
+    "sourceAccount": "secured-account-substitution-521",
+    "issuer": "KFW",
+    "assetClass": "AgencyDebt",
+    "destinationAccount": "provider-account-substitution-521",
+    "currency": "USD",
+    "tokenAdapterReference": "adapter/quickstart/substitution/kfw",
+    "settlementSystem": "Fedwire",
+    "lotId": "quickstart-sub-current-kfw-521",
+    "custodyAccount": "secured-account-substitution-521",
+    "assetId": "quickstart-sub-current-kfw-asset-521"
+  }, {
+    "jurisdiction": "FR",
+    "quantity": 250000.0000000000,
+    "transferabilityFlags": ["deliverable", "pledgeable"],
+    "sourceAccount": "secured-account-substitution-521",
+    "issuer": "EIB",
+    "assetClass": "SupranationalDebt",
+    "destinationAccount": "provider-account-substitution-521",
+    "currency": "USD",
+    "tokenAdapterReference": "adapter/quickstart/substitution/eib",
+    "settlementSystem": "Fedwire",
+    "lotId": "quickstart-sub-current-eib-521",
+    "custodyAccount": "secured-account-substitution-521",
+    "assetId": "quickstart-sub-current-eib-asset-521"
+  }],
+  "policyVersion": "cpl-v0.1-quickstart-substitution-demo",
+  "snapshotId": "quickstart-substitution-snapshot-521"
+}

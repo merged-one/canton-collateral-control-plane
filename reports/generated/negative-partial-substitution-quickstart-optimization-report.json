@@ -1,0 +1,647 @@
+{
+  "$schema": "../../reports/schemas/optimization-report.schema.json",
+  "reportType": "OptimizationReport",
+  "reportVersion": "0.1.0",
+  "optimizationId": "opr-a3fb4374c8cb8e45",
+  "status": "OPTIMAL",
+  "recommendedAction": "SUBSTITUTE",
+  "objective": {
+    "objectiveId": "MINIMIZE_MARKET_VALUE_THEN_HAIRCUT_COST_THEN_EXCESS",
+    "sequence": [
+      "market_value_amount",
+      "haircut_cost_amount",
+      "excess_amount",
+      "lot_count",
+      "lot_ids_lexical_tie_break"
+    ]
+  },
+  "policy": {
+    "policyId": "substitution-atomic-control-policy",
+    "policyVersion": "1.1.0",
+    "cplVersion": "0.1.0",
+    "profile": "central_bank"
+  },
+  "inventory": {
+    "inventorySetId": "quickstart-substitution-negative-partial-inventory-621",
+    "inventoryVersion": "1.0.0",
+    "asOf": "2026-04-16T14:00:00Z",
+    "settlementCurrency": "USD",
+    "valuationCurrency": "USD",
+    "candidateLotCount": 4
+  },
+  "obligation": {
+    "obligationId": "quickstart-substitution-obligation-621",
+    "obligationVersion": "1.0.0",
+    "asOf": "2026-04-16T14:00:00Z",
+    "settlementCurrency": "USD",
+    "coverageMetric": "LENDABLE_VALUE",
+    "obligationAmount": 430000.0,
+    "currentPostedLotIds": [
+      "quickstart-sub-current-eib-621",
+      "quickstart-sub-current-kfw-621"
+    ],
+    "substitutionRequest": {
+      "requestId": "quickstart-sub-request-partial-621",
+      "mustReplaceLotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621"
+      ],
+      "atomicityRequired": true
+    }
+  },
+  "candidateUniverse": {
+    "candidateLotCount": 4,
+    "admissibleLotCount": 4,
+    "blockedLotCount": 0,
+    "consideredCombinationCount": 15,
+    "feasibleCombinationCount": 1,
+    "screeningResults": [
+      {
+        "lotId": "quickstart-sub-current-eib-621",
+        "assetId": "quickstart-sub-current-eib-asset-621",
+        "assetClass": "SUPRANATIONAL_BOND",
+        "issuerId": "eib",
+        "marketValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700,
+        "admissible": true,
+        "reasonCodes": []
+      },
+      {
+        "lotId": "quickstart-sub-current-kfw-621",
+        "assetId": "quickstart-sub-current-kfw-asset-621",
+        "assetClass": "AGENCY_BOND",
+        "issuerId": "kfw",
+        "marketValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700,
+        "admissible": true,
+        "reasonCodes": []
+      },
+      {
+        "lotId": "quickstart-sub-repl-fannie-621",
+        "assetId": "quickstart-sub-repl-fannie-asset-621",
+        "assetClass": "AGENCY_BOND",
+        "issuerId": "fannie-mae",
+        "marketValue": 225000.0,
+        "lendableValue": 209250.0,
+        "totalHaircutBps": 700,
+        "admissible": true,
+        "reasonCodes": []
+      },
+      {
+        "lotId": "quickstart-sub-repl-ust-621",
+        "assetId": "quickstart-sub-repl-ust-asset-621",
+        "assetClass": "SOVEREIGN_BOND",
+        "issuerId": "us-treasury",
+        "marketValue": 250000.0,
+        "lendableValue": 245000.0,
+        "totalHaircutBps": 200,
+        "admissible": true,
+        "reasonCodes": []
+      }
+    ]
+  },
+  "currentPortfolio": {
+    "lotIds": [
+      "quickstart-sub-current-eib-621",
+      "quickstart-sub-current-kfw-621"
+    ],
+    "policyEvaluationId": "per-481bd035215f64c6",
+    "policyDecision": "ACCEPT",
+    "isFeasible": true,
+    "requiredAmount": 430000.0,
+    "allocatedMarketValue": 500000.0,
+    "allocatedLendableValue": 465000.0,
+    "shortfallAmount": 0.0,
+    "excessAmount": 35000.0,
+    "haircutCostAmount": 35000.0,
+    "lotCount": 2,
+    "objectiveVector": {
+      "marketValueAmount": 500000.0,
+      "haircutCostAmount": 35000.0,
+      "excessAmount": 35000.0,
+      "lotCount": 2,
+      "tieBreakLotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621"
+      ]
+    },
+    "blockingReasonCodes": [],
+    "selectedLots": [
+      {
+        "lotId": "quickstart-sub-current-eib-621",
+        "assetId": "quickstart-sub-current-eib-asset-621",
+        "issuerId": "eib",
+        "assetClass": "SUPRANATIONAL_BOND",
+        "marketValue": 250000.0,
+        "valuationBasisValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700
+      },
+      {
+        "lotId": "quickstart-sub-current-kfw-621",
+        "assetId": "quickstart-sub-current-kfw-asset-621",
+        "issuerId": "kfw",
+        "assetClass": "AGENCY_BOND",
+        "marketValue": 250000.0,
+        "valuationBasisValue": 250000.0,
+        "lendableValue": 232500.0,
+        "totalHaircutBps": 700
+      }
+    ],
+    "concentrationResults": [
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "eib",
+        "bucketValue": 250000.0,
+        "denominatorValue": 500000.0,
+        "observedRatio": 0.5,
+        "relatedLotIds": [
+          "quickstart-sub-current-eib-621"
+        ],
+        "reason": null
+      },
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "kfw",
+        "bucketValue": 250000.0,
+        "denominatorValue": 500000.0,
+        "observedRatio": 0.5,
+        "relatedLotIds": [
+          "quickstart-sub-current-kfw-621"
+        ],
+        "reason": null
+      }
+    ]
+  },
+  "recommendedPortfolio": {
+    "lotIds": [
+      "quickstart-sub-repl-fannie-621",
+      "quickstart-sub-repl-ust-621"
+    ],
+    "policyEvaluationId": "per-fb12cc5d7eb027fa",
+    "policyDecision": "ACCEPT",
+    "isFeasible": true,
+    "requiredAmount": 430000.0,
+    "allocatedMarketValue": 475000.0,
+    "allocatedLendableValue": 454250.0,
+    "shortfallAmount": 0.0,
+    "excessAmount": 24250.0,
+    "haircutCostAmount": 20750.0,
+    "lotCount": 2,
+    "objectiveVector": {
+      "marketValueAmount": 475000.0,
+      "haircutCostAmount": 20750.0,
+      "excessAmount": 24250.0,
+      "lotCount": 2,
+      "tieBreakLotIds": [
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ]
+    },
+    "blockingReasonCodes": [],
+    "selectedLots": [
+      {
+        "lotId": "quickstart-sub-repl-fannie-621",
+        "assetId": "quickstart-sub-repl-fannie-asset-621",
+        "issuerId": "fannie-mae",
+        "assetClass": "AGENCY_BOND",
+        "marketValue": 225000.0,
+        "valuationBasisValue": 225000.0,
+        "lendableValue": 209250.0,
+        "totalHaircutBps": 700
+      },
+      {
+        "lotId": "quickstart-sub-repl-ust-621",
+        "assetId": "quickstart-sub-repl-ust-asset-621",
+        "issuerId": "us-treasury",
+        "assetClass": "SOVEREIGN_BOND",
+        "marketValue": 250000.0,
+        "valuationBasisValue": 250000.0,
+        "lendableValue": 245000.0,
+        "totalHaircutBps": 200
+      }
+    ],
+    "concentrationResults": [
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "fannie-mae",
+        "bucketValue": 225000.0,
+        "denominatorValue": 475000.0,
+        "observedRatio": 0.473684,
+        "relatedLotIds": [
+          "quickstart-sub-repl-fannie-621"
+        ],
+        "reason": null
+      },
+      {
+        "limitId": "issuer-cap",
+        "dimension": "ISSUER",
+        "scope": "POLICY_PORTFOLIO",
+        "metric": "PERCENT_OF_COLLATERAL_VALUE",
+        "decision": "PASS",
+        "thresholdValue": 0.6,
+        "thresholdCurrency": null,
+        "bucket": "us-treasury",
+        "bucketValue": 250000.0,
+        "denominatorValue": 475000.0,
+        "observedRatio": 0.526316,
+        "relatedLotIds": [
+          "quickstart-sub-repl-ust-621"
+        ],
+        "reason": null
+      }
+    ]
+  },
+  "substitutionRecommendation": {
+    "requestId": "quickstart-sub-request-partial-621",
+    "atomicityRequired": true,
+    "mustReplaceLotIds": [
+      "quickstart-sub-current-eib-621",
+      "quickstart-sub-current-kfw-621"
+    ],
+    "currentPostedLotIds": [
+      "quickstart-sub-current-eib-621",
+      "quickstart-sub-current-kfw-621"
+    ],
+    "recommendedLotIds": [
+      "quickstart-sub-repl-fannie-621",
+      "quickstart-sub-repl-ust-621"
+    ],
+    "retainedLotIds": [],
+    "removeLotIds": [
+      "quickstart-sub-current-eib-621",
+      "quickstart-sub-current-kfw-621"
+    ],
+    "addLotIds": [
+      "quickstart-sub-repl-fannie-621",
+      "quickstart-sub-repl-ust-621"
+    ],
+    "improvesObjective": true
+  },
+  "explanationTrace": [
+    {
+      "step": 1,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot quickstart-sub-current-eib-621 for non-concentration policy feasibility.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 2,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot quickstart-sub-current-kfw-621 for non-concentration policy feasibility.",
+      "lotIds": [
+        "quickstart-sub-current-kfw-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 3,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot quickstart-sub-repl-fannie-621 for non-concentration policy feasibility.",
+      "lotIds": [
+        "quickstart-sub-repl-fannie-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 4,
+      "stage": "SCREENING",
+      "outcome": "ADMISSIBLE",
+      "message": "Screened lot quickstart-sub-repl-ust-621 for non-concentration policy feasibility.",
+      "lotIds": [
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 5,
+      "stage": "CURRENT_PORTFOLIO",
+      "outcome": "FEASIBLE",
+      "message": "Evaluated the currently posted lot set against coverage and portfolio-level policy constraints.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": 465000.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 500000.0,
+        "haircutCostAmount": 35000.0,
+        "excessAmount": 35000.0,
+        "lotCount": 2,
+        "tieBreakLotIds": [
+          "quickstart-sub-current-eib-621",
+          "quickstart-sub-current-kfw-621"
+        ]
+      }
+    },
+    {
+      "step": 6,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 7,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-kfw-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 8,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED",
+      "message": "Evaluated subset quickstart-sub-repl-fannie-621.",
+      "lotIds": [
+        "quickstart-sub-repl-fannie-621"
+      ],
+      "reasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "coverageAmount": 209250.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 225000.0,
+        "haircutCostAmount": 15750.0,
+        "excessAmount": 0.0,
+        "lotCount": 1,
+        "tieBreakLotIds": [
+          "quickstart-sub-repl-fannie-621"
+        ]
+      }
+    },
+    {
+      "step": 9,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED",
+      "message": "Evaluated subset quickstart-sub-repl-ust-621.",
+      "lotIds": [
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "CONCENTRATION_LIMIT_BREACH",
+        "INSUFFICIENT_LENDABLE_VALUE"
+      ],
+      "coverageAmount": 245000.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 250000.0,
+        "haircutCostAmount": 5000.0,
+        "excessAmount": 0.0,
+        "lotCount": 1,
+        "tieBreakLotIds": [
+          "quickstart-sub-repl-ust-621"
+        ]
+      }
+    },
+    {
+      "step": 10,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 11,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-repl-fannie-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 12,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 13,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-kfw-621",
+        "quickstart-sub-repl-fannie-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 14,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-kfw-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 15,
+      "stage": "SEARCH",
+      "outcome": "NEW_INCUMBENT",
+      "message": "Evaluated subset quickstart-sub-repl-fannie-621,quickstart-sub-repl-ust-621.",
+      "lotIds": [
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": 454250.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 475000.0,
+        "haircutCostAmount": 20750.0,
+        "excessAmount": 24250.0,
+        "lotCount": 2,
+        "tieBreakLotIds": [
+          "quickstart-sub-repl-fannie-621",
+          "quickstart-sub-repl-ust-621"
+        ]
+      }
+    },
+    {
+      "step": 16,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621",
+        "quickstart-sub-repl-fannie-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 17,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 18,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 19,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-kfw-621",
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 20,
+      "stage": "SEARCH",
+      "outcome": "BLOCKED_BY_SCOPE",
+      "message": "Rejected the subset because it retains one or more lots that the substitution request requires to be released.",
+      "lotIds": [
+        "quickstart-sub-current-eib-621",
+        "quickstart-sub-current-kfw-621",
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [
+        "SUBSTITUTION_LOT_RETENTION_NOT_ALLOWED"
+      ],
+      "coverageAmount": null,
+      "objectiveSnapshot": null
+    },
+    {
+      "step": 21,
+      "stage": "DECISION",
+      "outcome": "SUBSTITUTE",
+      "message": "Selected the final optimizer recommendation.",
+      "lotIds": [
+        "quickstart-sub-repl-fannie-621",
+        "quickstart-sub-repl-ust-621"
+      ],
+      "reasonCodes": [],
+      "coverageAmount": 454250.0,
+      "objectiveSnapshot": {
+        "marketValueAmount": 475000.0,
+        "haircutCostAmount": 20750.0,
+        "excessAmount": 24250.0,
+        "lotCount": 2,
+        "tieBreakLotIds": [
+          "quickstart-sub-repl-fannie-621",
+          "quickstart-sub-repl-ust-621"
+        ]
+      }
+    }
+  ]
+}

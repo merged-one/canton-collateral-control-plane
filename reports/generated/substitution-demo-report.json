@@ -2,12 +2,13 @@
   "$schema": "../../reports/schemas/substitution-report.schema.json",
   "reportType": "SubstitutionReport",
   "reportVersion": "0.1.0",
-  "substitutionReportId": "srr-867d60ba07862ccd",
-  "generatedAt": "2026-03-29T17:07:10Z",
+  "substitutionReportId": "srr-41979123ad810f49",
+  "generatedAt": "2026-03-30T02:08:46Z",
   "overallStatus": "PASS",
   "demo": {
     "demoId": "substitution-prototype",
     "demoVersion": "0.1.0",
+    "runtimeMode": "IDE_LEDGER",
     "command": "make demo-substitution",
     "manifestPath": "examples/demo-scenarios/substitution/demo-config.json",
     "outputDirectory": "reports/generated",
@@ -34,6 +35,10 @@
       "optimizationReportPath": "reports/generated/positive-substitution-optimization-report.json",
       "workflowInputPath": "reports/generated/positive-substitution-workflow-input.json",
       "workflowResultPath": "reports/generated/positive-substitution-workflow-result.json",
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": "IDE_LEDGER",
       "policyDecision": "ACCEPT",
       "optimizationStatus": "OPTIMAL",
       "recommendedAction": "SUBSTITUTE",
@@ -45,6 +50,33 @@
         "sub-repl-fannie",
         "sub-repl-ust"
       ],
+      "blockedPhase": null,
+      "adapterOutcome": "BLOCKED",
+      "atomicityEvidence": {
+        "proofStatus": "IDE_LEDGER_WORKFLOW_ONLY",
+        "incumbentEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "approvedReplacementLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "adapterActionReleaseLotIds": [],
+        "adapterActionReplacementLotIds": [],
+        "finalReleasedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "finalActiveEncumberedLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "providerVisibleCurrentHoldingLotIds": [],
+        "providerVisibleReplacementHoldingLotIds": [],
+        "providerVisibleAdapterReceiptCount": null,
+        "note": "The IDE-ledger path proves workflow-scoped atomic substitution, but it does not execute the Quickstart adapter release-plus-replacement path."
+      },
       "workflow": {
         "releasedLotIds": [
           "sub-current-kfw",
@@ -190,6 +222,10 @@
       "optimizationReportPath": null,
       "workflowInputPath": null,
       "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
       "policyDecision": "REJECT",
       "optimizationStatus": null,
       "recommendedAction": null,
@@ -198,6 +234,9 @@
         "sub-current-kfw"
       ],
       "replacementLotIds": [],
+      "blockedPhase": "POLICY_EVALUATION",
+      "adapterOutcome": "NOT_REQUESTED",
+      "atomicityEvidence": null,
       "workflow": null
     },
     {
@@ -218,6 +257,10 @@
       "optimizationReportPath": "reports/generated/negative-concentration-breach-optimization-report.json",
       "workflowInputPath": null,
       "workflowResultPath": null,
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": null,
       "policyDecision": "ACCEPT",
       "optimizationStatus": "NO_SOLUTION",
       "recommendedAction": "NO_SOLUTION",
@@ -226,6 +269,9 @@
         "sub-current-kfw"
       ],
       "replacementLotIds": [],
+      "blockedPhase": "OPTIMIZATION",
+      "adapterOutcome": "NOT_REQUESTED",
+      "atomicityEvidence": null,
       "workflow": null
     },
     {
@@ -246,6 +292,10 @@
       "optimizationReportPath": "reports/generated/negative-unauthorized-release-optimization-report.json",
       "workflowInputPath": "reports/generated/negative-unauthorized-release-workflow-input.json",
       "workflowResultPath": "reports/generated/negative-unauthorized-release-workflow-result.json",
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": "IDE_LEDGER",
       "policyDecision": "ACCEPT",
       "optimizationStatus": "OPTIMAL",
       "recommendedAction": "SUBSTITUTE",
@@ -257,6 +307,30 @@
         "sub-repl-fannie",
         "sub-repl-ust"
       ],
+      "blockedPhase": "WORKFLOW",
+      "adapterOutcome": "BLOCKED",
+      "atomicityEvidence": {
+        "proofStatus": "IDE_LEDGER_WORKFLOW_ONLY",
+        "incumbentEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "approvedReplacementLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "adapterActionReleaseLotIds": [],
+        "adapterActionReplacementLotIds": [],
+        "finalReleasedLotIds": [],
+        "finalActiveEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "providerVisibleCurrentHoldingLotIds": [],
+        "providerVisibleReplacementHoldingLotIds": [],
+        "providerVisibleAdapterReceiptCount": null,
+        "note": "The IDE-ledger path proves workflow-scoped atomic substitution, but it does not execute the Quickstart adapter release-plus-replacement path."
+      },
       "workflow": {
         "releasedLotIds": [],
         "executionReports": [],
@@ -376,6 +450,10 @@
       "optimizationReportPath": "reports/generated/negative-partial-substitution-optimization-report.json",
       "workflowInputPath": "reports/generated/negative-partial-substitution-workflow-input.json",
       "workflowResultPath": "reports/generated/negative-partial-substitution-workflow-result.json",
+      "quickstartSeedReceiptPath": null,
+      "adapterExecutionReportPath": null,
+      "adapterStatusPath": null,
+      "workflowRuntime": "IDE_LEDGER",
       "policyDecision": "ACCEPT",
       "optimizationStatus": "OPTIMAL",
       "recommendedAction": "SUBSTITUTE",
@@ -387,6 +465,30 @@
         "sub-repl-fannie",
         "sub-repl-ust"
       ],
+      "blockedPhase": "WORKFLOW",
+      "adapterOutcome": "BLOCKED",
+      "atomicityEvidence": {
+        "proofStatus": "IDE_LEDGER_WORKFLOW_ONLY",
+        "incumbentEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "approvedReplacementLotIds": [
+          "sub-repl-fannie",
+          "sub-repl-ust"
+        ],
+        "adapterActionReleaseLotIds": [],
+        "adapterActionReplacementLotIds": [],
+        "finalReleasedLotIds": [],
+        "finalActiveEncumberedLotIds": [
+          "sub-current-eib",
+          "sub-current-kfw"
+        ],
+        "providerVisibleCurrentHoldingLotIds": [],
+        "providerVisibleReplacementHoldingLotIds": [],
+        "providerVisibleAdapterReceiptCount": null,
+        "note": "The IDE-ledger path proves workflow-scoped atomic substitution, but it does not execute the Quickstart adapter release-plus-replacement path."
+      },
       "workflow": {
         "releasedLotIds": [],
         "executionReports": [],
@@ -496,8 +598,8 @@
       "scenarioId": "positive-substitution",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:02Z",
-      "finishedAt": "2026-03-29T17:07:03Z",
+      "startedAt": "2026-03-30T02:08:38Z",
+      "finishedAt": "2026-03-30T02:08:38Z",
       "artifactPath": "reports/generated/positive-substitution-policy-evaluation-report.json",
       "detail": "Evaluated substitution candidates for positive scenario with overall decision ACCEPT."
     },
@@ -507,8 +609,8 @@
       "scenarioId": "positive-substitution",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:03Z",
-      "finishedAt": "2026-03-29T17:07:03Z",
+      "startedAt": "2026-03-30T02:08:38Z",
+      "finishedAt": "2026-03-30T02:08:38Z",
       "artifactPath": "reports/generated/positive-substitution-optimization-report.json",
       "detail": "Optimized the substitution request for scenario positive-substitution with recommendation SUBSTITUTE."
     },
@@ -518,8 +620,8 @@
       "scenarioId": "positive-substitution",
       "phase": "WORKFLOW",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:03Z",
-      "finishedAt": "2026-03-29T17:07:05Z",
+      "startedAt": "2026-03-30T02:08:38Z",
+      "finishedAt": "2026-03-30T02:08:41Z",
       "artifactPath": "reports/generated/positive-substitution-workflow-result.json",
       "detail": "Recorded the Daml substitution workflow for scenario positive-substitution and confirmed atomic encumbrance replacement."
     },
@@ -529,8 +631,8 @@
       "scenarioId": "negative-replacement-becomes-ineligible",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:05Z",
-      "finishedAt": "2026-03-29T17:07:05Z",
+      "startedAt": "2026-03-30T02:08:41Z",
+      "finishedAt": "2026-03-30T02:08:41Z",
       "artifactPath": "reports/generated/negative-replacement-becomes-ineligible-policy-evaluation-report.json",
       "detail": "Evaluated substitution candidates for negative scenario with overall decision REJECT."
     },
@@ -540,8 +642,8 @@
       "scenarioId": "negative-concentration-breach",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:05Z",
-      "finishedAt": "2026-03-29T17:07:05Z",
+      "startedAt": "2026-03-30T02:08:41Z",
+      "finishedAt": "2026-03-30T02:08:41Z",
       "artifactPath": "reports/generated/negative-concentration-breach-policy-evaluation-report.json",
       "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
     },
@@ -551,8 +653,8 @@
       "scenarioId": "negative-concentration-breach",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:05Z",
-      "finishedAt": "2026-03-29T17:07:05Z",
+      "startedAt": "2026-03-30T02:08:41Z",
+      "finishedAt": "2026-03-30T02:08:41Z",
       "artifactPath": "reports/generated/negative-concentration-breach-optimization-report.json",
       "detail": "Optimized the substitution request for scenario negative-concentration-breach with recommendation NO_SOLUTION."
     },
@@ -562,8 +664,8 @@
       "scenarioId": "negative-unauthorized-release",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:05Z",
-      "finishedAt": "2026-03-29T17:07:05Z",
+      "startedAt": "2026-03-30T02:08:41Z",
+      "finishedAt": "2026-03-30T02:08:41Z",
       "artifactPath": "reports/generated/negative-unauthorized-release-policy-evaluation-report.json",
       "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
     },
@@ -573,8 +675,8 @@
       "scenarioId": "negative-unauthorized-release",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:05Z",
-      "finishedAt": "2026-03-29T17:07:06Z",
+      "startedAt": "2026-03-30T02:08:41Z",
+      "finishedAt": "2026-03-30T02:08:41Z",
       "artifactPath": "reports/generated/negative-unauthorized-release-optimization-report.json",
       "detail": "Optimized the substitution request for scenario negative-unauthorized-release with recommendation SUBSTITUTE."
     },
@@ -584,8 +686,8 @@
       "scenarioId": "negative-unauthorized-release",
       "phase": "WORKFLOW",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:06Z",
-      "finishedAt": "2026-03-29T17:07:07Z",
+      "startedAt": "2026-03-30T02:08:41Z",
+      "finishedAt": "2026-03-30T02:08:44Z",
       "artifactPath": "reports/generated/negative-unauthorized-release-workflow-result.json",
       "detail": "Recorded the Daml control failure for scenario negative-unauthorized-release with workflow state PendingSettlement."
     },
@@ -595,8 +697,8 @@
       "scenarioId": "negative-partial-substitution",
       "phase": "POLICY_EVALUATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:07Z",
-      "finishedAt": "2026-03-29T17:07:08Z",
+      "startedAt": "2026-03-30T02:08:44Z",
+      "finishedAt": "2026-03-30T02:08:44Z",
       "artifactPath": "reports/generated/negative-partial-substitution-policy-evaluation-report.json",
       "detail": "Evaluated substitution candidates for negative scenario with overall decision ACCEPT."
     },
@@ -606,8 +708,8 @@
       "scenarioId": "negative-partial-substitution",
       "phase": "OPTIMIZATION",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:08Z",
-      "finishedAt": "2026-03-29T17:07:08Z",
+      "startedAt": "2026-03-30T02:08:44Z",
+      "finishedAt": "2026-03-30T02:08:44Z",
       "artifactPath": "reports/generated/negative-partial-substitution-optimization-report.json",
       "detail": "Optimized the substitution request for scenario negative-partial-substitution with recommendation SUBSTITUTE."
     },
@@ -617,8 +719,8 @@
       "scenarioId": "negative-partial-substitution",
       "phase": "WORKFLOW",
       "status": "COMPLETED",
-      "startedAt": "2026-03-29T17:07:08Z",
-      "finishedAt": "2026-03-29T17:07:10Z",
+      "startedAt": "2026-03-30T02:08:44Z",
+      "finishedAt": "2026-03-30T02:08:46Z",
       "artifactPath": "reports/generated/negative-partial-substitution-workflow-result.json",
       "detail": "Recorded the Daml control failure for scenario negative-partial-substitution with workflow state Approved."
     }

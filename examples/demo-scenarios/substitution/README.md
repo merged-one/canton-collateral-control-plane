@@ -10,3 +10,6 @@ Current contents:
 - `negative-concentration-inventory.json` and `negative-concentration-obligation.json` for the concentration-breach replacement path
 - `negative-unauthorized-obligation.json` and `negative-partial-obligation.json` for workflow-control failures against the positive inventory snapshot
 - `demo-config.json` for the manifest consumed by `make demo-substitution`
+- `quickstart-positive-inventory.json` and `quickstart-positive-obligation.json` for the Quickstart-backed positive substitution path
+- `quickstart-negative-partial-inventory.json` and `quickstart-negative-partial-obligation.json` for the Quickstart-backed blocked partial-substitution path
+- `quickstart-demo-config.json` for the manifest consumed by `make demo-substitution-quickstart`

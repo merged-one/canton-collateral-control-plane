@@ -1,19 +1,20 @@
 # Substitution Demo Summary
 
-- Report ID: `srr-867d60ba07862ccd`
+- Report ID: `srr-41979123ad810f49`
+- Runtime mode: `IDE_LEDGER`
 - Command: `make demo-substitution`
 - Manifest: `examples/demo-scenarios/substitution/demo-config.json`
 - Report artifact: `reports/generated/substitution-demo-report.json`
 
 ## Scenario Outcomes
 
-| Scenario | Mode | Result | Summary |
-| --- | --- | --- | --- |
-| positive-substitution | POSITIVE | SUCCESS | Current encumbrances stayed controlled until approval, the optimizer recommended sub-repl-fannie, sub-repl-ust, and the Daml workflow closed the substitution atomically against outgoing lots sub-current-kfw, sub-current-eib. |
-| negative-replacement-becomes-ineligible | NEGATIVE | EXPECTED_FAILURE | Policy evaluation blocked the replacement inventory with decision REJECT and reason codes ASSET_CLASS_NOT_ELIGIBLE, HAIRCUT_RULE_NOT_FOUND, ISSUER_NOT_ON_ALLOW_LIST, ISSUER_RATING_BELOW_MINIMUM, ISSUER_TYPE_NOT_ALLOWED, ISSUE_TYPE_NOT_ELIGIBLE. |
-| negative-concentration-breach | NEGATIVE | EXPECTED_FAILURE | Policy evaluation stayed admissible at the lot level, but optimization ended with NO_SOLUTION and reason codes CONCENTRATION_LIMIT_BREACH, INSUFFICIENT_LENDABLE_VALUE. |
-| negative-unauthorized-release | NEGATIVE | EXPECTED_FAILURE | The workflow blocked the control path with atomicity outcome BLOCKED_ATOMICALLY and control checks APPROVAL_GATE_BLOCKED, UNAUTHORIZED_RELEASE_BLOCKED. |
-| negative-partial-substitution | NEGATIVE | EXPECTED_FAILURE | The workflow blocked the control path with atomicity outcome BLOCKED_ATOMICALLY and control checks APPROVAL_GATE_BLOCKED, PARTIAL_SUBSTITUTION_BLOCKED. |
+| Scenario | Mode | Result | Blocked Phase | Adapter Outcome | Summary |
+| --- | --- | --- | --- | --- | --- |
+| positive-substitution | POSITIVE | SUCCESS | - | BLOCKED | Current encumbrances stayed controlled until approval, the optimizer recommended sub-repl-fannie, sub-repl-ust, and the Daml workflow closed the substitution atomically against outgoing lots sub-current-kfw, sub-current-eib. |
+| negative-replacement-becomes-ineligible | NEGATIVE | EXPECTED_FAILURE | POLICY_EVALUATION | NOT_REQUESTED | Policy evaluation blocked the replacement inventory with decision REJECT and reason codes ASSET_CLASS_NOT_ELIGIBLE, HAIRCUT_RULE_NOT_FOUND, ISSUER_NOT_ON_ALLOW_LIST, ISSUER_RATING_BELOW_MINIMUM, ISSUER_TYPE_NOT_ALLOWED, ISSUE_TYPE_NOT_ELIGIBLE. |
+| negative-concentration-breach | NEGATIVE | EXPECTED_FAILURE | OPTIMIZATION | NOT_REQUESTED | Policy evaluation stayed admissible at the lot level, but optimization ended with NO_SOLUTION and reason codes CONCENTRATION_LIMIT_BREACH, INSUFFICIENT_LENDABLE_VALUE. |
+| negative-unauthorized-release | NEGATIVE | EXPECTED_FAILURE | WORKFLOW | BLOCKED | The workflow blocked the control path with atomicity outcome BLOCKED_ATOMICALLY and control checks APPROVAL_GATE_BLOCKED, UNAUTHORIZED_RELEASE_BLOCKED. |
+| negative-partial-substitution | NEGATIVE | EXPECTED_FAILURE | WORKFLOW | BLOCKED | The workflow blocked the control path with atomicity outcome BLOCKED_ATOMICALLY and control checks APPROVAL_GATE_BLOCKED, PARTIAL_SUBSTITUTION_BLOCKED. |
 
 ## Invariant Checks
 

@@ -1,6 +1,6 @@
 # Master Tracker
 
-Last Updated: 2026-03-29
+Last Updated: 2026-03-30
 Current Phase: Milestone 5 / Phase 5 - Final Conformance And Demo Package
 
 ## Mission
@@ -169,18 +169,26 @@ Prompt 16 status:
 - the negative Quickstart paths now prove both policy-blocked and workflow-rejected cases without fabricating downstream adapter success
 - substitution and return still remain on the IDE-ledger workflow path, and role-scoped report disclosure, production-grade custodian integrations, and settlement-window enforcement remain staged follow-on work
 
+Prompt 17 status:
+
+- ADR 0020 now chooses a Quickstart-backed substitution orchestration path that reseeds scenario-scoped state when needed, advances the substitution workflow on-ledger, invokes the reference token adapter only from the real pending-settlement handoff, and folds the resulting artifacts into one machine-readable substitution report
+- `make demo-substitution-quickstart` now starts or reuses the pinned Quickstart overlay, evaluates the positive and negative Quickstart substitution scenarios, runs the positive workflow plus adapter chain, proves blocked partial substitution without adapter side effects, and emits a schema-valid `SubstitutionReport` plus Markdown summary and timeline artifacts
+- the positive Quickstart path now links policy evaluation, optimization, workflow execution, adapter release plus replacement movement, provider-visible status refresh, and final substitution reporting through generated artifacts rather than operator-authored summaries
+- the blocked Quickstart partial-substitution path now proves incumbent encumbrances and holdings remain intact and provider-visible adapter receipt count stays `0`
+- return still remains on the IDE-ledger workflow path, and role-scoped report disclosure, production-grade custodian integrations, settlement-window enforcement, and workflow-coupled optimizer reservation remain staged follow-on work
+
 ## Next 5 Tasks
 
 1. Specify role-scoped `ExecutionReport`, `ReturnReport`, `SubstitutionReport`, and adapter-receipt disclosure profiles beyond the current workflow-party and provider-visible baseline.
 2. Define versioned reference-data contracts for valuation, FX, custodian, issuer, and counterparty facts consumed by policy evaluation.
 3. Define the first workflow-coupled optimizer reservation and consent interface, including substitution-scope and return-release carriage, without collapsing Canton authority.
-4. Extend the reference token adapter path beyond posting into substitution and return handling, including explicit release or replacement confirmation carriage.
+4. Extend the reference token adapter path into the return workflow, including explicit release confirmation carriage and blocked-path status evidence equivalent to the substitution path.
 5. Define replay, retry, failure-recovery, and settlement-window semantics for future production-grade asset adapters without weakening the current control-plane boundary.
 
 ## Blockers
 
 - There is no current blocker for continued documentation, policy-engine, optimizer, and report-contract work.
-- There is no current blocker preventing Control Plane DAR build, package installation, seeded confidential-scenario creation, Quickstart-backed margin-call workflow execution, or the first Quickstart-backed reference token adapter execution in the pinned Quickstart LocalNet; the remaining gated work is broader adapter coverage, role-scoped reporting, reference-data contracts, and workflow-coupled reservation on top of that baseline.
+- There is no current blocker preventing Control Plane DAR build, package installation, seeded confidential-scenario creation, Quickstart-backed margin-call workflow execution, Quickstart-backed substitution workflow execution, or the first Quickstart-backed reference token adapter execution in the pinned Quickstart LocalNet; the remaining gated work is broader adapter coverage, role-scoped reporting, reference-data contracts, and workflow-coupled reservation on top of that baseline.
 - Production-grade asset-adapter and workflow-coupled implementation beyond the current reference adapter, off-ledger engines, and Daml workflow package should not proceed until the seeded LocalNet package surface and asset interface versions are pinned explicitly.
 - Economic calibration beyond the current deterministic proxy objective is intentionally deferred until reference-data contracts and richer report contracts are specified.
 - The current roadmap reflects the 2026-03-28 proposal and may need ADR-backed revision if the proposal changes materially.

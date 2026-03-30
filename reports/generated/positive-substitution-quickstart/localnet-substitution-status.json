@@ -1,0 +1,77 @@
+{
+  "providerVisibleEncumbrances": [{
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-kfw-521",
+    "status": "EncumbranceReleased",
+    "encumbranceId": "quickstart-substitution-correlation-521-released-quickstart-sub-current-kfw-521",
+    "correlationId": "quickstart-substitution-correlation-521"
+  }, {
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-eib-521",
+    "status": "EncumbranceReleased",
+    "encumbranceId": "quickstart-substitution-correlation-521-released-quickstart-sub-current-eib-521",
+    "correlationId": "quickstart-substitution-correlation-521"
+  }, {
+    "quantity": 225000.0000000000,
+    "lotId": "quickstart-sub-repl-fannie-521",
+    "status": "EncumbrancePledged",
+    "encumbranceId": "quickstart-substitution-correlation-521-replacement-quickstart-sub-repl-fannie-521",
+    "correlationId": "quickstart-substitution-correlation-521"
+  }, {
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-repl-ust-521",
+    "status": "EncumbrancePledged",
+    "encumbranceId": "quickstart-substitution-correlation-521-replacement-quickstart-sub-repl-ust-521",
+    "correlationId": "quickstart-substitution-correlation-521"
+  }],
+  "settlementInstructionState": "Settled",
+  "substitutionState": "Closed",
+  "providerVisibleReplacementLotHoldings": [{
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-repl-ust-521",
+    "accountId": "secured-account-substitution-521",
+    "controlState": "SettledReplacementToSecuredAccount",
+    "assetId": "quickstart-sub-repl-ust-asset-521",
+    "holdingId": "positive-substitution-quickstart-replacement-holding-quickstart-sub-repl-ust-521-moved-quickstart-substitution-correlation-521-instruction-replacement-quickstart-sub-repl-ust-521",
+    "sourceReference": "quickstart-substitution-correlation-521-instruction-replacement-quickstart-sub-repl-ust-521",
+    "beneficialOwner": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc"
+  }, {
+    "quantity": 225000.0000000000,
+    "lotId": "quickstart-sub-repl-fannie-521",
+    "accountId": "secured-account-substitution-521",
+    "controlState": "SettledReplacementToSecuredAccount",
+    "assetId": "quickstart-sub-repl-fannie-asset-521",
+    "holdingId": "positive-substitution-quickstart-replacement-holding-quickstart-sub-repl-fannie-521-moved-quickstart-substitution-correlation-521-instruction-replacement-quickstart-sub-repl-fannie-521",
+    "sourceReference": "quickstart-substitution-correlation-521-instruction-replacement-quickstart-sub-repl-fannie-521",
+    "beneficialOwner": "app_provider_canton-collateral-1::12208903631325bcb3f6a87594729003aa53482189f278200572cb23b01e795a5afc"
+  }],
+  "scenarioId": "quickstart-substitution-demo-521",
+  "providerVisibleExecutionReportCount": 1,
+  "providerVisibleCurrentLotHoldings": [{
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-kfw-521",
+    "accountId": "provider-account-substitution-521",
+    "controlState": "ReleasedToProviderAccount",
+    "assetId": "quickstart-sub-current-kfw-asset-521",
+    "holdingId": "quickstart-substitution-demo-521-baseline-holding-quickstart-sub-current-kfw-521-moved-quickstart-substitution-correlation-521-instruction-release-quickstart-sub-current-kfw-521",
+    "sourceReference": "quickstart-substitution-correlation-521-instruction-release-quickstart-sub-current-kfw-521",
+    "beneficialOwner": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a"
+  }, {
+    "quantity": 250000.0000000000,
+    "lotId": "quickstart-sub-current-eib-521",
+    "accountId": "provider-account-substitution-521",
+    "controlState": "ReleasedToProviderAccount",
+    "assetId": "quickstart-sub-current-eib-asset-521",
+    "holdingId": "quickstart-substitution-demo-521-baseline-holding-quickstart-sub-current-eib-521-moved-quickstart-substitution-correlation-521-instruction-release-quickstart-sub-current-eib-521",
+    "sourceReference": "quickstart-substitution-correlation-521-instruction-release-quickstart-sub-current-eib-521",
+    "beneficialOwner": "app_user_canton-collateral-1::122029d17b90ca982c572b237f30895dd12b8db8582d623e473ed8059ce3e4185d0a"
+  }],
+  "providerVisibleAdapterReceipts": [{
+    "instructionId": "quickstart-substitution-correlation-521-instruction",
+    "status": "EXECUTED",
+    "executedAt": "2026-03-30T02:57:11.788617Z",
+    "receiptId": "positive-substitution-quickstart-reference-token-substitution-receipt",
+    "settlementAction": "ReplaceCollateral",
+    "externalTransactionId": "quickstart-substitution-correlation-521-instruction-reference-token-substitution"
+  }]
+}
