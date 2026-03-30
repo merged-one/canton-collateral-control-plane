@@ -2,7 +2,7 @@
   "reportType": "FinalDemoPack",
   "reportVersion": "0.1.0",
   "demoPackId": "fdp-ad4246d5144c77eb",
-  "generatedAt": "2026-03-30T05:54:32Z",
+  "generatedAt": "2026-03-30T06:03:16Z",
   "overallStatus": "PASS",
   "command": "make demo-all",
   "artifacts": {

@@ -2,6 +2,91 @@
 
 This log is append-oriented. Every task should record intent before changes and outcomes after changes.
 
+## 2026-03-30 - Reviewer Path Rehearsal - Pre-Change
+
+Intent:
+Rehearse the proposal reviewer path from a temporary reviewer workspace derived from the current repo snapshot, using only `make proposal-package`, the reviewer memo, and the repo-tracked walkthrough script, then document any drift or required fixes.
+
+Task summary:
+
+- stage a temporary reviewer workspace from the current repository snapshot without relying on the active development worktree as the only validation surface
+- run `make proposal-package` inside that rehearsal workspace and confirm the generated proposal manifest, summary, memo, and walkthrough script agree on the same artifact order and claims
+- validate that the reviewer can move through the documented path without browsing source code or reconstructing missing context manually
+- record the rehearsal outcome in a reproducible evidence note and update mission-control surfaces if the rehearsal exposes gaps
+
+Expected affected files:
+
+- `docs/mission-control/WORKLOG.md`
+- `docs/evidence/prompt-21-execution-report.md`
+- `docs/evidence/EVIDENCE_MANIFEST.md`
+- any reviewer-facing docs only if the rehearsal exposes path drift or missing references
+
+Risk assessment:
+
+- a temporary reviewer workspace built from the current uncommitted snapshot could still carry a dirty git state, so the rehearsal must distinguish reviewer-path validity from final commit freeze
+- the rehearsal may expose mismatches between the reviewer-start path, the proposal manifest review order, and the walkthrough script that were not caught by schema or unit checks
+- Quickstart-backed package generation in the temporary workspace could fail if any repo-local assumptions were accidentally tied to the original checkout path
+
+Acceptance criteria:
+
+- a temporary reviewer workspace can run `make proposal-package` successfully from the current repo snapshot
+- the reviewer-start doc, proposal memo, walkthrough script, and generated proposal manifest all point at the same artifact sequence and claim boundary
+- the rehearsal outcome and commands are captured in repo-tracked evidence and worklog entries
+
+## 2026-03-30 - Reviewer Path Rehearsal - Post-Change
+
+Outcome:
+Rehearsed the proposal reviewer path from a temporary workspace derived from the current source snapshot, confirmed that `make proposal-package` works outside the active checkout when repo-local runtime state is not copied wholesale, and fixed one manifest review-order drift so the generated reviewer path now matches the reviewer docs.
+
+Completed changes:
+
+- proved that a temporary reviewer workspace built from the current repo snapshot can rebuild the proposal package successfully when the overlay excludes `.runtime`, `.daml`, and `reports/generated`
+- captured the operational nuance that copying the active `.runtime/localnet/cn-quickstart` directory into a second workspace is not portable because `localnet-bootstrap` expects a valid git checkout at that path
+- updated `app/orchestration/proposal_submission_pack.py` so the machine-readable reviewer journey now places conformance before the final demo pack, matching `docs/evidence/REVIEWER_START_HERE.md`, `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`, and `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md`
+- tightened `test/conformance/test_proposal_submission_package.py` to lock the review-order sequence explicitly
+- added `docs/evidence/prompt-21-execution-report.md` plus corresponding tracker, invariant, and evidence-manifest updates so the reviewer-path rehearsal is repo-tracked evidence rather than an ad hoc terminal result
+
+Commands run:
+
+```sh
+tmpdir=$(mktemp -d /tmp/cccp-reviewer-rehearsal-XXXXXX)
+clone_dir="$tmpdir/repo"
+git clone --local /Users/charlesdusek/Code/canton-collateral-control-plane "$clone_dir"
+rsync -a --delete --exclude '.git' /Users/charlesdusek/Code/canton-collateral-control-plane/ "$clone_dir/"
+cd "$clone_dir"
+make proposal-package
+
+tmpdir=$(mktemp -d /tmp/cccp-reviewer-clean-XXXXXX)
+clone_dir="$tmpdir/repo"
+git clone --local /Users/charlesdusek/Code/canton-collateral-control-plane "$clone_dir"
+rsync -a --delete --exclude '.git' --exclude '.runtime' --exclude '.daml' --exclude 'reports/generated' /Users/charlesdusek/Code/canton-collateral-control-plane/ "$clone_dir/"
+cd "$clone_dir"
+make proposal-package
+
+python3 -m py_compile app/orchestration/proposal_submission_pack.py test/conformance/test_proposal_submission_package.py
+PYTHONPATH=app/orchestration python3 -m unittest discover -s test/conformance -p 'test_proposal_submission_package.py'
+make proposal-package
+make docs-lint
+git diff --check
+```
+
+Results:
+
+- the first temporary-workspace attempt failed because the copied `.runtime/localnet/cn-quickstart` directory was not portable into a second workspace
+- the fresh temporary reviewer workspace succeeded and rebuilt the full proposal package from the current repo snapshot
+- the reviewer rehearsal exposed one real mismatch before the fix: the generated proposal manifest ordered the final demo pack before conformance while the reviewer docs all ordered conformance first
+- after the fix, the temporary reviewer workspace proved that every proposal-manifest artifact path, reviewer-journey path, and walkthrough artifact-order path exists and that the docs and manifest now agree on the same conformance-before-final-demo-pack sequence
+- focused validation passed:
+  - `python3 -m py_compile ...`
+  - isolated `test_proposal_submission_package.py`
+  - `make proposal-package`
+  - `make docs-lint`
+  - `git diff --check`
+- the regenerated proposal package now carries submission id `psp-8bc396964860907b`
+
+Next step:
+Freeze a clean proposal baseline commit and rerun `make proposal-package` so the machine-readable wrapper records the intended source commit with `worktreeStatus: CLEAN`.
+
 ## 2026-03-30 - Remove Proposal Video Submission Surface - Pre-Change
 
 Intent:

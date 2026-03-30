@@ -199,6 +199,7 @@ Prompt 20 status:
 - `make proposal-package` now reruns or reuses the Quickstart-backed final demo pack, writes a machine-readable `ProposalSubmissionManifest` plus Markdown summary, and freezes the current Quickstart commit, package id, conformance suite id, final demo-pack id, and demo report ids for reviewer use
 - the repository now exposes `docs/evidence/REVIEWER_START_HERE.md`, `docs/evidence/PROPOSAL_SUBMISSION_MEMO.md`, and `docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md` so a development-fund reviewer can inspect the proof surface without reconstructing repo context manually
 - the proposal-submission wrapper keeps the Quickstart-backed runtime proof and the explicit prototype boundary aligned without requiring any out-of-repo media asset
+- a temporary reviewer workspace derived from the current repo snapshot can run `make proposal-package`, and the reviewer-start doc, memo, walkthrough script, and generated proposal manifest now agree on the conformance-before-final-demo-pack review sequence
 
 ## Next 5 Tasks
 
@@ -206,7 +207,7 @@ Prompt 20 status:
 2. Define versioned reference-data contracts for valuation, FX, custodian, issuer, and counterparty facts consumed by policy evaluation.
 3. Define the first workflow-coupled optimizer reservation and consent interface, including substitution-scope and return-release carriage, without collapsing Canton authority.
 4. Define replay, retry, failure-recovery, and settlement-window semantics for future production-grade asset adapters without weakening the current control-plane boundary.
-5. Rehearse the reviewer path from a clean clone using only `make proposal-package`, the reviewer memo, and the repo-tracked walkthrough script.
+5. Freeze a clean proposal baseline commit and rerun `make proposal-package` so the submission manifest records the intended source commit with `worktreeStatus: CLEAN`.
 
 ## Blockers
 

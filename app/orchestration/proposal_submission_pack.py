@@ -226,15 +226,15 @@ def _review_order(
         },
         {
             "step": 6,
-            "label": "Quickstart demos",
-            "path": final_demo_pack["artifacts"]["finalDemoPackPath"],
-            "purpose": "Use the final demo pack to inspect the margin-call, substitution, and return runtime paths.",
-        },
-        {
-            "step": 7,
             "label": "Conformance",
             "path": final_demo_pack["artifacts"]["conformanceReportPath"],
             "purpose": "Confirm the aggregate invariant pass or fail output for the Quickstart-backed proof set.",
+        },
+        {
+            "step": 7,
+            "label": "Quickstart demos",
+            "path": final_demo_pack["artifacts"]["finalDemoPackPath"],
+            "purpose": "Use the final demo pack after conformance to inspect the margin-call, substitution, and return runtime paths together.",
         },
         {
             "step": 8,

@@ -184,6 +184,7 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0163 | Demo artifacts | [docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md](./PROPOSAL_WALKTHROUGH_SCRIPT.md) | repo-tracked walkthrough script for reviewer replay or live presentation |
 | E-0165 | Demo artifacts | [reports/generated/proposal-submission-manifest.json](../../reports/generated/proposal-submission-manifest.json) | machine-readable reviewer-facing wrapper over the Quickstart-backed proposal proof set |
 | E-0166 | Demo artifacts | [docs/evidence/prompt-20-execution-report.md](./prompt-20-execution-report.md) | reproducible Prompt 20 execution record for the proposal-submission package and reviewer kit |
+| E-0167 | Demo artifacts | [docs/evidence/prompt-21-execution-report.md](./prompt-21-execution-report.md) | reproducible reviewer-path rehearsal record proving the proposal package can be rebuilt from a temporary reviewer workspace and that the reviewer docs align on one artifact order |
 
 ## Coverage Notes
 

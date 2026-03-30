@@ -219,6 +219,19 @@ class ProposalSubmissionPackageUnitTest(unittest.TestCase):
                     "artifactOrder",
                 },
             )
+            self.assertEqual(
+                [step["path"] for step in manifest["reviewerJourney"]["reviewOrder"]],
+                [
+                    "docs/evidence/REVIEWER_START_HERE.md",
+                    "docs/evidence/PROPOSAL_SUBMISSION_MEMO.md",
+                    "reports/generated/localnet-control-plane-deployment-receipt.json",
+                    "reports/generated/localnet-reference-token-adapter-execution-report.json",
+                    "reports/generated/localnet-reference-token-adapter-status.json",
+                    "reports/generated/conformance-suite-report.json",
+                    "reports/generated/final-demo-pack.json",
+                    "docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md",
+                ],
+            )
             self.assertTrue(
                 (reports_generated / "proposal-submission-manifest.json").is_file()
             )

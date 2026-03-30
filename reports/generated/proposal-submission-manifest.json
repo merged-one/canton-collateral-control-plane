@@ -1,8 +1,8 @@
 {
   "reportType": "ProposalSubmissionManifest",
   "reportVersion": "0.1.0",
-  "submissionId": "psp-9ebe336b9cb042fa",
-  "generatedAt": "2026-03-30T05:54:32Z",
+  "submissionId": "psp-8bc396964860907b",
+  "generatedAt": "2026-03-30T06:03:16Z",
   "overallStatus": "PASS",
   "command": "make proposal-package",
   "artifacts": {
@@ -21,41 +21,16 @@
     "runbookPath": "docs/runbooks/FINAL_DEMO_RUNBOOK.md"
   },
   "submissionBaseline": {
-    "sourceCommit": "f62f22e7b86cd2a730a29a2c924c9b25080ba42b",
-    "sourceCommitShort": "f62f22e",
+    "sourceCommit": "a6b6a9cce50ad1e9c73c95eef10dd0fd386e620b",
+    "sourceCommitShort": "a6b6a9c",
     "worktreeStatus": "DIRTY",
     "dirtyPaths": [
-      " M AGENTS.md",
-      " M CONTRIBUTING.md",
-      " M Makefile",
-      " M README.md",
-      " M docs/evidence/DEMO_ARTIFACT_INDEX.md",
-      " M docs/evidence/EVIDENCE_MANIFEST.md",
-      " M docs/evidence/PROPOSAL_READINESS_ASSESSMENT.md",
-      " M docs/invariants/INVARIANT_REGISTRY.md",
-      " M docs/mission-control/DECISION_LOG.md",
-      " M docs/mission-control/MASTER_TRACKER.md",
-      " M docs/mission-control/ROADMAP.md",
+      " M app/orchestration/proposal_submission_pack.py",
       " M docs/mission-control/WORKLOG.md",
-      " M docs/runbooks/FINAL_DEMO_RUNBOOK.md",
-      " M docs/runbooks/README.md",
-      " M docs/setup/LOCAL_DEV_SETUP.md",
-      " M reports/README.md",
       " M reports/generated/conformance-suite-report.json",
       " M reports/generated/final-demo-pack.json",
       " M reports/generated/localnet-control-plane-deployment-receipt.json",
-      " M scripts/verify-portable.sh",
-      " M scripts/verify.sh",
-      "?? app/orchestration/proposal_submission_cli.py",
-      "?? app/orchestration/proposal_submission_pack.py",
-      "?? docs/adrs/0023-proposal-submission-wrapper.md",
-      "?? docs/evidence/PROPOSAL_SUBMISSION_MEMO.md",
-      "?? docs/evidence/PROPOSAL_WALKTHROUGH_SCRIPT.md",
-      "?? docs/evidence/REVIEWER_START_HERE.md",
-      "?? docs/evidence/prompt-20-execution-report.md",
-      "?? reports/generated/proposal-submission-manifest.json",
-      "?? reports/generated/proposal-submission-summary.md",
-      "?? test/conformance/test_proposal_submission_package.py"
+      " M test/conformance/test_proposal_submission_package.py"
     ],
     "finalDemoPackId": "fdp-ad4246d5144c77eb",
     "conformanceSuiteId": "csr-d7e4b4c29646d5d4",
@@ -169,15 +144,15 @@
       },
       {
         "step": 6,
-        "label": "Quickstart demos",
-        "path": "reports/generated/final-demo-pack.json",
-        "purpose": "Use the final demo pack to inspect the margin-call, substitution, and return runtime paths."
-      },
-      {
-        "step": 7,
         "label": "Conformance",
         "path": "reports/generated/conformance-suite-report.json",
         "purpose": "Confirm the aggregate invariant pass or fail output for the Quickstart-backed proof set."
+      },
+      {
+        "step": 7,
+        "label": "Quickstart demos",
+        "path": "reports/generated/final-demo-pack.json",
+        "purpose": "Use the final demo pack after conformance to inspect the margin-call, substitution, and return runtime paths together."
       },
       {
         "step": 8,
