@@ -37,6 +37,67 @@ Acceptance criteria:
 - uncommitted source or documentation edits outside `reports/generated` still cause the manifest to report `DIRTY`
 - focused tests, mission-control docs, and evidence records are updated alongside the cleanliness-scope change
 
+## 2026-03-30 - Proposal Baseline Freeze And Cleanliness Scope - Post-Change
+
+Outcome:
+Froze a clean proposal baseline commit, reran `make proposal-package`, and updated the proposal-submission wrapper so it now reports the committed source baseline as clean while explicitly excluding regenerated `reports/generated` outputs from that git-cleanliness calculation.
+
+Completed changes:
+
+- verified the pre-fix limitation directly: rerunning `make proposal-package` from a clean `HEAD` still produced `worktreeStatus: DIRTY` because `make demo-all` refreshed tracked files under `reports/generated/` before the proposal wrapper captured git status
+- updated `app/orchestration/proposal_submission_pack.py` so the git-cleanliness calculation now filters dirty paths under `reports/generated/`, carries the excluded-prefix list into `submissionBaseline`, and renders the scope explicitly in the generated summary
+- expanded `test/conformance/test_proposal_submission_package.py` to prove that generated-output-only dirtiness is ignored while non-generated source or documentation dirtiness is still reported
+- froze the new baseline at commit `71c9a3baac375a2f92460fd470f2f71281577faf` with commit message `Freeze clean proposal baseline`
+- reran `make proposal-package` from that baseline and confirmed that `reports/generated/proposal-submission-manifest.json` now records:
+  - submission id `psp-7d263e9219b1c4e2`
+  - source commit `71c9a3baac375a2f92460fd470f2f71281577faf`
+  - `worktreeStatus: CLEAN`
+  - `ignoredDirtyPathPrefixes: ["reports/generated/"]`
+  - no dirty source paths outside the excluded generated-output scope
+- added `docs/evidence/prompt-22-execution-report.md` plus corresponding tracker, invariant, evidence-manifest, and worklog updates so the clean-baseline freeze is repo-tracked evidence
+
+Commands run:
+
+```sh
+python3 -m py_compile app/orchestration/proposal_submission_pack.py test/conformance/test_proposal_submission_package.py
+PYTHONPATH=app/orchestration python3 -m unittest discover -s test/conformance -p 'test_proposal_submission_package.py'
+git add app/orchestration/proposal_submission_pack.py \
+  test/conformance/test_proposal_submission_package.py \
+  docs/mission-control/WORKLOG.md \
+  reports/generated/conformance-suite-report.json \
+  reports/generated/final-demo-pack.json \
+  reports/generated/localnet-control-plane-deployment-receipt.json \
+  reports/generated/proposal-submission-manifest.json \
+  reports/generated/proposal-submission-summary.md
+git commit -m "Freeze clean proposal baseline"
+git rev-parse HEAD
+make proposal-package
+python3 - <<'PY'
+import json
+from pathlib import Path
+
+manifest = json.loads(Path('reports/generated/proposal-submission-manifest.json').read_text())
+print(manifest['submissionBaseline']['sourceCommit'])
+print(manifest['submissionBaseline']['worktreeStatus'])
+print(manifest['submissionBaseline']['ignoredDirtyPathPrefixes'])
+print(manifest['submissionBaseline']['dirtyPaths'])
+PY
+git status --short
+git diff --check
+```
+
+Results:
+
+- `python3 -m py_compile ...` passed
+- the focused proposal-package unit tests passed with 4 tests
+- the clean proposal baseline is frozen at commit `71c9a3baac375a2f92460fd470f2f71281577faf`
+- `make proposal-package` passed from that baseline and the generated summary now states `Worktree status at package build (excluding reports/generated/): CLEAN`
+- `git diff --check` passed
+- no ADR was added because this change narrows the cleanliness accounting inside the existing proposal-submission wrapper without changing the runtime-proof surface or broader repository architecture
+
+Next step:
+Decide whether regenerated `reports/generated` artifacts should be committed as a separate evidence commit, shipped alongside the frozen source baseline commit, or both when assembling the final external proposal submission bundle.
+
 ## 2026-03-30 - Reviewer Path Rehearsal - Pre-Change
 
 Intent:

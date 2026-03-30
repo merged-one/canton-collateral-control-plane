@@ -185,6 +185,7 @@ This manifest defines the evidence categories required to defend changes in this
 | E-0165 | Demo artifacts | [reports/generated/proposal-submission-manifest.json](../../reports/generated/proposal-submission-manifest.json) | machine-readable reviewer-facing wrapper over the Quickstart-backed proposal proof set |
 | E-0166 | Demo artifacts | [docs/evidence/prompt-20-execution-report.md](./prompt-20-execution-report.md) | reproducible Prompt 20 execution record for the proposal-submission package and reviewer kit |
 | E-0167 | Demo artifacts | [docs/evidence/prompt-21-execution-report.md](./prompt-21-execution-report.md) | reproducible reviewer-path rehearsal record proving the proposal package can be rebuilt from a temporary reviewer workspace and that the reviewer docs align on one artifact order |
+| E-0168 | Demo artifacts | [docs/evidence/prompt-22-execution-report.md](./prompt-22-execution-report.md) | reproducible clean-baseline freeze record proving the proposal manifest can cite a committed source baseline as `CLEAN` while making the generated-artifact exclusion explicit |
 
 ## Coverage Notes
 

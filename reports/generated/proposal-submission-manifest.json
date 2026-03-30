@@ -1,8 +1,8 @@
 {
   "reportType": "ProposalSubmissionManifest",
   "reportVersion": "0.1.0",
-  "submissionId": "psp-f71c891039fa83f6",
-  "generatedAt": "2026-03-30T06:10:18Z",
+  "submissionId": "psp-7d263e9219b1c4e2",
+  "generatedAt": "2026-03-30T06:12:51Z",
   "overallStatus": "PASS",
   "command": "make proposal-package",
   "artifacts": {
@@ -21,13 +21,12 @@
     "runbookPath": "docs/runbooks/FINAL_DEMO_RUNBOOK.md"
   },
   "submissionBaseline": {
-    "sourceCommit": "8cb3e15844b73ed52b8c6da4fd9d512854bd3c25",
-    "sourceCommitShort": "8cb3e15",
-    "worktreeStatus": "DIRTY",
-    "dirtyPaths": [
-      " M reports/generated/conformance-suite-report.json",
-      " M reports/generated/final-demo-pack.json",
-      " M reports/generated/localnet-control-plane-deployment-receipt.json"
+    "sourceCommit": "71c9a3baac375a2f92460fd470f2f71281577faf",
+    "sourceCommitShort": "71c9a3b",
+    "worktreeStatus": "CLEAN",
+    "dirtyPaths": [],
+    "ignoredDirtyPathPrefixes": [
+      "reports/generated/"
     ],
     "finalDemoPackId": "fdp-ad4246d5144c77eb",
     "conformanceSuiteId": "csr-d7e4b4c29646d5d4",

@@ -1,10 +1,10 @@
 # Proposal Submission Summary
 
-- Submission ID: `psp-f71c891039fa83f6`
+- Submission ID: `psp-7d263e9219b1c4e2`
 - Command: `make proposal-package`
 - Overall status: `PASS`
-- Source commit: `8cb3e15844b73ed52b8c6da4fd9d512854bd3c25`
-- Worktree status at package build: `DIRTY`
+- Source commit: `71c9a3baac375a2f92460fd470f2f71281577faf`
+- Worktree status at package build (excluding reports/generated/): `CLEAN`
 - Final demo pack ID: `fdp-ad4246d5144c77eb`
 - Conformance suite ID: `csr-d7e4b4c29646d5d4`
 - Quickstart commit: `fe56d460af650b71b8e20098b3e76693397a8bf9`
